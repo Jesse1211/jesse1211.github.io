@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/styled": "^11.11.5",
+    "@mui/joy": "5.0.0-beta.32",
     "@types/zdog": "^1.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
