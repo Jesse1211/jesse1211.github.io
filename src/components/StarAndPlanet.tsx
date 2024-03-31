@@ -1,19 +1,12 @@
 import { Illustration, Ellipse, Group, TAU, QuartersValue } from 'zdog';
+import { RingSphere } from '../models/Ring';
+import { Star } from '../models/Star';
 
 const rand = (min: number, max: number): number => Math.random() * (max - min) + min;
 const randInt = (min: number, max: number): number => Math.floor(rand(min, max + 1));
 const map = (value: number, start1: number, stop1: number, start2: number, stop2: number): number => start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
 
-interface Ring {
-  shape: Ellipse;
-  spin: number;
-}
-
-interface Star {
-  shape: Ellipse;
-}
-
-export const Start = () => {
+export const StarAndPlanet = () => {
   const canvas = document.querySelector('canvas');
 
   if (!canvas) {
@@ -29,7 +22,7 @@ export const Start = () => {
   const ringGroup = new Group({ addTo: illo });
   const starGroup = new Group({ addTo: illo });
 
-  const rings: Ring[] = [];
+  const rings: RingSphere[] = [];
   const ringCount = 100;
   const ringDiameter = 350;
 

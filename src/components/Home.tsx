@@ -1,6 +1,8 @@
 import { FC, useEffect, useState } from "react";
-import { Start } from "./Start"; // Assuming Start is correctly imported without the extension
+import { StarAndPlanet } from "./StarAndPlanet";
 import { Button } from "@mui/joy";
+import { StarBackground } from "./Star";
+import { Portfolio } from "./Portfolio";
 
 export const Home: FC = () => {
   const [home, setHome] = useState<boolean>(true);
@@ -11,7 +13,7 @@ export const Home: FC = () => {
       if (canvas) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        Start();
+        home ? StarAndPlanet() : StarBackground();
       }
     };
 
@@ -20,23 +22,23 @@ export const Home: FC = () => {
     window.addEventListener("resize", resizeCanvas);
 
     return () => window.removeEventListener("resize", resizeCanvas);
-  }, []);
+  }, [home]);
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      {home ? (
-        <>
-          <canvas
-            style={{
-              display: "block",
-              background: "#0e0f43",
-              width: "100%",
-              height: "100%",
-              position: "absolute",
-              top: 0,
-              left: 0,
-            }}
-          />
+      <>
+        <canvas
+          style={{
+            display: "block",
+            background: "#0e0f43",
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
+        />
+        {home ? (
           <Button
             style={{
               position: "absolute",
@@ -52,10 +54,10 @@ export const Home: FC = () => {
           >
             Start Discovery
           </Button>
-        </>
-      ) : (
-        <>OK watch my face babe</>
-      )}
+        ) : (
+          <Portfolio/>
+        )}
+      </>
     </div>
   );
 };
