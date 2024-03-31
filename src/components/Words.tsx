@@ -1,8 +1,6 @@
 import { Box, Illustration, Shape, TAU } from 'zdog';
 
-const Words = () => {
-  // Made with Zdog
-
+export const Words = () => {
     let isSpinning = true;
 
     const illo = new Illustration({
@@ -60,5 +58,3 @@ const Words = () => {
     
   return null;
 };
-
-export default Words;

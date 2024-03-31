@@ -1,6 +1,6 @@
 import { Box, Illustration, TAU } from 'zdog';
 
-const HomeSquare = () => {
+export const HomeSquare = () => {
   let isSpinning = true;
   const illo = new Illustration({
     element: '.zdog-canvas',
@@ -34,5 +34,3 @@ const HomeSquare = () => {
     
   return null;
 };
-
-export default HomeSquare;
