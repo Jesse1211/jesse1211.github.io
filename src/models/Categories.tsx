@@ -1,1 +1,1 @@
-export type Categories = "Start" | "Home" | "Educations" | "Experiences" | "Projects";
+export type Categories =  "Educations" | "Experiences" | "Projects";
