@@ -8,11 +8,15 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import { Home } from "./components/Home.tsx";
+import { CategoryDetails } from "./components/CategoryDetails.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index element={<Home />} />
+      <Route path="/Educations" element={<CategoryDetails category={"Educations"} />} />
+      <Route path="/Experiences" element={<CategoryDetails category={"Experiences"} />} />
+      <Route path="/Projects" element={<CategoryDetails category={"Projects"} />} />
     </Route>
   )
 );
