@@ -1,23 +1,27 @@
 import { FC, useState } from "react";
-import { Button, ButtonGroup } from "@mui/joy";
+import { Box, Button, Stack } from "@mui/joy";
 import { Background } from "./Background";
 import { Categories } from "../models/Categories";
 import { CategoryDetails } from "./CategoryDetails";
 
 export const Home: FC = () => {
   const [category, setCategory] = useState<Categories>("Start");
-
+  Background();
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      <>
-        <Background />
+    <>
+      <Stack
+        mx="auto"
+        width={0.9}
+        height={1}
+        p={3}
+        spacing={4}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Box border={250}></Box>
         {category === "Start" ? (
           <Button
             style={{
-              position: "absolute",
-              top: "70%",
-              left: "50%",
-              transform: "translate(-50%, -50%)", // Centers the button
               color: "#889def",
             }}
             variant="plain"
@@ -29,44 +33,41 @@ export const Home: FC = () => {
           </Button>
         ) : (
           <>
-            <ButtonGroup
-              style={{
-                position: "absolute",
-                top: "70%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-              variant="plain"
-            >
-              <Button
-                onClick={() => setCategory("Educations")}
-                style={{
-                  color: "#889def",
-                }}
-              >
-                Educations
-              </Button>
-              <Button
-                onClick={() => setCategory("Experiences")}
-                style={{
-                  color: "#889def",
-                }}
-              >
-                Experiences
-              </Button>{" "}
-              <Button
-                onClick={() => setCategory("Projects")}
-                style={{
-                  color: "#889def",
-                }}
-              >
-                Projects
-              </Button>
-            </ButtonGroup>
-            <CategoryDetails category={category} />
+              <Stack direction="row" spacing={6}>
+                <Button
+                  onClick={() => setCategory("Educations")}
+                  style={{
+                    color: "#889def",
+                  }}
+                  variant="plain"
+                >
+                  Educations
+                </Button>
+                <Button
+                  onClick={() => setCategory("Experiences")}
+                  style={{
+                    color: "#889def",
+                  }}
+                  variant="plain"
+                >
+                  Experiences
+                </Button>{" "}
+                <Button
+                  onClick={() => setCategory("Projects")}
+                  style={{
+                    color: "#889def",
+                  }}
+                  variant="plain"
+
+                >
+                  Projects
+                </Button>
+              </Stack>
+              <CategoryDetails category={category} />
+            
           </>
         )}
-      </>
-    </div>
+      </Stack>
+    </>
   );
 };
