@@ -1,13 +1,24 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { App } from './App.tsx'
-import { CssBaseline, CssVarsProvider } from "@mui/joy"
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { App } from "./App.tsx";
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
+import { Home } from "./components/Home.tsx";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<App />}>
+      <Route index element={<Home />} />
+    </Route>
+  )
+);
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <CssVarsProvider>
-				<CssBaseline disableColorScheme />
-				<App />
-    </CssVarsProvider>
+    <RouterProvider router={router} />
   </React.StrictMode>
-)
+);
