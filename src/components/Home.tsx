@@ -1,44 +1,17 @@
-import { FC, useEffect, useState } from "react";
-import { StarAndPlanet } from "./StarAndPlanet";
-import { Button } from "@mui/joy";
-import { StarBackground } from "./Star";
-import { Portfolio } from "./Portfolio";
+import { FC, useState } from "react";
+import { Button, ButtonGroup } from "@mui/joy";
+import { Background } from "./Background";
+import { Categories } from "../models/Categories";
+import { CategoryDetails } from "./CategoryDetails";
 
 export const Home: FC = () => {
-  const [home, setHome] = useState<boolean>(true);
-
-  useEffect(() => {
-    const resizeCanvas = () => {
-      const canvas = document.querySelector("canvas");
-      if (canvas) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        home ? StarAndPlanet() : StarBackground();
-      }
-    };
-
-    resizeCanvas();
-
-    window.addEventListener("resize", resizeCanvas);
-
-    return () => window.removeEventListener("resize", resizeCanvas);
-  }, [home]);
+  const [category, setCategory] = useState<Categories>("Start");
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
       <>
-        <canvas
-          style={{
-            display: "block",
-            background: "#0e0f43",
-            width: "100%",
-            height: "100%",
-            position: "absolute",
-            top: 0,
-            left: 0,
-          }}
-        />
-        {home ? (
+        <Background />
+        {category === "Start" ? (
           <Button
             style={{
               position: "absolute",
@@ -49,13 +22,49 @@ export const Home: FC = () => {
             }}
             variant="plain"
             onClick={() => {
-              setHome(false);
+              setCategory("Home");
             }}
           >
             Start Discovery
           </Button>
         ) : (
-          <Portfolio/>
+          <>
+            <ButtonGroup
+              style={{
+                position: "absolute",
+                top: "70%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+              variant="plain"
+            >
+              <Button
+                onClick={() => setCategory("Educations")}
+                style={{
+                  color: "#889def",
+                }}
+              >
+                Educations
+              </Button>
+              <Button
+                onClick={() => setCategory("Experiences")}
+                style={{
+                  color: "#889def",
+                }}
+              >
+                Experiences
+              </Button>{" "}
+              <Button
+                onClick={() => setCategory("Projects")}
+                style={{
+                  color: "#889def",
+                }}
+              >
+                Projects
+              </Button>
+            </ButtonGroup>
+            <CategoryDetails category={category} />
+          </>
         )}
       </>
     </div>
