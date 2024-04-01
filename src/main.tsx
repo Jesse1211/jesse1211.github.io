@@ -1,28 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { App } from "./App.tsx";
+import { CssBaseline, CssVarsProvider } from "@mui/joy";
 import {
-  Route,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from "react-router-dom";
-import { Home } from "./components/Home.tsx";
-import { CategoryDetails } from "./components/CategoryDetails.tsx";
+  experimental_extendTheme,
+  Experimental_CssVarsProvider,
+  THEME_ID,
+} from "@mui/material/styles";
+import { Footer } from "./components/Footer.tsx";
+import { Navigation } from "./components/Navigation.tsx";
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<App />}>
-      <Route index element={<Home />} />
-      <Route path="/Educations" element={<CategoryDetails category={"Educations"} />} />
-      <Route path="/Experiences" element={<CategoryDetails category={"Experiences"} />} />
-      <Route path="/Projects" element={<CategoryDetails category={"Projects"} />} />
-    </Route>
-  )
-);
+const materialTheme = experimental_extendTheme();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Experimental_CssVarsProvider
+      defaultMode="system"
+      theme={{ [THEME_ID]: materialTheme }}
+    >
+      <CssVarsProvider>
+        <CssBaseline disableColorScheme />
+        <App/>
+        <Footer/>
+      </CssVarsProvider>
+    </Experimental_CssVarsProvider>
   </React.StrictMode>
 );
