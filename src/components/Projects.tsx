@@ -3,7 +3,7 @@ import { FC } from "react";
 
 export const Projects: FC = () => {
   return (
-    <Card sx={{ width: 0.7 }}>
+    <Card sx={{ minWidth: 0.9, alignSelf: "center"}} >
       <CardCover>
         <img
           src="../public/Cornell.jpg"

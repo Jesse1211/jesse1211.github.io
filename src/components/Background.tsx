@@ -1,7 +1,7 @@
-import { FC, useEffect } from "react";
+import { useEffect } from "react";
 import { StarAndPlanet } from "./StarAndPlanet";
 
-export const Background: FC = () => {
+export const Background = () => {
   useEffect(() => {
     const resizeCanvas = () => {
       const canvas = document.querySelector("canvas");
@@ -19,17 +19,4 @@ export const Background: FC = () => {
     return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
 
-  return (
-    <canvas
-      style={{
-        display: "block",
-        background: "#0e0f43",
-        width: "100%",
-        height: "100%",
-        position: "absolute",
-        top: 0,
-        left: 0,
-      }}
-    />
-  );
 };
