@@ -1,16 +1,28 @@
 import { FC, useState } from "react";
-import { Box, Button, Stack } from "@mui/joy";
+import { Button, Stack } from "@mui/joy";
 import { Background } from "./Background";
-import { Categories } from "../models/Categories";
 import Fade from "@mui/material/Fade";
+import { useNavigate } from "react-router-dom"; // Step 1
+import { motion } from "framer-motion";
+import { Buttons } from "./Buttons";
 
 export const Home: FC = () => {
   const [checked, setChecked] = useState(false);
+  const navigate = useNavigate();
 
-  const [category, setCategory] = useState<Categories>();
+  const handleCategoryClick = (category: string) => {
+    navigate(`/${category}`);
+  };
+
   Background();
+
   return (
-    <>
+    <motion.div
+      className="home"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Stack
         mx="auto"
         width={0.9}
@@ -37,39 +49,9 @@ export const Home: FC = () => {
         </Fade>
         
         <Fade in={checked}>
-          <Stack direction="row" spacing={6}>
-            <Button
-              onClick={() => setCategory("Educations")}
-              style={{
-                color: "#889def",
-              }}
-              variant="plain"
-            >
-              Educations
-            </Button>
-            <Button
-              onClick={() => setCategory("Experiences")}
-              style={{
-                color: "#889def",
-              }}
-              variant="plain"
-            >
-              Experiences
-            </Button>{" "}
-            <Button
-              onClick={() => setCategory("Projects")}
-              style={{
-                color: "#889def",
-              }}
-              variant="plain"
-            >
-              Projects
-            </Button>
-          </Stack>
-          {/* <CategoryDetails category={category} /> */}
-        
+          <Buttons handleCategoryClick={handleCategoryClick} />                
         </Fade>
       </Stack>
-    </>
+    </motion.div>
   );
 };
