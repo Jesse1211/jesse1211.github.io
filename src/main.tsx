@@ -8,7 +8,6 @@ import {
   THEME_ID,
 } from "@mui/material/styles";
 import { Footer } from "./components/Footer.tsx";
-import { Navigation } from "./components/Navigation.tsx";
 
 const materialTheme = experimental_extendTheme();
 

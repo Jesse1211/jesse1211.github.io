@@ -2,17 +2,11 @@ import { FC, useState } from "react";
 import { Button, Stack } from "@mui/joy";
 import { Background } from "./canvas/Background";
 import Fade from "@mui/material/Fade";
-import { useNavigate } from "react-router-dom"; // Step 1
 import { motion } from "framer-motion";
 import { Buttons } from "./Buttons";
 
 export const Home: FC = () => {
   const [checked, setChecked] = useState(false);
-  const navigate = useNavigate();
-
-  const handleCategoryClick = (category: string) => {
-    navigate(`/${category}`);
-  };
 
   Background();
   // Cube();
@@ -50,7 +44,7 @@ export const Home: FC = () => {
         </Fade>
         
         <Fade in={checked}>
-          <Buttons handleCategoryClick={handleCategoryClick} />                
+          <Buttons isHome={false} />                
         </Fade>
       </Stack>
     </motion.div>
