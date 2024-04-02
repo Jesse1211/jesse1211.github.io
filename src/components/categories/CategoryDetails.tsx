@@ -3,7 +3,7 @@ import { FC } from "react";
 import { University } from "./University";
 import { Experience } from "./Experience";
 import { Projects } from "./Projects";
-import { Categories } from "../models/Categories";
+import { Categories } from "../../models/Categories";
 import { motion } from "framer-motion";
 
 export const CategoryDetails: FC<{ category: Categories }> = ({ category }) => {

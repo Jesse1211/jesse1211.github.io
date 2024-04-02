@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { Button, Stack } from "@mui/joy";
-import { Background } from "./Background";
+import { Background } from "./canvas/Background";
 import Fade from "@mui/material/Fade";
 import { useNavigate } from "react-router-dom"; // Step 1
 import { motion } from "framer-motion";
@@ -15,6 +15,7 @@ export const Home: FC = () => {
   };
 
   Background();
+  // Cube();
 
   return (
     <motion.div

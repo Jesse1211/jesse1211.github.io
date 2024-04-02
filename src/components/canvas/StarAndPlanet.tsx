@@ -1,6 +1,6 @@
 import { Illustration, Ellipse, Group, TAU, QuartersValue } from 'zdog';
-import { RingSphere } from '../models/Ring';
-import { Star } from '../models/Star';
+import { RingSphere } from '../../models/Ring';
+import { Star } from '../../models/Star';
 
 const rand = (min: number, max: number): number => Math.random() * (max - min) + min;
 const randInt = (min: number, max: number): number => Math.floor(rand(min, max + 1));

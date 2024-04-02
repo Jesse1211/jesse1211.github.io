@@ -1,10 +1,17 @@
 import { Box, Illustration, Shape, TAU } from 'zdog';
 
-export const Words = () => {
+export const Cube = () => {
+    const canvas = document.querySelector('canvas');
+
+    if (!canvas) {
+        console.error('Canvas not found!');
+        return;
+      }
+      
     let isSpinning = true;
 
     const illo = new Illustration({
-    element: '.zdog-canvas',
+    element: canvas,
     rotate: { x: -TAU/16 },
     dragRotate: true,
     onDragStart: function() {
