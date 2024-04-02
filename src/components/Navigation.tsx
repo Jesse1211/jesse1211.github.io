@@ -1,4 +1,4 @@
-import { Stack } from "@mui/joy";
+import { Button, Stack } from "@mui/joy";
 import { FC } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Fade from "@mui/material/Fade";
@@ -25,6 +25,7 @@ export const Navigation: FC = () => {
           textAlign: "center",
         }}
       >
+        <Button>Home</Button>
         <Buttons handleCategoryClick={handleCategoryClick} />
       </Stack>
     </Fade>

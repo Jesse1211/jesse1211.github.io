@@ -1,5 +1,5 @@
 import { Route, Routes, useLocation } from "react-router-dom";
-import { CategoryDetails } from "./CategoryDetails";
+import { CategoryDetails } from "./categories/CategoryDetails";
 import { Home } from "./Home";
 import { AnimatePresence } from "framer-motion";
 import { FC } from "react";
