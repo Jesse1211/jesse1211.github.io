@@ -6,12 +6,12 @@ import { EducationView } from "./categories/EducationView";
 import { Grow } from "@mui/material";
 import { ExperienceView } from "./categories/ExperienceView";
 import { ProjectView } from "./categories/ProjectView";
+import { Background } from "./canvas/Background";
 
 export const Home: FC = () => {
   const [started, setStarted] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Categories>();
-  // TODO: Add canvas feature
-  // Background();
+  Background();
 
   return (
     <Stack
