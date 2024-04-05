@@ -6,7 +6,7 @@ export const Experience: FC = () => {
     <Card sx={{ minWidth: 0.9, alignSelf: "center"}} >
       <CardCover>
         <img
-          src="../public/Cornell.jpg"
+          src="./Cornell.jpg"
           loading="lazy"
           style={{ filter: "brightness(0.5)" }}
         />
