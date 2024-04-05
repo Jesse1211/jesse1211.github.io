@@ -1,15 +1,13 @@
 import { FC, useState } from "react";
 import { Button, Stack } from "@mui/joy";
-import { Background } from "./canvas/Background";
 import Fade from "@mui/material/Fade";
 import { motion } from "framer-motion";
 import { Buttons } from "./Buttons";
 
 export const Home: FC = () => {
   const [checked, setChecked] = useState(false);
-
-  Background();
-  // Cube();
+  // TODO: Add canvas feature
+  // Background();
 
   return (
     <motion.div

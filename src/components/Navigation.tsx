@@ -4,9 +4,9 @@ import Fade from "@mui/material/Fade";
 import { Buttons } from "./Buttons";
 
 export const Navigation: FC = () => {
+
   return (
     <Fade in={location.pathname !== "/"}>
-      
       <Stack
         direction="row"
         justifyContent="center"
@@ -16,12 +16,11 @@ export const Navigation: FC = () => {
           top: 0,
           width: "100%",
           textAlign: "center",
-          background: "green"
+          background: "green",
         }}
       >
         <Buttons isHome={true} />
       </Stack>
-        
     </Fade>
   );
 };

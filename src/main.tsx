@@ -1,27 +1,45 @@
-import React from "react";
+import React, { FC } from "react";
 import ReactDOM from "react-dom/client";
 import { App } from "./App.tsx";
-import { CssBaseline, CssVarsProvider } from "@mui/joy";
-import {
-  experimental_extendTheme,
-  Experimental_CssVarsProvider,
-  THEME_ID,
-} from "@mui/material/styles";
-import { Footer } from "./components/Footer.tsx";
+import { AnimatePresence } from "framer-motion";
+import { createBrowserRouter, createRoutesFromElements, Route, useLocation, Routes, RouterProvider } from "react-router-dom";
+import { Home } from "./components/Home.tsx";
+import { CategoryDetails } from "./components/categories/CategoryDetails.tsx";
 
-const materialTheme = experimental_extendTheme();
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<App />}>
+      <Route index element={<Home />} />
+      <Route
+        path="Educations"
+        element={<CategoryDetails category={"Educations"} />}
+      />
+      <Route
+        path="Experiences"
+        element={<CategoryDetails category={"Experiences"} />}
+      />
+      <Route
+        path="Projects"
+        element={<CategoryDetails category={"Projects"} />}
+      />
+    </Route>
+  )
+);
+
+// Todo: add animation to the routes
+export const AnimatedRoutes: FC = () => {
+  const location = useLocation();
+  return (
+    <AnimatePresence>
+      <Routes location={location} key={location.pathname}>
+        <RouterProvider router={router} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Experimental_CssVarsProvider
-      defaultMode="system"
-      theme={{ [THEME_ID]: materialTheme }}
-    >
-      <CssVarsProvider>
-        <CssBaseline disableColorScheme />
-        <App/>
-        <Footer/>
-      </CssVarsProvider>
-    </Experimental_CssVarsProvider>
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
