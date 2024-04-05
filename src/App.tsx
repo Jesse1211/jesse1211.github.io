@@ -6,7 +6,7 @@ import {
   Experimental_CssVarsProvider as MaterialCssVarsProvider,
   THEME_ID as MATERIAL_THEME_ID,
 } from "@mui/material/styles";
-import { Navigation } from "./components/Navigation";
+import { Footer } from "./components/Footer";
 
 const materialTheme = materialExtendTheme();
 
@@ -17,10 +17,10 @@ export const App: FC = () => {
       theme={{ [MATERIAL_THEME_ID]: materialTheme }}
     >
       <JoyCssVarsProvider defaultMode="system">
-        <Navigation />
+        {/* <Navigation /> */}
         <CssBaseline />
         <Outlet />
-
+        <Footer />
       </JoyCssVarsProvider>
     </MaterialCssVarsProvider>
   );
