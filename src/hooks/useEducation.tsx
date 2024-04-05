@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import { projectService } from "../services/project-service";
-import { Project, RequestType } from "../models/Categories";
+import { educationService } from "../services/education-service";
+import { Education, RequestType } from "../models/Categories";
 
-export function useProject(
+export function useEducation(
   requestType: RequestType,
   id?: string,
-  project?: Project
+  education?: Education
 ): {
   busy: boolean;
-  responseProject?: Project | Project[] | string;
+  responseEducation?: Education | Education[] | string;
   error?: Error;
 } {
-  const [responseProject, setResponseProject] = useState<
-    Project | Project[] | string
+  const [responseEducation, setResponseEducation] = useState<
+  Education | Education[] | string
   >();
   const [busy, setBusy] = useState<boolean>(true);
   const [error, setError] = useState<Error>();
@@ -24,50 +24,50 @@ export function useProject(
     switch (requestType) {
       case "GETONE":
         if (id !== undefined) {
-          projectService
-            .getProject(id)
+          educationService
+            .getEducation(id)
             .then((result) => {
               if (!signal.aborted) {
-                setResponseProject(result);
+                setResponseEducation(result);
               }
             })
             .catch((e: Error) => signal.aborted || setError(e))
             .finally(() => signal.aborted || setBusy(false));
         }
-        else setResponseProject("No ID provided");
+        else setResponseEducation("No ID provided");
         break;
       case "GETALL":
-        projectService
-          .getProjects()
+        educationService
+          .getEducations()
           .then((result) => {
             if (!signal.aborted) {
-              setResponseProject(result);
+              setResponseEducation(result);
             }
           })
           .catch((e: Error) => signal.aborted || setError(e))
           .finally(() => signal.aborted || setBusy(false));
         break;
       case "UPDATE":
-        if (project !== undefined) {
-          projectService
-            .updateProject(project)
+        if (education !== undefined) {
+          educationService
+            .updateEducation(education)
             .then((result) => {
               if (!signal.aborted) {
-                setResponseProject(result);
+                setResponseEducation(result);
               }
             })
             .catch((e: Error) => signal.aborted || setError(e))
             .finally(() => signal.aborted || setBusy(false));
         }
-        else setResponseProject("No data provided");
+        else setResponseEducation("No data provided");
         break;
       case "DELETEONE":
         if (id !== undefined) {
-          projectService
-            .deleteProject(id)
+          educationService
+            .deleteEducation(id)
             .then((result) => {
               if (!signal.aborted) {
-                setResponseProject(result);
+                setResponseEducation(result);
               }
             })
             .catch((e: Error) => signal.aborted || setError(e))
@@ -75,11 +75,11 @@ export function useProject(
         }
         break;
       case "DELETEALL":
-        projectService
-          .deleteAllProject()
+        educationService
+          .deleteAllEducation()
           .then((result) => {
             if (!signal.aborted) {
-              setResponseProject(result);
+              setResponseEducation(result);
             }
           })
           .catch((e: Error) => signal.aborted || setError(e))
@@ -90,7 +90,7 @@ export function useProject(
     }
 
     return () => abortController.abort();
-  }, [id, project, requestType]);
+  }, [id, education, requestType]);
 
-  return { busy, responseProject, error };
+  return { busy, responseEducation, error };
 }

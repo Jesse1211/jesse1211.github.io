@@ -1,50 +1,81 @@
 import { FC, useState } from "react";
 import { Button, Stack } from "@mui/joy";
 import Fade from "@mui/material/Fade";
-import { motion } from "framer-motion";
-import { Buttons } from "./Buttons";
+import { Categories } from "../models/Categories";
+import { EducationView } from "./categories/EducationView";
+import { Grow } from "@mui/material";
+import { ExperienceView } from "./categories/ExperienceView";
+import { ProjectView } from "./categories/ProjectView";
 
 export const Home: FC = () => {
-  const [checked, setChecked] = useState(false);
+  const [started, setStarted] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<Categories>();
   // TODO: Add canvas feature
   // Background();
 
   return (
-    <motion.div
-      className="home"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <Stack
+      mx="auto"
+      width={0.9}
+      height={1}
+      // p={3}
+      spacing={4}
+      alignItems="center"
+      justifyContent="center"
     >
-      <Stack
-        mx="auto"
-        width={0.9}
-        height={1}
-        p={3}
-        spacing={4}
-        alignItems="center"
-        justifyContent="center"
-      >
-        {/* <Box border={250}></Box> */}
+      {/* <Box border={250}></Box> */}
 
-        <Fade in={!checked}>
+      <Fade in={!started}>
+        <Button
+          style={{
+            color: "#889def",
+          }}
+          variant="plain"
+          onClick={() => {
+            setStarted(!started);
+          }}
+        >
+          Start Discovery
+        </Button>
+      </Fade>
+
+      <Fade in={started}>
+        <Stack direction="row" spacing={6}>
           <Button
-            style={{
-              color: "#889def",
-            }}
+            onClick={() => setSelectedCategory("Educations")}
+            style={{ color: "#889def" }}
             variant="plain"
-            onClick={() => {
-              setChecked(!checked);
-            }}
           >
-            Start Discovery
+            Educations
           </Button>
-        </Fade>
-        
-        <Fade in={checked}>
-          <Buttons isHome={false} />                
-        </Fade>
-      </Stack>
-    </motion.div>
+          <Button
+            onClick={() => setSelectedCategory("Experiences")}
+            style={{ color: "#889def" }}
+            variant="plain"
+          >
+            Experiences
+          </Button>
+          <Button
+            onClick={() => setSelectedCategory("Projects")}
+            style={{ color: "#889def" }}
+            variant="plain"
+          >
+            Projects
+          </Button>
+        </Stack>
+      </Fade>
+
+      <Grow in={selectedCategory !== undefined}>
+        <Stack sx={{ display: "flex" }}>
+          {selectedCategory === "Educations" ? (
+            <EducationView />
+          ) : selectedCategory === "Experiences" ? (
+            <ExperienceView />
+          ) : (
+            <ProjectView />
+          )}
+        </Stack>
+      </Grow>
+    </Stack>
   );
 };

@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import { projectService } from "../services/project-service";
-import { Project, RequestType } from "../models/Categories";
+import { experienceService } from "../services/experience-service";
+import { Experience, RequestType } from "../models/Categories";
 
-export function useProject(
+export function useExperience(
   requestType: RequestType,
   id?: string,
-  project?: Project
+  experience?: Experience
 ): {
   busy: boolean;
-  responseProject?: Project | Project[] | string;
+  responseexperience?: Experience | Experience[] | string;
   error?: Error;
 } {
-  const [responseProject, setResponseProject] = useState<
-    Project | Project[] | string
+  const [responseexperience, setResponseexperience] = useState<
+  Experience | Experience[] | string
   >();
   const [busy, setBusy] = useState<boolean>(true);
   const [error, setError] = useState<Error>();
@@ -24,50 +24,50 @@ export function useProject(
     switch (requestType) {
       case "GETONE":
         if (id !== undefined) {
-          projectService
-            .getProject(id)
+          experienceService
+            .getExperience(id)
             .then((result) => {
               if (!signal.aborted) {
-                setResponseProject(result);
+                setResponseexperience(result);
               }
             })
             .catch((e: Error) => signal.aborted || setError(e))
             .finally(() => signal.aborted || setBusy(false));
         }
-        else setResponseProject("No ID provided");
+        else setResponseexperience("No ID provided");
         break;
       case "GETALL":
-        projectService
-          .getProjects()
+        experienceService
+          .getExperiences()
           .then((result) => {
             if (!signal.aborted) {
-              setResponseProject(result);
+              setResponseexperience(result);
             }
           })
           .catch((e: Error) => signal.aborted || setError(e))
           .finally(() => signal.aborted || setBusy(false));
         break;
       case "UPDATE":
-        if (project !== undefined) {
-          projectService
-            .updateProject(project)
+        if (experience !== undefined) {
+          experienceService
+            .updateExperience(experience)
             .then((result) => {
               if (!signal.aborted) {
-                setResponseProject(result);
+                setResponseexperience(result);
               }
             })
             .catch((e: Error) => signal.aborted || setError(e))
             .finally(() => signal.aborted || setBusy(false));
         }
-        else setResponseProject("No data provided");
+        else setResponseexperience("No data provided");
         break;
       case "DELETEONE":
         if (id !== undefined) {
-          projectService
-            .deleteProject(id)
+          experienceService
+            .deleteExperience(id)
             .then((result) => {
               if (!signal.aborted) {
-                setResponseProject(result);
+                setResponseexperience(result);
               }
             })
             .catch((e: Error) => signal.aborted || setError(e))
@@ -75,11 +75,11 @@ export function useProject(
         }
         break;
       case "DELETEALL":
-        projectService
-          .deleteAllProject()
+        experienceService
+          .deleteAllExperience()
           .then((result) => {
             if (!signal.aborted) {
-              setResponseProject(result);
+              setResponseexperience(result);
             }
           })
           .catch((e: Error) => signal.aborted || setError(e))
@@ -90,7 +90,7 @@ export function useProject(
     }
 
     return () => abortController.abort();
-  }, [id, project, requestType]);
+  }, [id, experience, requestType]);
 
-  return { busy, responseProject, error };
+  return { busy, responseexperience, error };
 }
