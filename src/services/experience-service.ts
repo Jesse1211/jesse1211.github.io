@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Project } from "../models/Categories";
+import { Experience } from "../models/Categories";
 
 const client = axios.create({
   baseURL: "http://127.0.0.1:5000",
@@ -8,59 +8,59 @@ const client = axios.create({
   //   },
 });
 
-export const projectService = {
-  async addProject(
-    project: Project,
+export const experienceService = {
+  async addExperience(
+    experience: Experience,
     abortSignal?: AbortSignal
   ): Promise<string> {
     const response = await client.post<string>(
-      `add_project`,
+      `add_experience`,
       {
-        project,
+        experience,
       },
       { signal: abortSignal }
     );
     return response.data;
   },
-  async getProject(
-    projectId: string,
+  async getExperience(
+    experienceId: string,
     abortSignal?: AbortSignal
-  ): Promise<Project> {
-    const response = await client.get<Project>(`get_project/${projectId}`, {
+  ): Promise<Experience> {
+    const response = await client.get<Experience>(`get_experience/${experienceId}`, {
       signal: abortSignal,
     });
     return response.data;
   },
-  async getProjects(abortSignal?: AbortSignal): Promise<Project[]> {
-    const response = await client.get<string>(`get_projects`, {
+  async getExperiences(abortSignal?: AbortSignal): Promise<Experience[]> {
+    const response = await client.get<string>(`get_experiences`, {
       signal: abortSignal,
     });
-    const data: Project[] = JSON.parse(response.data);
+    const data: Experience[] = JSON.parse(response.data);
     return data;
   },
-  async updateProject(
-    project: Project,
+  async updateExperience(
+    experience: Experience,
     abortSignal?: AbortSignal
   ): Promise<string> {
     const response = await client.post<string>(
-      `update_project`,
-      { project },
+      `update_experience`,
+      { experience },
       { signal: abortSignal }
     );
     return response.data;
   },
-  async deleteProject(
-    projectId: string,
+  async deleteExperience(
+    experienceId: string,
     abortSignal?: AbortSignal
   ): Promise<string> {
     const response = await client.delete<string>(
-      `delete_project/${projectId}`,
+      `delete_experience/${experienceId}`,
       { signal: abortSignal }
     );
     return response.data;
   },
-  async deleteAllProject(abortSignal?: AbortSignal): Promise<string> {
-    const response = await client.delete<string>(`delete_projects`, {
+  async deleteAllExperience(abortSignal?: AbortSignal): Promise<string> {
+    const response = await client.delete<string>(`delete_experiences`, {
       signal: abortSignal,
     });
     return response.data;
