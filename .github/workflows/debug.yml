@@ -4,8 +4,7 @@ on:
   pull_request:
     paths-ignore:
       - "**.md"
-env:
-  CI: false
+      
 jobs:
   build-and-deploy:
     name: 'Build and Depoly'
