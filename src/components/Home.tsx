@@ -33,6 +33,7 @@ export const Home: FC = () => {
   } = useExperienceGetAll();
 
   const onSetSelectedCategory = (category: Categories) => {
+    if (category === selectedCategory) return;
     setSelectedCategory(undefined);
 
     setTimeout(() => {

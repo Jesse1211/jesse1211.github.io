@@ -32,6 +32,7 @@ export const EducationView: FC<{
           sx={{ minWidth: { xs: 1, md: 0.47, lg: 0.32 } }}
           minHeight={1}
           key={index}
+          style={{ filter: "opacity(0.9)" }}
         >
           <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
             <AspectRatio ratio="2">
