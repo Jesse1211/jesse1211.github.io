@@ -17,7 +17,7 @@ export const App: FC = () => {
       theme={{ [MATERIAL_THEME_ID]: materialTheme }}
     >
       <JoyCssVarsProvider defaultMode="system">
-        <canvas id="canvas"></canvas>
+        <canvas className="canvas"></canvas>
         {/* <Navigation /> */}
         <CssBaseline />
         <Outlet />

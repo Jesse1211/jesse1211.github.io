@@ -1,22 +1,29 @@
-import { Illustration, Ellipse, Group, TAU, QuartersValue } from 'zdog';
-import { RingSphere } from '../../models/Ring';
-import { Star } from '../../models/Star';
+import { Illustration, Ellipse, Group, TAU, QuartersValue } from "zdog";
+import { RingSphere } from "../../models/Ring";
+import { Star } from "../../models/Star";
 
-const rand = (min: number, max: number): number => Math.random() * (max - min) + min;
-const randInt = (min: number, max: number): number => Math.floor(rand(min, max + 1));
-const map = (value: number, start1: number, stop1: number, start2: number, stop2: number): number => start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+const rand = (min: number, max: number): number =>
+  Math.random() * (max - min) + min;
+const randInt = (min: number, max: number): number =>
+  Math.floor(rand(min, max + 1));
+const map = (
+  value: number,
+  start1: number,
+  stop1: number,
+  start2: number,
+  stop2: number
+): number => start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
 
 export const StarAndPlanet = () => {
-  const canvas = document.querySelector('canvas');
-
-  if (!canvas) {
-    console.error('Canvas not found!');
-    return;
-  }
-
   const illo = new Illustration({
-    element: canvas,
+    element: "canvas",
     dragRotate: true,
+    resize: "fullscreen",
+    zoom: 1.5,
+    onResize: function (width, height) {
+      const minSize = Math.min(width, height);
+      this.zoom = minSize / 250;
+    },
   });
 
   const ringGroup = new Group({ addTo: illo });
@@ -24,24 +31,25 @@ export const StarAndPlanet = () => {
 
   const rings: RingSphere[] = [];
   const ringCount = 100;
-  const ringDiameter = 350;
+  const ringDiameter = 90;
 
   const stars: Star[] = [];
   const starCount = 840;
-  const starRange = 600;
+  const starRange = 300;
 
   for (let i = 0; i < ringCount; i++) {
     const p = i / (ringCount - 1);
     rings.push({
       shape: new Ellipse({
         addTo: ringGroup,
-        diameter: Math.sin(p * TAU / 2) * ringDiameter / 2,
-        translate: { z: Math.cos(p * TAU / 2) * ringDiameter / 4 },
-        rotate: { z: rand(TAU, 0) }, // Adjusted for TypeScript
+        diameter: (Math.sin((p * TAU) / 2) * ringDiameter) / 2,
+        translate: { z: (Math.cos((p * TAU) / 2) * ringDiameter) / 4 },
+        rotate: { z: rand(TAU, 0) },
         color: `hsla(${map(p, 0, 1, 180, 360)}, 90%, 50%, 1)`,
-        quarters: randInt(1, 3) as QuartersValue, // Adjusted for TypeScript
+        quarters: randInt(1, 3) as QuartersValue,
+        stroke: rand(0.5, 0.2),
       }),
-      spin: rand(0.001, 0.03), // Adjusted for TypeScript
+      spin: rand(0.001, 0.03),
     });
   }
 
@@ -51,12 +59,12 @@ export const StarAndPlanet = () => {
         addTo: starGroup,
         diameter: 0,
         translate: {
-          x: rand(-starRange, starRange), // Adjusted for TypeScript
-          y: rand(-starRange, starRange), // Adjusted for TypeScript
-          z: rand(-starRange, starRange), // Adjusted for TypeScript
+          x: rand(-starRange, starRange),
+          y: rand(-starRange, starRange),
+          z: rand(-starRange, starRange),
         },
-        stroke: rand(0.5, 2), // Adjusted for TypeScript
-        color: `hsla(0, 0%, 100%, ${rand(0.1, 1)})`, // Adjusted for TypeScript
+        stroke: rand(0.5, 2),
+        color: `hsla(0, 0%, 100%, ${rand(0.1, 1)})`,
       }),
     });
   }
