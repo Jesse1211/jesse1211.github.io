@@ -8,11 +8,13 @@ import {
   CircularProgress,
 } from "@mui/joy";
 import { FC } from "react";
-import { useExperienceGetAll } from "../../hooks/useExperienceGetAll";
+import { Experience } from "../../models/Categories";
 
-export const ExperienceView: FC = () => {
-  const { busy, responseExperience, error } = useExperienceGetAll();
-  console.log(responseExperience);
+export const ExperienceView: FC<{
+  responseExperience?: Experience[];
+  error?: Error;
+  busy?: boolean;
+}> = ({responseExperience, error, busy}) => {
   if (error) {
     return <Alert color="danger">{error.message}</Alert>;
   }
@@ -26,17 +28,18 @@ export const ExperienceView: FC = () => {
   }
 
   return (
-    <>
-      <Typography
-        level="title-lg"
-        fontWeight="lg"
-        textColor="#fff"
-        style={{
-          color: "#889def",
-        }}
-      >
-        Experiences
-      </Typography>
+    <Stack
+      flexDirection={"row"}
+      maxWidth={1}
+      minHeight={1}
+      overflow="auto"
+      gap={5}
+      sx={{
+        "&::-webkit-scrollbar": {
+          display: "none",
+        }
+      }}
+    >
       {responseExperience.map((experience, index) => (
         <Card key={index}>
           <CardCover>
@@ -62,6 +65,6 @@ export const ExperienceView: FC = () => {
           </CardContent>
         </Card>
       ))}
-    </>
+    </Stack>
   );
 };

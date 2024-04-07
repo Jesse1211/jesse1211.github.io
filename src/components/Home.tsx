@@ -1,29 +1,53 @@
 import { FC, useState } from "react";
-import { Button, Stack } from "@mui/joy";
+import { Alert, Box, Button, CircularProgress, Stack } from "@mui/joy";
 import Fade from "@mui/material/Fade";
 import { Categories } from "../models/Categories";
-import { EducationView } from "./categories/EducationView";
-import { Grow } from "@mui/material";
-import { ExperienceView } from "./categories/ExperienceView";
-import { ProjectView } from "./categories/ProjectView";
 import { Background } from "./canvas/Background";
+import { useEducationGetAll } from "../hooks/useEducationGetAll";
+import { useProjectGetAll } from "../hooks/useProjectGetAll";
+import { useExperienceGetAll } from "../hooks/useExperienceGetAll";
+import { HomeNavigationFade } from "./HomeNavigation";
+import { Grow } from "@mui/material";
 
 export const Home: FC = () => {
   const [started, setStarted] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Categories>();
+  const {
+    busy: educationBusy,
+    responseEducation,
+    error: educationError,
+  } = useEducationGetAll();
+  const {
+    busy: projectBusy,
+    responseProject,
+    error: projectError,
+  } = useProjectGetAll();
+  const {
+    busy: experienceBusy,
+    responseExperience,
+    error: experienceError,
+  } = useExperienceGetAll();
+
+  const onSetSelectedCategory = (category: Categories) => {
+    setSelectedCategory(undefined);
+
+    setTimeout(() => {
+      setSelectedCategory(category);
+    }, 100);
+  };
   Background();
 
+  if (educationError || projectError || experienceError) {
+    return <Alert color="danger">Something Wrong</Alert>;
+  }
+
+  if (educationBusy || projectBusy || experienceBusy) {
+    return <CircularProgress />;
+  }
+
   return (
-    <Stack
-      mx="auto"
-      width={0.9}
-      height={1}
-      // p={3}
-      spacing={4}
-      alignItems="center"
-      justifyContent="center"
-    >
-      {/* <Box border={250}></Box> */}
+    <Stack mx="auto" width={0.7} spacing={4} alignSelf="center">
+      <Box height={100} width={100} />
 
       <Fade in={!started}>
         <Button
@@ -40,42 +64,19 @@ export const Home: FC = () => {
       </Fade>
 
       <Fade in={started}>
-        <Stack direction="row" spacing={6}>
-          <Button
-            onClick={() => setSelectedCategory("Educations")}
-            style={{ color: "#889def" }}
-            variant="plain"
-          >
-            Educations
-          </Button>
-          <Button
-            onClick={() => setSelectedCategory("Experiences")}
-            style={{ color: "#889def" }}
-            variant="plain"
-          >
-            Experiences
-          </Button>
-          <Button
-            onClick={() => setSelectedCategory("Projects")}
-            style={{ color: "#889def" }}
-            variant="plain"
-          >
-            Projects
-          </Button>
-        </Stack>
+        <HomeNavigationFade setSelectedCategory={onSetSelectedCategory} />
       </Fade>
 
-      <Grow in={selectedCategory !== undefined}>
-        <Stack sx={{ display: "flex" }}>
-          {selectedCategory === "Educations" ? (
-            <EducationView />
-          ) : selectedCategory === "Experiences" ? (
-            <ExperienceView />
-          ) : (
-            <ProjectView />
-          )}
-        </Stack>
-      </Grow>
+      <Box height={100}>
+        <Grow in={selectedCategory !== undefined}>
+          <HomeNavigationFade
+            selectedCategory={selectedCategory}
+            responseEducation={responseEducation}
+            responseProject={responseProject}
+            responseExperience={responseExperience}
+          />
+        </Grow>
+      </Box>
     </Stack>
   );
 };

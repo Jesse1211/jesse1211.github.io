@@ -8,11 +8,13 @@ import {
   CircularProgress,
 } from "@mui/joy";
 import { FC } from "react";
-import { useProjectGetAll } from "../../hooks/useProjectGetAll";
+import { Project } from "../../models/Categories";
 
-export const ProjectView: FC = () => {
-  const { busy, responseProject, error } = useProjectGetAll();
-  console.log(responseProject);
+export const ProjectView: FC<{
+  responseProject?: Project[];
+  error?: Error;
+  busy?: boolean;
+}> = ({responseProject, error, busy}) => {
   if (error) {
     return <Alert color="danger">{error.message}</Alert>;
   }
@@ -26,17 +28,18 @@ export const ProjectView: FC = () => {
   }
 
   return (
-    <>
-      <Typography
-        level="title-lg"
-        fontWeight="lg"
-        textColor="#fff"
-        style={{
-          color: "#889def",
-        }}
-      >
-        Projects
-      </Typography>
+    <Stack
+      flexDirection={"row"}
+      maxWidth={1}
+      minHeight={1}
+      overflow="auto"
+      gap={5}
+      sx={{
+        "&::-webkit-scrollbar": {
+          display: "none",
+        },
+      }}
+    >
       {responseProject.map((project, index) => (
         <Card key={index}>
           <CardCover>
@@ -62,6 +65,6 @@ export const ProjectView: FC = () => {
           </CardContent>
         </Card>
       ))}
-    </>
+    </Stack>
   );
 };
