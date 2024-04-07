@@ -49,8 +49,8 @@ export const Home: FC = () => {
   }
 
   return (
-    <Stack mx="auto" width={0.7} spacing={4} alignSelf="center">
-      <Box height={100} width={100} />
+    <Stack mx="auto" flex={1} height={0.8} maxWidth={0.8} spacing={4} alignSelf="center" >
+      <Box height={10} width={100} />
 
       <Fade in={started}>
         <HomeNavigationFade setSelectedCategory={onSetSelectedCategory} />
@@ -70,7 +70,7 @@ export const Home: FC = () => {
         </Button>
       </Fade>
 
-      <Box height={100}>
+      <Box height={1}>
         <Grow
           in={selectedCategory !== undefined}
           {...(selectedCategory !== undefined ? { timeout: 1000 } : {})}

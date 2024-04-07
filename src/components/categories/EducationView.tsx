@@ -5,56 +5,77 @@ import {
   CardCover,
   Stack,
   Box,
+  CardOverflow,
+  AspectRatio,
+  Divider,
 } from "@mui/joy";
 import { FC } from "react";
 import { Education } from "../../models/Categories";
 
 export const EducationView: FC<{
   responseEducation: Education[];
-}> = ({responseEducation}) => {
-
+}> = ({ responseEducation }) => {
   return (
     <Stack
-      flexDirection={"row"}
-      maxWidth={1}
-      minHeight={1}
+      height={1}
+      direction={"row"}
       overflow="auto"
-      gap={5}
       sx={{
         "&::-webkit-scrollbar": {
           display: "none",
-        }
+        },
       }}
+      gap={4}
     >
       {responseEducation.map((education: Education, index) => (
-        <Box minWidth={350} key={index}>
-          <Card key={index}>
-            <CardCover>
-              <img
-                src="./Cornell.jpg"
-                loading="lazy"
-                style={{ filter: "brightness(0.5)" }}
-              />
-            </CardCover>
+        <Box
+          sx={{ minWidth: { xs: 1, md: 0.47, lg: 0.32 } }}
+          minHeight={1}
+          key={index}
+        >
+          <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
+            <AspectRatio ratio="2">
+              <CardOverflow>
+                <CardCover>
+                  <img src="./Cornell.jpg" loading="lazy" />
+                </CardCover>
+                <CardContent>
+                  <Typography level="body-md" fontWeight="lg">
+                    {education.School}
+                  </Typography>
+                  <Typography level="body-sm" fontWeight="lg">
+                    Master of Engineer
+                  </Typography>
+                </CardContent>
+              </CardOverflow>
+            </AspectRatio>
 
             <CardContent>
-              <Stack direction="row" justifyContent="space-between">
-                <Typography level="body-md" fontWeight="lg" textColor="#fff">
-                  {education.School}
-                </Typography>
-                <Typography level="body-md" fontWeight="lg" textColor="#fff">
-                  {education.StartDate} to {education.EndDate}
-                </Typography>
-              </Stack>
               {education.ReleventCourses.length > 0 && (
-                <Typography level="body-sm" fontWeight="lg" textColor="#fff">
-                  Relevent Courses {education.ReleventCourses.join(", ")}
-                </Typography>
+                <>
+                  <Typography level="body-sm" fontWeight="lg">
+                    Relevent Courses:
+                  </Typography>
+                  {education.ReleventCourses.map((course, index) => (
+                    <Typography level="body-sm" fontWeight="md" key={index}>
+                      {course}
+                    </Typography>
+                  ))}
+                </>
               )}
-              <Typography level="body-sm" fontWeight="lg" textColor="#fff">
-                gpa: {education.Grade}
-              </Typography>
             </CardContent>
+
+            <CardOverflow>
+              <Divider inset="context" />
+              <Typography level="body-sm" fontWeight="md">
+                GPA: {education.Grade} / 4.0
+              </Typography>
+              <Divider orientation="vertical" />
+
+              <Typography level="body-sm" fontWeight="lg">
+                {education.StartDate} - {education.EndDate}
+              </Typography>
+            </CardOverflow>
           </Card>
         </Box>
       ))}

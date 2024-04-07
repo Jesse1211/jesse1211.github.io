@@ -6,8 +6,17 @@ import {
   Stack,
   Alert,
   CircularProgress,
+  AspectRatio,
+  Box,
+  CardOverflow,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Modal,
+  ModalClose,
+  ModalDialog,
 } from "@mui/joy";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Experience } from "../../models/Categories";
 
 export const ExperienceView: FC<{
@@ -15,6 +24,7 @@ export const ExperienceView: FC<{
   error?: Error;
   busy?: boolean;
 }> = ({responseExperience, error, busy}) => {
+  const [layout, setLayout] = useState<boolean>(false);
   if (error) {
     return <Alert color="danger">{error.message}</Alert>;
   }
@@ -26,44 +36,83 @@ export const ExperienceView: FC<{
   if (!responseExperience) {
     return <Alert color="danger">Loading Experiences</Alert>;
   }
-
   return (
     <Stack
-      flexDirection={"row"}
-      maxWidth={1}
-      minHeight={1}
+      height={1}
+      direction={"row"}
       overflow="auto"
-      gap={5}
       sx={{
         "&::-webkit-scrollbar": {
           display: "none",
-        }
+        },
       }}
+      gap={4}
     >
       {responseExperience.map((experience, index) => (
-        <Card key={index}>
-          <CardCover>
-            <img
-              src="./Cornell.jpg"
-              loading="lazy"
-              style={{ filter: "brightness(0.5)" }}
-            />
-          </CardCover>
+        <>
+          <Box
+            sx={{ minWidth: { xs: 1, md: 0.47, lg: 0.32 } }}
+            minHeight={1}
+            key={index}
+            onClick={() => setLayout(true)}
+          >
+            <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
+              <AspectRatio ratio="2">
+                <CardOverflow>
+                  <CardCover>
+                    <img src="./Cornell.jpg" loading="lazy" />
+                  </CardCover>
+                  <CardContent>
+                    <Typography level="body-md" fontWeight="lg">
+                      {experience.Company}
+                    </Typography>
+                    <Typography level="body-sm" fontWeight="lg">
+                      {experience.Title}
+                    </Typography>
+                  </CardContent>
+                </CardOverflow>
+              </AspectRatio>
 
-          <CardContent>
-            <Stack direction="row" justifyContent="space-between">
-              <Typography level="body-md" fontWeight="lg" textColor="#fff">
-                {experience.Company}
-              </Typography>
-              <Typography level="body-md" fontWeight="lg" textColor="#fff">
-                {experience.StartDate} to {experience.EndDate}
-              </Typography>
-            </Stack>
-            <Typography level="body-sm" fontWeight="lg" textColor="#fff">
-              Accomplishments: {experience.Accomplishments.join(", ")}
-            </Typography>
-          </CardContent>
-        </Card>
+              <CardContent>
+                {experience.Accomplishments.length > 0 && (
+                  <>
+                    <Typography level="body-sm" fontWeight="lg">
+                      Accomplishments:
+                    </Typography>
+                    {experience.Accomplishments.map((accomplishment, index) => (
+                      <Typography level="body-sm" fontWeight="md" key={index}>
+                        {accomplishment}
+                      </Typography>
+                    ))}
+                  </>
+                )}
+              </CardContent>
+
+              <CardOverflow>
+                <Divider inset="context" />
+                <Typography level="body-sm" fontWeight="md">
+                  Skills: {experience.Expertises.join(", ")}
+                </Typography>
+                <Divider orientation="vertical" />
+
+                <Typography level="body-sm" fontWeight="lg">
+                  {experience.StartDate} - {experience.EndDate}
+                </Typography>
+              </CardOverflow>
+            </Card>
+          </Box>
+          <Modal open={!!layout} onClose={() => setLayout(false)}>
+            <ModalDialog>
+              <ModalClose />
+              <DialogTitle>Description</DialogTitle>
+              <DialogContent>
+                <Typography level="body-md" fontWeight="lg">
+                  {experience.Description}
+                </Typography>
+              </DialogContent>
+            </ModalDialog>
+          </Modal>
+        </>
       ))}
     </Stack>
   );
