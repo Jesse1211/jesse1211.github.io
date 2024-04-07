@@ -30,12 +30,12 @@ export const StarAndPlanet = () => {
   const starGroup = new Group({ addTo: illo });
 
   const rings: RingSphere[] = [];
-  const ringCount = 100;
-  const ringDiameter = 90;
+  const ringCount = 80;
+  const ringDiameter = 200;
 
   const stars: Star[] = [];
-  const starCount = 840;
-  const starRange = 300;
+  const starCount = 1000;
+  const starRange = 100;
 
   for (let i = 0; i < ringCount; i++) {
     const p = i / (ringCount - 1);
@@ -45,7 +45,7 @@ export const StarAndPlanet = () => {
         diameter: (Math.sin((p * TAU) / 2) * ringDiameter) / 2,
         translate: { z: (Math.cos((p * TAU) / 2) * ringDiameter) / 4 },
         rotate: { z: rand(TAU, 0) },
-        color: `hsla(${map(p, 0, 1, 180, 360)}, 90%, 50%, 1)`,
+        color: `hsla(${map(p, 0, 1, 110, 240)}, 30%, 50%, 0.7)`,
         quarters: randInt(1, 3) as QuartersValue,
         stroke: rand(0.5, 0.2),
       }),
@@ -63,8 +63,8 @@ export const StarAndPlanet = () => {
           y: rand(-starRange, starRange),
           z: rand(-starRange, starRange),
         },
-        stroke: rand(0.5, 2),
-        color: `hsla(0, 0%, 100%, ${rand(0.1, 1)})`,
+        stroke: rand(0.1, 2),
+        color: `hsla(0, 40%, 100%, ${rand(0.1, 1)})`,
       }),
     });
   }
