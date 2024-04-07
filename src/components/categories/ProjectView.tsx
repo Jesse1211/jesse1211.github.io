@@ -57,6 +57,7 @@ export const ProjectView: FC<{
             minHeight={1}
             key={index}
             onClick={() => setLayout(true)}
+            style={{ filter: "opacity(0.9)" }}
           >
             <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
               <AspectRatio ratio="2">
