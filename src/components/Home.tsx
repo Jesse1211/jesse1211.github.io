@@ -1,15 +1,19 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Alert, Box, Button, CircularProgress, Stack } from "@mui/joy";
 import Fade from "@mui/material/Fade";
 import { Categories } from "../models/Categories";
-import { Background } from "./canvas/Background";
 import { useEducationGetAll } from "../hooks/useEducationGetAll";
 import { useProjectGetAll } from "../hooks/useProjectGetAll";
 import { useExperienceGetAll } from "../hooks/useExperienceGetAll";
 import { HomeNavigationFade } from "./HomeNavigation";
 import { Grow } from "@mui/material";
+import { StarAndPlanet } from "./canvas/StarAndPlanet";
 
 export const Home: FC = () => {
+  useEffect(() => {
+    StarAndPlanet();
+  }, []);
+
   const [started, setStarted] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Categories>();
   const {
@@ -35,7 +39,6 @@ export const Home: FC = () => {
       setSelectedCategory(category);
     }, 100);
   };
-  Background();
 
   if (educationError || projectError || experienceError) {
     return <Alert color="danger">Something Wrong</Alert>;
@@ -48,6 +51,10 @@ export const Home: FC = () => {
   return (
     <Stack mx="auto" width={0.7} spacing={4} alignSelf="center">
       <Box height={100} width={100} />
+
+      <Fade in={started}>
+        <HomeNavigationFade setSelectedCategory={onSetSelectedCategory} />
+      </Fade>
 
       <Fade in={!started}>
         <Button
@@ -63,12 +70,11 @@ export const Home: FC = () => {
         </Button>
       </Fade>
 
-      <Fade in={started}>
-        <HomeNavigationFade setSelectedCategory={onSetSelectedCategory} />
-      </Fade>
-
       <Box height={100}>
-        <Grow in={selectedCategory !== undefined}>
+        <Grow
+          in={selectedCategory !== undefined}
+          {...(selectedCategory !== undefined ? { timeout: 1000 } : {})}
+        >
           <HomeNavigationFade
             selectedCategory={selectedCategory}
             responseEducation={responseEducation}
