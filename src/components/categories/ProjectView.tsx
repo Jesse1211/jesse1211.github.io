@@ -7,17 +7,12 @@ import {
   Alert,
   CircularProgress,
   AspectRatio,
-  Box,
   CardOverflow,
   Divider,
-  DialogContent,
-  DialogTitle,
-  Modal,
-  ModalClose,
-  ModalDialog,
 } from "@mui/joy";
 import { FC, useState } from "react";
 import { Project } from "../../models/Categories";
+import { CardContainer } from "./CardContainer";
 
 export const ProjectView: FC<{
   responseProject?: Project[];
@@ -42,23 +37,13 @@ export const ProjectView: FC<{
     <Stack
       height={1}
       direction={"row"}
-      overflow="auto"
-      sx={{
-        "&::-webkit-scrollbar": {
-          display: "none",
-        },
-      }}
+      flexWrap={"wrap"}
       gap={4}
+      justifyContent={"center"}
     >
       {responseProject.map((project, index) => (
-        <>
-          <Box
-            sx={{ minWidth: { xs: 1, md: 0.47, lg: 0.32 } }}
-            minHeight={1}
-            key={index}
-            onClick={() => setLayout(true)}
-            style={{ filter: "opacity(0.9)" }}
-          >
+        <CardContainer
+          cardView={
             <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
               <AspectRatio ratio="2">
                 <CardOverflow>
@@ -103,19 +88,11 @@ export const ProjectView: FC<{
                 </Typography>
               </CardOverflow>
             </Card>
-          </Box>
-          <Modal open={!!layout} onClose={() => setLayout(false)}>
-            <ModalDialog>
-              <ModalClose />
-              <DialogTitle>Description</DialogTitle>
-              <DialogContent>
-                <Typography level="body-md" fontWeight="lg">
-                  {project.Description}
-                </Typography>
-              </DialogContent>
-            </ModalDialog>
-          </Modal>
-        </>
+          }
+          description={project.Description}
+          onSetLayout={setLayout}
+          isLayout={layout}
+        />
       ))}
     </Stack>
   );

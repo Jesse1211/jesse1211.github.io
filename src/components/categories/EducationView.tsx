@@ -4,81 +4,68 @@ import {
   Typography,
   CardCover,
   Stack,
-  Box,
   CardOverflow,
   AspectRatio,
   Divider,
 } from "@mui/joy";
 import { FC } from "react";
 import { Education } from "../../models/Categories";
+import { CardContainer } from "./CardContainer";
 
 export const EducationView: FC<{
   responseEducation: Education[];
 }> = ({ responseEducation }) => {
   return (
-    <Stack
-      height={1}
-      direction={"row"}
-      overflow="auto"
-      sx={{
-        "&::-webkit-scrollbar": {
-          display: "none",
-        },
-      }}
-      gap={4}
-    >
+    <Stack height={1} direction={"row"} flexWrap={"wrap"} gap={4} justifyContent={"center"}>
       {responseEducation.map((education: Education, index) => (
-        <Box
-          sx={{ minWidth: { xs: 1, md: 0.47, lg: 0.32 } }}
-          minHeight={1}
-          key={index}
-          style={{ filter: "opacity(0.9)" }}
-        >
-          <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
-            <AspectRatio ratio="2">
-              <CardOverflow>
-                <CardCover>
-                  <img src="./Cornell.jpg" loading="lazy" />
-                </CardCover>
+        <CardContainer
+          cardView={
+              <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
+                <AspectRatio ratio="2">
+                  <CardOverflow>
+                    <CardCover>
+                      <img src="./Cornell.jpg" loading="lazy" />
+                    </CardCover>
+                    <CardContent>
+                      <Typography level="body-md" fontWeight="lg">
+                        {education.School}
+                      </Typography>
+                      <Typography level="body-sm" fontWeight="lg">
+                        Master of Engineer
+                      </Typography>
+                    </CardContent>
+                  </CardOverflow>
+                </AspectRatio>
+
                 <CardContent>
-                  <Typography level="body-md" fontWeight="lg">
-                    {education.School}
-                  </Typography>
-                  <Typography level="body-sm" fontWeight="lg">
-                    Master of Engineer
-                  </Typography>
+                  {education.ReleventCourses.length > 0 && (
+                    <>
+                      <Typography level="body-sm" fontWeight="lg">
+                        Relevent Courses:
+                      </Typography>
+                      {education.ReleventCourses.map((course, index) => (
+                        <Typography level="body-sm" fontWeight="md" key={index}>
+                          {course}
+                        </Typography>
+                      ))}
+                    </>
+                  )}
                 </CardContent>
-              </CardOverflow>
-            </AspectRatio>
 
-            <CardContent>
-              {education.ReleventCourses.length > 0 && (
-                <>
-                  <Typography level="body-sm" fontWeight="lg">
-                    Relevent Courses:
+                <CardOverflow>
+                  <Divider inset="context" />
+                  <Typography level="body-sm" fontWeight="md">
+                    GPA: {education.Grade} / 4.0
                   </Typography>
-                  {education.ReleventCourses.map((course, index) => (
-                    <Typography level="body-sm" fontWeight="md" key={index}>
-                      {course}
-                    </Typography>
-                  ))}
-                </>
-              )}
-            </CardContent>
+                  <Divider orientation="vertical" />
 
-            <CardOverflow>
-              <Divider inset="context" />
-              <Typography level="body-sm" fontWeight="md">
-                GPA: {education.Grade} / 4.0
-              </Typography>
-              <Divider orientation="vertical" />
-
-              <Typography level="body-sm" fontWeight="lg">
-                {education.StartDate} - {education.EndDate}
-              </Typography>
-            </CardOverflow>
-          </Card>
-        </Box>
+                  <Typography level="body-sm" fontWeight="lg">
+                    {education.StartDate} - {education.EndDate}
+                  </Typography>
+                </CardOverflow>
+              </Card>
+          }
+        />
       ))}
     </Stack>
   );
