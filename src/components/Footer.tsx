@@ -5,15 +5,9 @@ export const Footer: FC = () => {
   return (
     <Stack 
       component="footer" 
-      direction="row" 
-      justifyContent="center" 
-      p={1}
-      style={{
-        position: "fixed",
-        bottom: 0,
-        width: "100%",
-        textAlign: "center",
-      }}>
+      position={"fixed"}
+      bottom={0}
+      >
         <Typography level="body-xs">© Created by Jesse Liu</Typography>
       </Stack>
   );

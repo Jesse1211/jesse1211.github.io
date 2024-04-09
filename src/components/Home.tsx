@@ -58,7 +58,7 @@ export const Home: FC = () => {
       alignSelf="center"
       margin={"auto"}
       sx={{
-        "margin-top": "10%"
+        "margin-top": "10%",
       }}
     >
       <Box height={10} width={100} />
@@ -81,19 +81,19 @@ export const Home: FC = () => {
         </Button>
       </Fade>
 
-      <Box height={1} >
-        <Grow
-          in={selectedCategory !== undefined}
-          {...(selectedCategory !== undefined ? { timeout: 1000 } : {})}
-        >
-          <HomeNavigationFade
-            selectedCategory={selectedCategory}
-            responseEducation={responseEducation}
-            responseProject={responseProject}
-            responseExperience={responseExperience}
-          />
-        </Grow>
-      </Box>
+      <Grow
+        in={selectedCategory !== undefined}
+        {...(selectedCategory !== undefined ? { timeout: 1000 } : {})}
+      >
+        <HomeNavigationFade
+          selectedCategory={selectedCategory}
+          responseEducation={responseEducation}
+          responseProject={responseProject}
+          responseExperience={responseExperience}
+        />
+      </Grow>
+
+      <Box height={10} width={100} />
     </Stack>
   );
 };
