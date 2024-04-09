@@ -50,7 +50,17 @@ export const Home: FC = () => {
   }
 
   return (
-    <Stack mx="auto" flex={1} maxWidth={0.8} spacing={4} alignSelf="center" margin={"auto"} sx={{"margin-top": "10%"}}>
+    <Stack
+      mx="auto"
+      flex={1}
+      maxWidth={0.8}
+      spacing={4}
+      alignSelf="center"
+      margin={"auto"}
+      sx={{
+        "margin-top": "10%"
+      }}
+    >
       <Box height={10} width={100} />
 
       <Fade in={started}>
@@ -71,7 +81,7 @@ export const Home: FC = () => {
         </Button>
       </Fade>
 
-      <Box height={1}>
+      <Box height={1} >
         <Grow
           in={selectedCategory !== undefined}
           {...(selectedCategory !== undefined ? { timeout: 1000 } : {})}
