@@ -7,23 +7,18 @@ import {
   Alert,
   CircularProgress,
   AspectRatio,
-  Box,
   CardOverflow,
-  DialogContent,
-  DialogTitle,
   Divider,
-  Modal,
-  ModalClose,
-  ModalDialog,
 } from "@mui/joy";
 import { FC, useState } from "react";
 import { Experience } from "../../models/Categories";
+import { CardContainer } from "./CardContainer";
 
 export const ExperienceView: FC<{
   responseExperience?: Experience[];
   error?: Error;
   busy?: boolean;
-}> = ({responseExperience, error, busy}) => {
+}> = ({ responseExperience, error, busy }) => {
   const [layout, setLayout] = useState<boolean>(false);
   if (error) {
     return <Alert color="danger">{error.message}</Alert>;
@@ -36,27 +31,18 @@ export const ExperienceView: FC<{
   if (!responseExperience) {
     return <Alert color="danger">Loading Experiences</Alert>;
   }
+  
   return (
     <Stack
       height={1}
       direction={"row"}
-      overflow="auto"
-      sx={{
-        "&::-webkit-scrollbar": {
-          display: "none",
-        },
-      }}
+      flexWrap={"wrap"}
       gap={4}
+      justifyContent={"center"}
     >
       {responseExperience.map((experience, index) => (
-        <>
-          <Box
-            sx={{ minWidth: { xs: 1, md: 0.47, lg: 0.32 } }}
-            minHeight={1}
-            key={index}
-            onClick={() => setLayout(true)}
-            style={{ filter: "opacity(0.9)" }}
-          >
+        <CardContainer
+          cardView={
             <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
               <AspectRatio ratio="2">
                 <CardOverflow>
@@ -101,19 +87,11 @@ export const ExperienceView: FC<{
                 </Typography>
               </CardOverflow>
             </Card>
-          </Box>
-          <Modal open={!!layout} onClose={() => setLayout(false)}>
-            <ModalDialog>
-              <ModalClose />
-              <DialogTitle>Description</DialogTitle>
-              <DialogContent>
-                <Typography level="body-md" fontWeight="lg">
-                  {experience.Description}
-                </Typography>
-              </DialogContent>
-            </ModalDialog>
-          </Modal>
-        </>
+          }
+          description={experience.Description}
+          onSetLayout={setLayout}
+          isLayout={layout}
+        />
       ))}
     </Stack>
   );

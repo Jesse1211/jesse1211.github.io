@@ -50,7 +50,7 @@ export const Home: FC = () => {
   }
 
   return (
-    <Stack mx="auto" flex={1} height={0.8} maxWidth={0.8} spacing={4} alignSelf="center" >
+    <Stack mx="auto" flex={1} maxWidth={0.8} spacing={4} alignSelf="center" margin={"auto"} >
       <Box height={10} width={100} />
 
       <Fade in={started}>
