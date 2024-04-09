@@ -16,7 +16,7 @@ export const EducationView: FC<{
   responseEducation: Education[];
 }> = ({ responseEducation }) => {
   return (
-    <Stack height={1} direction={"row"} flexWrap={"wrap"} gap={4} justifyContent={"center"}>
+    <Stack direction={"row"} flexWrap={"wrap"} gap={4} justifyContent={"center"} overflow={"auto"} >
       {responseEducation.map((education: Education, index) => (
         <CardContainer
           cardView={

@@ -34,7 +34,6 @@ export const ExperienceView: FC<{
   
   return (
     <Stack
-      height={1}
       direction={"row"}
       flexWrap={"wrap"}
       gap={4}
