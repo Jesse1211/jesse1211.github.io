@@ -18,7 +18,7 @@ export const StarAndPlanet = () => {
   const illo = new Illustration({
     element: "canvas",
     dragRotate: true,
-    resize: "fullscreen",
+    resize: true,
     zoom: 1.5,
     onResize: function (width, height) {
       const minSize = Math.min(width, height);
