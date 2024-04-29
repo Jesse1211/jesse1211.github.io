@@ -9,6 +9,7 @@ import {
 import { EducationView } from "./categories/EducationView";
 import { ExperienceView } from "./categories/ExperienceView";
 import { ProjectView } from "./categories/ProjectView";
+import { AboutMeView } from "./categories/AboutMeView";
 
 interface HomeNavigationFadeProps extends HTMLProps<HTMLDivElement> {
   setSelectedCategory?: (category: Categories) => void;
@@ -45,6 +46,9 @@ export const HomeNavigationFade = forwardRef<
       {selectedCategory === "Projects" && responseProject && (
         <ProjectView responseProject={responseProject} />
       )}
+      {selectedCategory === "AboutMe" && responseProject && (
+        <AboutMeView />
+      )}
     </div>
   );
 });
@@ -74,6 +78,13 @@ const HomeNavigation: FC<{
         variant="plain"
       >
         Projects
+      </Button>
+      <Button
+        onClick={() => setSelectedCategory("AboutMe")}
+        style={{ color: "#889def" }}
+        variant="plain"
+      >
+        Contact Me
       </Button>
     </Stack>
   );
