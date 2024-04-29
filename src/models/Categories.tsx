@@ -1,4 +1,4 @@
-export type Categories = "Educations" | "Experiences" | "Projects";
+export type Categories = "Educations" | "Experiences" | "Projects" | "AboutMe";
 
 export interface Education {
   _id: string;
