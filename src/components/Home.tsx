@@ -1,10 +1,7 @@
 import { FC, useEffect, useState } from "react";
-import { Alert, Box, Button, CircularProgress, Stack } from "@mui/joy";
+import { Box, Button, Stack } from "@mui/joy";
 import Fade from "@mui/material/Fade";
-import { Categories } from "../models/Categories";
-import { useEducationGetAll } from "../hooks/useEducationGetAll";
-import { useProjectGetAll } from "../hooks/useProjectGetAll";
-import { useExperienceGetAll } from "../hooks/useExperienceGetAll";
+import { Categories, Education, Experience } from "../models/Categories";
 import { HomeNavigationFade } from "./HomeNavigation";
 import { Grow } from "@mui/material";
 import { StarAndPlanet } from "./canvas/StarAndPlanet";
@@ -16,22 +13,43 @@ export const Home: FC = () => {
 
   const [started, setStarted] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Categories>();
-  const {
-    busy: educationBusy,
-    responseEducation,
-    error: educationError,
-  } = useEducationGetAll();
-  const {
-    busy: projectBusy,
-    responseProject,
-    error: projectError,
-  } = useProjectGetAll();
-  const {
-    busy: experienceBusy,
-    responseExperience,
-    error: experienceError,
-  } = useExperienceGetAll();
 
+  const responseEducation : Education[] = [
+    {
+      _id: "", // Add the missing property _id
+      StartDate: "", // Add the missing property StartDate
+      EndDate: "", // Add the missing property EndDate
+      School: "", // Add the missing property School
+      ReleventCourses: ["string[]"],
+      Grade: "string"
+    }
+  ];
+  const responseExperience : Experience[] = [
+    {
+      _id: "", // Add the missing property _id
+      StartDate: "", // Add the missing property StartDate
+      EndDate: "", // Add the missing property EndDate
+      Title: "",
+      Company: "",
+      Description: "",
+      Accomplishments: [""],
+      Expertises: [""],
+    }
+  ];
+  const responseProject = [
+    {
+      _id: "", // Add the missing property _id
+      StartDate: "", // Add the missing property StartDate
+      EndDate: "", // Add the missing property EndDate
+      Title: "",
+      Company: "",
+      Description: "",
+      Accomplishments: [""],
+      Expertises: [""],
+    },
+  ];
+
+  
   const onSetSelectedCategory = (category: Categories) => {
     if (category === selectedCategory) return;
     setSelectedCategory(undefined);
@@ -41,13 +59,13 @@ export const Home: FC = () => {
     }, 100);
   };
 
-  if (educationError || projectError || experienceError) {
-    return <Alert color="danger">Something Wrong</Alert>;
-  }
+  // if (educationError || projectError || experienceError) {
+  //   return <Alert color="danger">Something Wrong</Alert>;
+  // }
 
-  if (educationBusy || projectBusy || experienceBusy) {
-    return <CircularProgress />;
-  }
+  // if (educationBusy || projectBusy || experienceBusy) {
+  //   return <CircularProgress />;
+  // }
 
   return (
     <Stack
