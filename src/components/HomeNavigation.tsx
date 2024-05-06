@@ -63,21 +63,21 @@ const HomeNavigation: FC<{
         style={{ color: "#889def" }}
         variant="plain"
       >
-        Educations
+        Education
       </Button>
       <Button
         onClick={() => setSelectedCategory("Experiences")}
         style={{ color: "#889def" }}
         variant="plain"
       >
-        Experiences
+        Experience
       </Button>
       <Button
         onClick={() => setSelectedCategory("Projects")}
         style={{ color: "#889def" }}
         variant="plain"
       >
-        Projects
+        Research
       </Button>
       <Button
         onClick={() => setSelectedCategory("AboutMe")}

@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Box, Button, Stack } from "@mui/joy";
 import Fade from "@mui/material/Fade";
-import { Categories, Education, Experience } from "../models/Categories";
+import { Categories, responseEducation, responseExperience, responseProject } from "../models/Categories";
 import { HomeNavigationFade } from "./HomeNavigation";
 import { Grow } from "@mui/material";
 import { StarAndPlanet } from "./canvas/StarAndPlanet";
@@ -13,42 +13,6 @@ export const Home: FC = () => {
 
   const [started, setStarted] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Categories>();
-
-  const responseEducation : Education[] = [
-    {
-      _id: "", // Add the missing property _id
-      StartDate: "", // Add the missing property StartDate
-      EndDate: "", // Add the missing property EndDate
-      School: "", // Add the missing property School
-      ReleventCourses: ["string[]"],
-      Grade: "string"
-    }
-  ];
-  const responseExperience : Experience[] = [
-    {
-      _id: "", // Add the missing property _id
-      StartDate: "", // Add the missing property StartDate
-      EndDate: "", // Add the missing property EndDate
-      Title: "",
-      Company: "",
-      Description: "",
-      Accomplishments: [""],
-      Expertises: [""],
-    }
-  ];
-  const responseProject = [
-    {
-      _id: "", // Add the missing property _id
-      StartDate: "", // Add the missing property StartDate
-      EndDate: "", // Add the missing property EndDate
-      Title: "",
-      Company: "",
-      Description: "",
-      Accomplishments: [""],
-      Expertises: [""],
-    },
-  ];
-
   
   const onSetSelectedCategory = (category: Categories) => {
     if (category === selectedCategory) return;
