@@ -6,7 +6,7 @@ import {
   Stack,
   CardOverflow,
   AspectRatio,
-  Divider,
+  Divider
 } from "@mui/joy";
 import { FC } from "react";
 import { Education } from "../../models/Categories";
@@ -52,7 +52,7 @@ export const EducationView: FC<{
                 {education.Expertise.length > 0 && (
                   <>
                     <Typography level="body-sm" fontWeight="lg">
-                    👩🏻‍🔬 Expertise:
+                    💻 Expertise:
                     </Typography>
                     {education.Expertise.map((course, index) => (
                       <Typography level="body-sm" fontWeight="md" key={index}>

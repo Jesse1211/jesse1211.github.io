@@ -53,6 +53,8 @@ export const Home: FC = () => {
         <Button
           style={{
             color: "#889def",
+            maxWidth: "20%",
+            alignSelf: "center",
           }}
           variant="plain"
           onClick={() => {
