@@ -77,7 +77,7 @@ const HomeNavigation: FC<{
         style={{ color: "#889def" }}
         variant="plain"
       >
-        Research
+        Project
       </Button>
       <Button
         onClick={() => setSelectedCategory("AboutMe")}
