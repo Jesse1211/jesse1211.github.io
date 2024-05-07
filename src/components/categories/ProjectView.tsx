@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   Typography,
-  CardCover,
   Stack,
   Alert,
   CircularProgress,
@@ -46,9 +45,6 @@ export const ProjectView: FC<{
             <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
               <AspectRatio ratio="2">
                 <CardOverflow>
-                  <CardCover>
-                    <img src="./Cornell.jpg" loading="lazy" />
-                  </CardCover>
                   <CardContent>
                     <Typography level="body-md" fontWeight="lg">
                       {project.Company}
@@ -68,7 +64,7 @@ export const ProjectView: FC<{
                     </Typography>
                     {project.Accomplishments.map((accomplishment, index) => (
                       <Typography level="body-sm" fontWeight="md" key={index}>
-                        {accomplishment}
+                        🌟 {accomplishment}
                       </Typography>
                     ))}
                   </>

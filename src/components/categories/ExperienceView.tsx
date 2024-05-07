@@ -31,7 +31,7 @@ export const ExperienceView: FC<{
   if (!responseExperience) {
     return <Alert color="danger">Loading Experiences</Alert>;
   }
-  
+
   return (
     <Stack
       direction={"row"}
@@ -45,10 +45,17 @@ export const ExperienceView: FC<{
             <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
               <AspectRatio ratio="2">
                 <CardOverflow>
-                  <CardCover>
-                    {/* <img src="./Cornell.jpg" loading="lazy" /> */}
+                  <CardCover style={{ display: "contents" }}>
+                    <img
+                      src={experience.Image}
+                      loading="lazy"
+                      style={{ width: "auto" }}
+                    />
                   </CardCover>
-                  <CardContent>
+                </CardOverflow>
+              </AspectRatio>
+              <CardContent sx={{ "align-items": "center" }}>
+                    {" "}
                     <Typography level="body-md" fontWeight="lg">
                       {experience.Company}
                     </Typography>
@@ -59,8 +66,6 @@ export const ExperienceView: FC<{
                       {experience.Location}
                     </Typography>
                   </CardContent>
-                </CardOverflow>
-              </AspectRatio>
 
               <CardContent>
                 {experience.Accomplishments.length > 0 && (
@@ -70,7 +75,7 @@ export const ExperienceView: FC<{
                     </Typography>
                     {experience.Accomplishments.map((accomplishment, index) => (
                       <Typography level="body-sm" fontWeight="md" key={index}>
-                        🧬 {accomplishment}
+                        🎯 {accomplishment}
                       </Typography>
                     ))}
                   </>
@@ -79,9 +84,11 @@ export const ExperienceView: FC<{
 
               <CardOverflow>
                 <Divider inset="context" />
-                {<Typography level="body-sm" fontWeight="md">
-                  Product development & E-commence
-                </Typography>}
+                {
+                  <Typography level="body-sm" fontWeight="md">
+                    Software Engineer
+                  </Typography>
+                }
                 <Divider orientation="vertical" />
 
                 <Typography level="body-sm" fontWeight="lg">
