@@ -46,9 +46,7 @@ export const HomeNavigationFade = forwardRef<
       {selectedCategory === "Projects" && responseProject && (
         <ProjectView responseProject={responseProject} />
       )}
-      {selectedCategory === "AboutMe" && responseProject && (
-        <AboutMeView />
-      )}
+      {selectedCategory === "AboutMe" && responseProject && <AboutMeView />}
     </div>
   );
 });
@@ -57,31 +55,37 @@ const HomeNavigation: FC<{
   setSelectedCategory: (category: Categories) => void;
 }> = ({ setSelectedCategory }) => {
   return (
-    <Stack direction="row" spacing={6} justifyContent="center" top={0}>
+    <Stack
+      direction="row"
+      spacing={6}
+      justifyContent="space-evenly"
+      top={0}
+      flexWrap={"wrap"}
+    >
       <Button
         onClick={() => setSelectedCategory("Educations")}
-        style={{ color: "#889def" }}
+        style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
         Education
       </Button>
       <Button
         onClick={() => setSelectedCategory("Experiences")}
-        style={{ color: "#889def" }}
+        style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
         Experience
       </Button>
       <Button
         onClick={() => setSelectedCategory("Projects")}
-        style={{ color: "#889def" }}
+        style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
         Project
       </Button>
       <Button
         onClick={() => setSelectedCategory("AboutMe")}
-        style={{ color: "#889def" }}
+        style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
         Contact Me
