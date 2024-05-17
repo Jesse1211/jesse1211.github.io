@@ -51,12 +51,13 @@ export const responseEducation: Education[] = [
     StartDate: "Jan 2023",
     EndDate: "May 2024",
     School: "Cornell University",
-    Major: "Master of Food Science",
+    Major: "Master of Engineer, Computer Science",
     Expertise: [
       "Programming Languages",
       "Database",
       "Computer Networks",
       "Computer Graphics",
+      "Entrepreneurship Management",
     ],
     Grade: "3.70/4.00",
     Location: "Ithaca, NY",
@@ -67,7 +68,7 @@ export const responseEducation: Education[] = [
     StartDate: "Sep 2021",
     EndDate: "Jun 2023",
     School: "University of California, Davis",
-    Major: "Computer Science",
+    Major: "Bachelor of Science, Computer Science",
     Expertise: [
       "Data Structures",
       "Algorithms",
@@ -84,7 +85,7 @@ export const responseEducation: Education[] = [
     StartDate: "Jun 2019",
     EndDate: "Jun 2021",
     School: "City College of San Francisco",
-    Major: "Computer Science",
+    Major: "Associate, Computer Science",
     Expertise: ["Teaching Assistant"],
     Location: "San Francisco, CA",
     Grade: "3.97/4.00",
@@ -97,7 +98,7 @@ export const responseEducation: Education[] = [
     School: "Berkeley City College",
     Major: "Mathematics",
     Expertise: [],
-    Location: "Berkeley, CA",
+    Location: "Associate, Berkeley, CA",
     Grade: "3.50/4.00",
     Image: "./Berkeley_city_College_logo.png",
   },
@@ -184,5 +185,5 @@ export const responseProject: Project[] = [
     ],
     Expertises: [""],
     Location: "Davis, CA",
-  }
+  },
 ];
