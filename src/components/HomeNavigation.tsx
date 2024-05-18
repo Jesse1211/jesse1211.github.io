@@ -9,7 +9,7 @@ import {
 import { EducationView } from "./categories/EducationView";
 import { ExperienceView } from "./categories/ExperienceView";
 import { ProjectView } from "./categories/ProjectView";
-import { AboutMeView } from "./categories/AboutMeView";
+import { AboutMeView } from "./categories/SocialMedia/AboutMeView";
 
 interface HomeNavigationFadeProps extends HTMLProps<HTMLDivElement> {
   setSelectedCategory?: (category: Categories) => void;
