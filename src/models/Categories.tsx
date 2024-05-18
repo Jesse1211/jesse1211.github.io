@@ -22,6 +22,7 @@ export interface Experience {
   Accomplishments: string[];
   Location: string;
   Image: string;
+  link: string;
 }
 
 export interface Project {
@@ -108,8 +109,8 @@ export const responseExperience: Experience[] = [
     _id: "1",
     StartDate: "Jan 2024",
     EndDate: "Present",
-    Title: "Research technician",
-    Company: "DIAPER Infant Nutrition Project, Cornell University",
+    Title: "Full-Stack Developer",
+    Company: "DIAPER Infant Nutrition Project",
     Location: "Ithaca, NY",
     Description: "",
     Accomplishments: [
@@ -119,12 +120,13 @@ export const responseExperience: Experience[] = [
       "Creating 3 Confluence documentation sets to clarify design architecture, reduced 5 hours for each new hire onboarding",
     ],
     Image: "./Cornell_University_Logo.png",
+    link: "https://dashboard.diaper-project.com",
   },
   {
     _id: "2",
     StartDate: "Oct 2022",
     EndDate: "Dec 2023",
-    Title: "Co-founder, Software Engineer, UX/UI Designer",
+    Title: "Co-founder & Full-Stack Developer",
     Company: "EduRoute Inc.",
     Location: "Davis, CA",
     Description: "",
@@ -137,6 +139,7 @@ export const responseExperience: Experience[] = [
       "Designed and implemented referral system to end-to-end",
     ],
     Image: "./Schedgo.png",
+    link: "https://eduroute.ai/",
   },
 ];
 export const responseProject: Project[] = [

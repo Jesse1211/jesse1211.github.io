@@ -1,12 +1,11 @@
 import {
-  Card,
   CardContent,
   Typography,
   CardCover,
   Stack,
   CardOverflow,
   AspectRatio,
-  Divider
+  Divider,
 } from "@mui/joy";
 import { FC } from "react";
 import { Education } from "../../models/Categories";
@@ -22,11 +21,13 @@ export const EducationView: FC<{
       gap={4}
       justifyContent={"center"}
       overflow={"auto"}
+      paddingBottom={4}
     >
-      {responseEducation.map((education: Education, index) => (
+      {responseEducation.map((education: Education, key) => (
         <CardContainer
+          key={key}
           cardView={
-            <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
+            <>
               <AspectRatio ratio="2">
                 <CardOverflow>
                   <CardCover style={{ display: "contents" }}>
@@ -38,8 +39,7 @@ export const EducationView: FC<{
                   </CardCover>
                 </CardOverflow>
               </AspectRatio>
-
-              <CardContent sx={{"align-items": "center"}}>
+              <CardContent sx={{ alignItems: "center" }}>
                 <Typography level="body-md" fontWeight="lg">
                   {education.School}
                 </Typography>
@@ -47,34 +47,19 @@ export const EducationView: FC<{
                   {education.Major}
                 </Typography>
               </CardContent>
-
-              <CardContent>
-                {education.Expertise.length > 0 && (
-                  <>
-                    <Typography level="body-sm" fontWeight="lg">
-                    💻 Expertise:
-                    </Typography>
-                    {education.Expertise.map((course, index) => (
-                      <Typography level="body-sm" fontWeight="md" key={index}>
-                        {course}
-                      </Typography>
-                    ))}
-                  </>
-                )}
-              </CardContent>
-
               <CardOverflow>
                 <Divider inset="context" />
-                <Typography level="body-sm" fontWeight="md">
-                  GPA: {education.Grade}
-                </Typography>
-                <Divider orientation="vertical" />
+                <Stack height="70px" justifyContent="center">
+                  <Typography level="body-sm" fontWeight="md">
+                    GPA: {education.Grade}
+                  </Typography>
 
-                <Typography level="body-sm" fontWeight="lg">
-                  {education.StartDate} - {education.EndDate}
-                </Typography>
+                  <Typography level="body-sm" fontWeight="md">
+                    {education.StartDate} - {education.EndDate}
+                  </Typography>
+                </Stack>
               </CardOverflow>
-            </Card>
+            </>
           }
         />
       ))}
