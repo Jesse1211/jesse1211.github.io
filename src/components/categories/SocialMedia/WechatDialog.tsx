@@ -26,7 +26,7 @@ const WechatDialog = (props: WechatModalProps) => {
                         borderRadius: 20,
                     })}
                 >
-                    <img src={`wechat.jpg`} alt="Wechat QR Code" />
+                    <img src={`Wechat.jpg`} alt="Wechat QR Code" />
                 </AspectRatio>
             </ModalDialog>
         </Modal>
