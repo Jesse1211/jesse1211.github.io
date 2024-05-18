@@ -4,7 +4,7 @@ import { User } from "../models/User";
 
 export function useUserLogin(
   isLogin: boolean,
-  user: User
+  user: User,
 ): {
   busy: boolean;
   response?: string;
@@ -18,27 +18,25 @@ export function useUserLogin(
     const abortController = new AbortController();
     const signal = abortController.signal;
 
-    isLogin ? 
-    userService.login(user)
-    .then(
-      (result) => {
-        if (!signal.aborted) {
-          setResponse(result);
-        }
-      }
-    )
-    .catch((e: Error) => signal.aborted || setError(e))
-    .finally(() => signal.aborted || setBusy(false))
-    : userService.register(user)
-    .then(
-      (result) => {
-        if (!signal.aborted) {
-          setResponse(result);
-        }
-      }
-    )
-    .catch((e: Error) => signal.aborted || setError(e))
-    .finally(() => signal.aborted || setBusy(false));
+    isLogin
+      ? userService
+          .login(user)
+          .then((result) => {
+            if (!signal.aborted) {
+              setResponse(result);
+            }
+          })
+          .catch((e: Error) => signal.aborted || setError(e))
+          .finally(() => signal.aborted || setBusy(false))
+      : userService
+          .register(user)
+          .then((result) => {
+            if (!signal.aborted) {
+              setResponse(result);
+            }
+          })
+          .catch((e: Error) => signal.aborted || setError(e))
+          .finally(() => signal.aborted || setBusy(false));
 
     return () => abortController.abort();
   }, [isLogin, user]);

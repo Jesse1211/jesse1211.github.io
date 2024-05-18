@@ -11,24 +11,27 @@ const client = axios.create({
 export const educationService = {
   async addEducation(
     education: Education,
-    abortSignal: AbortSignal
+    abortSignal: AbortSignal,
   ): Promise<string> {
     const response = await client.post<string>(
       `add_education`,
       {
         education,
       },
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     return response.data;
   },
   async getEducation(
     educationId: string,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<Education> {
-    const response = await client.get<Education>(`get_education/${educationId}`, {
-      signal: abortSignal,
-    });
+    const response = await client.get<Education>(
+      `get_education/${educationId}`,
+      {
+        signal: abortSignal,
+      },
+    );
     return response.data;
   },
   async getEducations(abortSignal?: AbortSignal): Promise<Education[]> {
@@ -40,22 +43,22 @@ export const educationService = {
   },
   async updateEducation(
     education: Education,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<string> {
     const response = await client.post<string>(
       `update_education`,
       { education },
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     return response.data;
   },
   async deleteEducation(
     educationId: string,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<string> {
     const response = await client.delete<string>(
       `delete_education/${educationId}`,
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     return response.data;
   },
