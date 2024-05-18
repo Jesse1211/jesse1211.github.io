@@ -33,7 +33,6 @@ export const Home: FC = () => {
 
   return (
     <Stack
-      // mx="auto"
       p={3}
       spacing={4}
       flex={1}
@@ -42,35 +41,39 @@ export const Home: FC = () => {
         "margin-top": "10%",
       }}
     >
-      <Typography
-        fontWeight="md"
-        fontSize="1.5rem"
-        sx={{ letterSpacing: "0.1vw", color: "#0076ff" }}
-      >
-        <TypeWriter
-          options={{ loop: true, delay: 160, autoStart: true }}
-          onInit={(typewriter) => {
-            typewriter
-              .typeString(
-                "<strong><span style='color:#7b00ff;'>Passion</span><strong> is not a fleeting emotion but a <span style='color:#7b00ff;'>relentless force</span>."
-              )
-              .pauseFor(1500)
-              .deleteAll()
-              .typeString(
-                "Studying is like exploring the universe, <strong><span style='color:#7b00ff;'>exciting yet satisfying</span><strong>."
-              )
-              .pauseFor(1500)
-              .start();
-          }}
-        />{" "}
-      </Typography>
+      {
+        <Fade in={!started}>
+          <Typography
+            fontWeight="md"
+            fontSize="1.5rem"
+            sx={{ letterSpacing: "0.1vw", color: "#0076ff" }}
+          >
+            <TypeWriter
+              options={{ loop: true, delay: 160, autoStart: true }}
+              onInit={(typewriter) => {
+                typewriter
+                  .typeString(
+                    "<strong><span style='color:#7b00ff;'>Passion</span><strong> is not a fleeting emotion but a <span style='color:#7b00ff;'>relentless force</span>."
+                  )
+                  .pauseFor(1500)
+                  .deleteAll()
+                  .typeString(
+                    "Studying is like exploring the universe, <strong><span style='color:#7b00ff;'>exciting yet satisfying</span><strong>."
+                  )
+                  .pauseFor(1500)
+                  .start();
+              }}
+            />{" "}
+          </Typography>
+        </Fade>
+      }
 
       {started && (
         <Fade in={started}>
           <HomeNavigationFade setSelectedCategory={onSetSelectedCategory} />
         </Fade>
       )}
-      
+
       {!started && (
         <Fade in={!started}>
           <Button
