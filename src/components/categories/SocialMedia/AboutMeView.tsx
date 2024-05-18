@@ -1,11 +1,4 @@
-import {
-  Card,
-  Typography,
-  AspectRatio,
-  Chip,
-  Stack,
-  Divider,
-} from "@mui/joy";
+import { Card, Typography, AspectRatio, Chip, Stack, Divider } from "@mui/joy";
 import { FC } from "react";
 import SocialMediaButtons from "./SocialMedialButtons";
 

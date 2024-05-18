@@ -32,33 +32,41 @@ export const CardContainer: FC<{
         }}
         style={{ filter: "opacity(0.9)" }}
       >
-        <Card sx={{ height: 1, justifyContent: "space-between"}} size="md" variant="soft">
+        <Card
+          sx={{ height: 1, justifyContent: "space-between" }}
+          size="md"
+          variant="soft"
+        >
           {cardView}
-          {description && <Stack
-            direction={"row"}
-            justifyContent={description && !link ? "center" : "space-between"}
-          >
-            {link !== undefined && (
-              <Button
-                size="sm"
-                component="a"
-                variant="outlined"
-                href={link}
-                target="_blank"
-                color="neutral"
-                endDecorator={<TransitEnterexit />}
-              >
-                Visit Site
-              </Button>
-            )}
-            {description && <Button
-              size="sm"
-              variant="outlined"
-              onClick={() => setLayout(!layout)}
+          {description && (
+            <Stack
+              direction={"row"}
+              justifyContent={description && !link ? "center" : "space-between"}
             >
-              View Details
-            </Button>}
-          </Stack>}
+              {link !== undefined && (
+                <Button
+                  size="sm"
+                  component="a"
+                  variant="outlined"
+                  href={link}
+                  target="_blank"
+                  color="neutral"
+                  endDecorator={<TransitEnterexit />}
+                >
+                  Visit Site
+                </Button>
+              )}
+              {description && (
+                <Button
+                  size="sm"
+                  variant="outlined"
+                  onClick={() => setLayout(!layout)}
+                >
+                  View Details
+                </Button>
+              )}
+            </Stack>
+          )}
         </Card>
       </Box>
       {layout && description && (
@@ -67,11 +75,11 @@ export const CardContainer: FC<{
             <ModalClose />
             <DialogTitle>Accomplishments</DialogTitle>
             <DialogContent>
-                {description.map((accomplishment, index) => (
-                  <Typography level="body-sm" fontWeight="md" key={index}>
-                    🎯 {accomplishment}
-                  </Typography>
-                ))}
+              {description.map((accomplishment, index) => (
+                <Typography level="body-sm" fontWeight="md" key={index}>
+                  🎯 {accomplishment}
+                </Typography>
+              ))}
             </DialogContent>
           </ModalDialog>
         </Modal>

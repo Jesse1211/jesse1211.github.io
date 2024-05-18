@@ -36,7 +36,7 @@
 // export const MyComponent = forwardRef(function ({setSelectedCategory, ...props}: { setSelectedCategory: (category: Categories) => void }, ref: React.Ref<HTMLSpanElement>) {
 //   setSelectedCategory("Educations");
 //   return (
-    
+
 //     <Typography
 //       component="span"
 //       ref={ref}

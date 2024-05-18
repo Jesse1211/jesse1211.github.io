@@ -53,12 +53,12 @@ export const Home: FC = () => {
               onInit={(typewriter) => {
                 typewriter
                   .typeString(
-                    "<strong><span style='color:#7b00ff;'>Passion</span><strong> is not a fleeting emotion but a <span style='color:#7b00ff;'>relentless force</span>."
+                    "<strong><span style='color:#7b00ff;'>Passion</span><strong> is not a fleeting emotion but a <span style='color:#7b00ff;'>relentless force</span>.",
                   )
                   .pauseFor(1500)
                   .deleteAll()
                   .typeString(
-                    "Studying is like exploring the universe, <strong><span style='color:#7b00ff;'>exciting yet satisfying</span><strong>."
+                    "Studying is like exploring the universe, <strong><span style='color:#7b00ff;'>exciting yet satisfying</span><strong>.",
                   )
                   .pauseFor(1500)
                   .start();

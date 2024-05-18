@@ -7,10 +7,7 @@ import WechatDialog from "./WechatDialog";
 const SocialMediaButtons = () => {
   const [wechatDialogOpen, setWechatDialogOpen] = useState(false);
   return (
-    <ButtonGroup
-      spacing={3}
-      sx={{ margin:"15px", flexWrap: "wrap"}}
-    >
+    <ButtonGroup spacing={3} sx={{ margin: "15px", flexWrap: "wrap" }}>
       <IconButton
         component={Link}
         variant="solid"

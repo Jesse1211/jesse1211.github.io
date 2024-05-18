@@ -11,24 +11,27 @@ const client = axios.create({
 export const experienceService = {
   async addExperience(
     experience: Experience,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<string> {
     const response = await client.post<string>(
       `add_experience`,
       {
         experience,
       },
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     return response.data;
   },
   async getExperience(
     experienceId: string,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<Experience> {
-    const response = await client.get<Experience>(`get_experience/${experienceId}`, {
-      signal: abortSignal,
-    });
+    const response = await client.get<Experience>(
+      `get_experience/${experienceId}`,
+      {
+        signal: abortSignal,
+      },
+    );
     return response.data;
   },
   async getExperiences(abortSignal?: AbortSignal): Promise<Experience[]> {
@@ -40,22 +43,22 @@ export const experienceService = {
   },
   async updateExperience(
     experience: Experience,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<string> {
     const response = await client.post<string>(
       `update_experience`,
       { experience },
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     return response.data;
   },
   async deleteExperience(
     experienceId: string,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<string> {
     const response = await client.delete<string>(
       `delete_experience/${experienceId}`,
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     return response.data;
   },

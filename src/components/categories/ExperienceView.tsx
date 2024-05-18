@@ -44,7 +44,7 @@ export const ExperienceView: FC<{
                   {experience.Company}
                 </Typography>
               </CardContent>
-              <CardOverflow >
+              <CardOverflow>
                 <Divider inset="context" />
 
                 <Typography level="body-sm" fontWeight="md" marginTop={"5%"}>
