@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { Email, GitHub, Instagram, LinkedIn } from "@mui/icons-material";
+import { Email, Instagram, LinkedIn } from "@mui/icons-material";
 import { ButtonGroup, IconButton, Link } from "@mui/joy";
 import { useState } from "react";
 import WechatDialog from "./WechatDialog";
@@ -12,7 +12,7 @@ const SocialMediaButtons = () => {
         component={Link}
         variant="solid"
         size="md"
-        href="mailto:zl942@cornell.edu"
+        href="mailto:Jacquelyncjl@gmail.com"
         target="_blank"
         rel="noopener noreferrer"
         color="primary"
@@ -21,20 +21,10 @@ const SocialMediaButtons = () => {
       </IconButton>
       <IconButton
         component={Link}
-        color="primary"
-        size="md"
-        href="https://www.github.com/Jesse1211"
-        target="_blank"
-        variant="solid"
-      >
-        <GitHub />
-      </IconButton>
-      <IconButton
-        component={Link}
         variant="solid"
         color="primary"
         size="md"
-        href="https://www.linkedin.com/in/jesse-liu-0613201b4/"
+        href="https://www.linkedin.com/in/jialing-chen-352125265/"
         target="_blank"
       >
         <LinkedIn />
@@ -44,7 +34,7 @@ const SocialMediaButtons = () => {
         color="primary"
         variant="solid"
         size="md"
-        href="https://www.instagram.com/zhl_lzh/"
+        href="https://www.instagram.com/_002550/"
         target="_blank"
       >
         <Instagram />

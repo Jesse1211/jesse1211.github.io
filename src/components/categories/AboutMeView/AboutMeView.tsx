@@ -14,18 +14,19 @@ export const AboutMeView: FC<{ introduction: Introduction }> = ({
           alignItems: "center",
           width: { xs: 0.9, md: 0.7, lg: 0.6 },
           backgroundColor: "rgba(255, 255, 255, 0.7)", // Semi-transparent background color
+          // marginBottom: "10%",
+          // height: "auto",
         }}
       >
         <Stack
           sx={{
-            marginBottom: "10%",
             width: { xs: 0.7, md: 0.6, lg: 0.5 },
             maxWidth: { xs: 0.7, md: 0.6, lg: 0.5 },
           }}
         >
           <Card variant="outlined" orientation="horizontal">
             <AspectRatio ratio="1" sx={{ minWidth: 90 }}>
-              <img src="./Jesse.png" loading="lazy" />
+              <img src="./jacquelyn.jpg" loading="lazy" />
             </AspectRatio>
 
             <Stack direction="column" spacing={1}>

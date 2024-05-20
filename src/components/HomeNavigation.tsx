@@ -75,7 +75,7 @@ const HomeNavigation: FC<{
         style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
-        Project
+        Research
       </Button>
       <Button
         size="md"

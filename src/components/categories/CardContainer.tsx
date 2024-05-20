@@ -77,7 +77,7 @@ export const CardContainer: FC<{
             <DialogContent>
               {description.map((accomplishment, index) => (
                 <Typography level="body-sm" fontWeight="md" key={index}>
-                  🎯 {accomplishment}
+                  🧬 {accomplishment}
                 </Typography>
               ))}
             </DialogContent>
