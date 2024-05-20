@@ -36,16 +36,16 @@ export const Home: FC = () => {
         marginTop: "10%",
       }}
     >
-      <Typography
+      <Box
         fontWeight="md"
         sx={{
           letterSpacing: "0.1vw",
-          color: "#0076ff",
           sm: { fontSize: "0.5rem" },
           md: { fontSize: "1rem" },
           lg: { fontSize: "1.5rem" },
         }}
         position={"absolute"}
+        fontFamily={"Lucia Console, Cursive, monospace"}
       >
         <TypeWriter
           options={{ loop: true, delay: 160, autoStart: true }}
@@ -63,7 +63,7 @@ export const Home: FC = () => {
               .start();
           }}
         />
-      </Typography>
+      </Box>
       <div className="blank"></div>
       {started && (
         <Fade in={started}>
