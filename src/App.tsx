@@ -1,4 +1,8 @@
-import { CssBaseline, CssVarsProvider as JoyCssVarsProvider } from "@mui/joy";
+import {
+  CssBaseline,
+  CssVarsProvider as JoyCssVarsProvider,
+  extendTheme,
+} from "@mui/joy";
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import {
@@ -64,12 +68,31 @@ export const App: FC = () => {
   //   setCurrentLocale(locale);
   // };
 
+  const THEME = extendTheme({
+    components: {
+      JoyButton: {
+        styleOverrides: {
+          root: () => ({
+            fontFamily: "Lucia Console, Cursive, monospace",
+          }),
+        },
+      },
+      JoyTypography: {
+        styleOverrides: {
+          root: () => ({
+            fontFamily: "Lucia Console, monospace",
+          }),
+        },
+      },
+    },
+  });
+
   return (
     <MaterialCssVarsProvider
       defaultMode="system"
       theme={{ [MATERIAL_THEME_ID]: materialTheme }}
     >
-      <JoyCssVarsProvider defaultMode="system">
+      <JoyCssVarsProvider defaultMode="system" theme={THEME}>
         <canvas className="canvas"></canvas>
         <CssBaseline />
         <PortfolioProvider>
