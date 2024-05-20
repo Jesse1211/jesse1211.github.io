@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { educationService } from "../services/education-service";
-import { Education, RequestType } from "../models/Categories";
+import { Education } from "../models/Categories";
+import { RequestType } from "../models/User";
 
 export function useEducation(
   requestType: RequestType,
