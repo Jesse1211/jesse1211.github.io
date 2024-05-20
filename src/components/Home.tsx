@@ -52,7 +52,7 @@ export const Home: FC = () => {
           onInit={(typewriter) => {
             typewriter
               .typeString(
-                "<span style='color:white;'>Life is a wilderness, not a track</span>."
+                "<span style='color:white;'>Life is a wilderness, not a track</span>.",
               )
               .pauseFor(1500)
               // .deleteAll()

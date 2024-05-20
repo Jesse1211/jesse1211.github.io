@@ -13,7 +13,6 @@ import {
 import { Footer } from "./components/Footer";
 import { Home } from "./components/Home";
 import { PortfolioProvider } from "./components/PortfolioContext";
-import { Navigation } from "./components/Navigation";
 
 const materialTheme = materialExtendTheme();
 // const LOCALES_LIST = [
@@ -96,7 +95,7 @@ export const App: FC = () => {
         <canvas className="canvas"></canvas>
         <CssBaseline />
         <PortfolioProvider>
-          <Navigation />
+          {/* <Navigation /> */}
           <Home />
         </PortfolioProvider>
         <Outlet />
