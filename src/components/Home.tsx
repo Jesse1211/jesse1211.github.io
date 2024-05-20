@@ -2,12 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { Box, Button, Stack, Typography } from "@mui/joy";
 import TypeWriter from "typewriter-effect";
 import Fade from "@mui/material/Fade";
-import {
-  Categories,
-  responseEducation,
-  responseExperience,
-  responseProject,
-} from "../models/Categories";
+import { Categories } from "../models/Categories";
 import { HomeNavigationFade } from "./HomeNavigation";
 import { Grow } from "@mui/material";
 import { StarAndPlanet } from "./canvas/StarAndPlanet";
@@ -38,36 +33,38 @@ export const Home: FC = () => {
       flex={1}
       maxWidth={0.9}
       sx={{
-        "margin-top": "10%",
+        marginTop: "10%",
       }}
     >
-      {
-        <Fade in={!started}>
-          <Typography
-            fontWeight="md"
-            fontSize="1.5rem"
-            sx={{ letterSpacing: "0.1vw", color: "#0076ff" }}
-          >
-            <TypeWriter
-              options={{ loop: true, delay: 160, autoStart: true }}
-              onInit={(typewriter) => {
-                typewriter
-                  .typeString(
-                    "<strong><span style='color:#7b00ff;'>Passion</span><strong> is not a fleeting emotion but a <span style='color:#7b00ff;'>relentless force</span>.",
-                  )
-                  .pauseFor(1500)
-                  .deleteAll()
-                  .typeString(
-                    "Studying is like exploring the universe, <strong><span style='color:#7b00ff;'>exciting yet satisfying</span><strong>.",
-                  )
-                  .pauseFor(1500)
-                  .start();
-              }}
-            />{" "}
-          </Typography>
-        </Fade>
-      }
-
+      <Typography
+        fontWeight="md"
+        sx={{
+          letterSpacing: "0.1vw",
+          color: "#0076ff",
+          sm: { fontSize: "0.5rem" },
+          md: { fontSize: "1rem" },
+          lg: { fontSize: "1.5rem" },
+        }}
+        position={"absolute"}
+      >
+        <TypeWriter
+          options={{ loop: true, delay: 160, autoStart: true }}
+          onInit={(typewriter) => {
+            typewriter
+              .typeString(
+                "<strong><span style='color:#7b00ff;'>Passion</span><strong> is not a fleeting emotion but a <span style='color:#7b00ff;'>relentless force</span>.",
+              )
+              .pauseFor(1500)
+              .deleteAll()
+              .typeString(
+                "Studying is like exploring the universe, <strong><span style='color:#7b00ff;'>exciting yet satisfying</span><strong>.",
+              )
+              .pauseFor(1500)
+              .start();
+          }}
+        />
+      </Typography>
+      <div className="blank"></div>
       {started && (
         <Fade in={started}>
           <HomeNavigationFade setSelectedCategory={onSetSelectedCategory} />
@@ -96,12 +93,7 @@ export const Home: FC = () => {
         in={selectedCategory !== undefined}
         {...(selectedCategory !== undefined ? { timeout: 1000 } : {})}
       >
-        <HomeNavigationFade
-          selectedCategory={selectedCategory}
-          responseEducation={responseEducation}
-          responseProject={responseProject}
-          responseExperience={responseExperience}
-        />
+        <HomeNavigationFade selectedCategory={selectedCategory} />
       </Grow>
 
       <Box height={10} width={100} />

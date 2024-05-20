@@ -3,3 +3,11 @@ export interface User {
   Email: string;
   Password: string;
 }
+
+export type RequestType =
+  | "GETONE"
+  | "GETALL"
+  | "UPDATE"
+  | "ADD"
+  | "DELETEONE"
+  | "DELETEALL";

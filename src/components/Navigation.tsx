@@ -1,26 +1,27 @@
-// import { Stack } from "@mui/joy";
-// import { FC } from "react";
-// import Fade from "@mui/material/Fade";
-// import { Buttons } from "./Buttons";
+import Translate from "@mui/icons-material/Translate";
+import { Button, Container } from "@mui/joy";
+import { FC, useContext } from "react";
+import { PortfolioContext } from "./PortfolioContext";
+// import DarkmodeToggle from "./DarkModeToggle"
 
-// export const Navigation: FC = () => {
-
-//   return (
-//     <Fade in={location.pathname !== "/"}>
-//       <Stack
-//         direction="row"
-//         justifyContent="center"
-//         p={1}
-//         style={{
-//           position: "fixed",
-//           top: 0,
-//           width: "100%",
-//           textAlign: "center",
-//           background: "green",
-//         }}
-//       >
-//         <Buttons isHome={true} />
-//       </Stack>
-//     </Fade>
-//   );
-// };
+export const Navigation: FC = () => {
+  const portfolioData = useContext(PortfolioContext);
+  return (
+    <Container
+      maxWidth={false}
+      sx={{ position: "fixed", marginTop: 1, right: 0, direction: "rtl" }}
+    >
+      <Button
+        size="sm"
+        startDecorator={<Translate />}
+        onClick={() => {
+          portfolioData.onLocaleChange(
+            portfolioData.$locale === "en-US" ? "zh-CN" : "en-US",
+          );
+        }}
+      >
+        {portfolioData.$locale === "en-US" ? "中文" : "English"}
+      </Button>
+    </Container>
+  );
+};
