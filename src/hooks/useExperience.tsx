@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { experienceService } from "../services/experience-service";
-import { Experience, RequestType } from "../models/Categories";
+import { Experience } from "../models/Categories";
+import { RequestType } from "../models/User";
 
 export function useExperience(
   requestType: RequestType,

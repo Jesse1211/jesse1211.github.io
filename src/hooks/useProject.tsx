@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { projectService } from "../services/project-service";
-import { Project, RequestType } from "../models/Categories";
+import { Project } from "../models/Categories";
+import { RequestType } from "../models/User";
 
 export function useProject(
   requestType: RequestType,

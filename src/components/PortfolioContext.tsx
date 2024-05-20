@@ -15,7 +15,7 @@ export const PortfolioContext = createContext<{
 export const PortfolioProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [$locale, setLocale] = useState<LocalType>("zh-CN");
+  const [$locale, setLocale] = useState<LocalType>("en-US");
 
   const onLocaleChange = (locale: LocalType) => {
     setLocale(locale);
