@@ -45,6 +45,7 @@ export const HomeNavigationFade = forwardRef<
 const HomeNavigation: FC<{
   setSelectedCategory: (category: Categories) => void;
 }> = ({ setSelectedCategory }) => {
+  const portfolioData = useContext(PortfolioContext);
   return (
     <Stack
       direction="row"
@@ -59,7 +60,7 @@ const HomeNavigation: FC<{
         style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
-        Education
+        {portfolioData.$locale === "zh-CN" ? "教育" : "Education"}
       </Button>
       <Button
         size="md"
@@ -67,7 +68,7 @@ const HomeNavigation: FC<{
         style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
-        Experience
+        {portfolioData.$locale === "zh-CN" ? "经历" : "Experience"}
       </Button>
       <Button
         size="md"
@@ -75,7 +76,7 @@ const HomeNavigation: FC<{
         style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
-        Project
+        {portfolioData.$locale === "zh-CN" ? "项目" : "Project"}
       </Button>
       <Button
         size="md"
@@ -83,7 +84,7 @@ const HomeNavigation: FC<{
         style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
-        Myself
+        {portfolioData.$locale === "zh-CN" ? "第一人称" : "Myself"}
       </Button>
     </Stack>
   );

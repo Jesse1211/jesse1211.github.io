@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { Box, Button, Stack, Typography } from "@mui/joy";
+import { Box, Button, Stack } from "@mui/joy";
 import TypeWriter from "typewriter-effect";
 import Fade from "@mui/material/Fade";
 import { Categories } from "../models/Categories";
@@ -46,13 +46,14 @@ export const Home: FC = () => {
         }}
         position={"absolute"}
         fontFamily={"Lucia Console, Cursive, monospace"}
+        color={"aqua"}
       >
         <TypeWriter
           options={{ loop: true, delay: 160, autoStart: true }}
           onInit={(typewriter) => {
             typewriter
               .typeString(
-                "<strong><span style='color:#7b00ff;'>Passion</span><strong> is not a fleeting emotion but a <span style='color:#7b00ff;'>relentless force</span>.",
+                "<strong><span style='color:#7b00ff;'>Passion</span> is not a fleeting emotion but a <span style='color:#7b00ff;'>relentless force</span>.<strong>",
               )
               .pauseFor(1500)
               .deleteAll()

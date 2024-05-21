@@ -73,7 +73,7 @@ export const App: FC = () => {
       JoyButton: {
         styleOverrides: {
           root: () => ({
-            fontFamily: "Lucia Console, Cursive, monospace",
+            fontFamily: "fantasy",
           }),
         },
       },
