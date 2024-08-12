@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { educationService } from "../services/education-service";
-import { Education, RequestType } from "../models/Categories";
+import { Education } from "../models/Categories";
+import { RequestType } from "../models/User";
 
 export function useEducation(
   requestType: RequestType,
   id?: string,
-  education?: Education
+  education?: Education,
 ): {
   busy: boolean;
   responseEducation?: Education | Education[] | string;
   error?: Error;
 } {
   const [responseEducation, setResponseEducation] = useState<
-  Education | Education[] | string
+    Education | Education[] | string
   >();
   const [busy, setBusy] = useState<boolean>(true);
   const [error, setError] = useState<Error>();
@@ -33,8 +34,7 @@ export function useEducation(
             })
             .catch((e: Error) => signal.aborted || setError(e))
             .finally(() => signal.aborted || setBusy(false));
-        }
-        else setResponseEducation("No ID provided");
+        } else setResponseEducation("No ID provided");
         break;
       case "GETALL":
         educationService
@@ -58,8 +58,7 @@ export function useEducation(
             })
             .catch((e: Error) => signal.aborted || setError(e))
             .finally(() => signal.aborted || setBusy(false));
-        }
-        else setResponseEducation("No data provided");
+        } else setResponseEducation("No data provided");
         break;
       case "DELETEONE":
         if (id !== undefined) {

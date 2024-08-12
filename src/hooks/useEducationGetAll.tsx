@@ -16,14 +16,14 @@ export function useEducationGetAll(): {
     const signal = abortController.signal;
 
     educationService
-    .getEducations()
-    .then((result) => {
-      if (!signal.aborted) {
-        setResponseEducation(result);
-      }
-    })
-    .catch((e: Error) => signal.aborted || setError(e))
-    .finally(() => signal.aborted || setBusy(false));
+      .getEducations()
+      .then((result) => {
+        if (!signal.aborted) {
+          setResponseEducation(result);
+        }
+      })
+      .catch((e: Error) => signal.aborted || setError(e))
+      .finally(() => signal.aborted || setBusy(false));
 
     return () => abortController.abort();
   }, []);

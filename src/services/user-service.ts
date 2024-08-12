@@ -2,7 +2,7 @@ import axios from "axios";
 import { User } from "../models/User";
 
 const client = axios.create({
-  baseURL: "http://127.0.0.1:5000",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   //   headers: {
   //     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxMjE2MzgzNiwianRpIjoiMmJmODE1NDktMDRmMi00NzExLWE2ZWYtNjc2NDZiYWUwMWUzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6bnVsbCwibmJmIjoxNzEyMTYzODM2LCJjc3JmIjoiZDM0ZDUzOGQtYjE4YS00YTZiLWFlMGYtOWFkZWExZjIyZjQyIiwiZXhwIjoxNzEyMTY0NzM2fQ.1W6zOnmbP8vZ6UhgzvIbvGFxG92llkMm5bcgPYWQVX4"
   //   },
@@ -13,7 +13,7 @@ export const userService = {
     const response = await client.post<string>(
       `login`,
       { user },
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     console.log(response);
     return response.data;
@@ -22,7 +22,7 @@ export const userService = {
     const response = await client.post<string>(
       `register`,
       { user },
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     console.log(response);
     return response.data;

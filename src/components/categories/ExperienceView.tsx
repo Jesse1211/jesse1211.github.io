@@ -1,119 +1,71 @@
 import {
-  Card,
   CardContent,
   Typography,
   CardCover,
   Stack,
-  Alert,
-  CircularProgress,
   AspectRatio,
-  Box,
   CardOverflow,
-  DialogContent,
-  DialogTitle,
   Divider,
-  Modal,
-  ModalClose,
-  ModalDialog,
 } from "@mui/joy";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Experience } from "../../models/Categories";
+import { CardContainer } from "./CardContainer";
 
 export const ExperienceView: FC<{
-  responseExperience?: Experience[];
-  error?: Error;
-  busy?: boolean;
-}> = ({responseExperience, error, busy}) => {
-  const [layout, setLayout] = useState<boolean>(false);
-  if (error) {
-    return <Alert color="danger">{error.message}</Alert>;
-  }
-
-  if (busy) {
-    return <CircularProgress />;
-  }
-
-  if (!responseExperience) {
-    return <Alert color="danger">Loading Experiences</Alert>;
-  }
+  responseExperience: Experience[];
+}> = ({ responseExperience }) => {
   return (
     <Stack
-      height={1}
       direction={"row"}
-      overflow="auto"
-      sx={{
-        "&::-webkit-scrollbar": {
-          display: "none",
-        },
-      }}
+      flexWrap={"wrap"}
       gap={4}
+      justifyContent={"center"}
+      overflow={"auto"}
+      paddingBottom={4}
     >
       {responseExperience.map((experience, index) => (
-        <>
-          <Box
-            sx={{ minWidth: { xs: 1, md: 0.47, lg: 0.32 } }}
-            minHeight={1}
-            key={index}
-            onClick={() => setLayout(true)}
-            style={{ filter: "opacity(0.9)" }}
-          >
-            <Card key={index} sx={{ height: 1 }} size="lg" variant="soft">
+        <CardContainer
+          key={index}
+          cardView={
+            <>
               <AspectRatio ratio="2">
                 <CardOverflow>
-                  <CardCover>
-                    <img src="./Cornell.jpg" loading="lazy" />
+                  <CardCover style={{ display: "contents" }}>
+                    <img
+                      src={experience.Image}
+                      loading="lazy"
+                      style={{ width: "auto" }}
+                    />
                   </CardCover>
-                  <CardContent>
-                    <Typography level="body-md" fontWeight="lg">
-                      {experience.Company}
-                    </Typography>
-                    <Typography level="body-sm" fontWeight="lg">
-                      {experience.Title}
-                    </Typography>
-                  </CardContent>
                 </CardOverflow>
               </AspectRatio>
-
-              <CardContent>
-                {experience.Accomplishments.length > 0 && (
-                  <>
-                    <Typography level="body-sm" fontWeight="lg">
-                      Accomplishments:
-                    </Typography>
-                    {experience.Accomplishments.map((accomplishment, index) => (
-                      <Typography level="body-sm" fontWeight="md" key={index}>
-                        {accomplishment}
-                      </Typography>
-                    ))}
-                  </>
-                )}
+              <CardContent sx={{ alignItems: "center" }}>
+                <Typography level="body-md" fontWeight="lg">
+                  {experience.Company}
+                </Typography>
               </CardContent>
-
               <CardOverflow>
                 <Divider inset="context" />
-                <Typography level="body-sm" fontWeight="md">
-                  Skills: {experience.Expertises.join(", ")}
-                </Typography>
-                <Divider orientation="vertical" />
 
-                <Typography level="body-sm" fontWeight="lg">
-                  {experience.StartDate} - {experience.EndDate}
+                <Typography level="body-sm" fontWeight="md" marginTop={"5%"}>
+                  {experience.Title}
                 </Typography>
+
+                <Stack direction={"row"} justifyContent={"space-between"}>
+                  <Typography level="body-sm" fontWeight="md">
+                    {experience.StartDate} - {experience.EndDate}
+                  </Typography>
+
+                  <Typography level="body-sm" fontWeight="md">
+                    {experience.Location}
+                  </Typography>
+                </Stack>
               </CardOverflow>
-            </Card>
-          </Box>
-          <Modal open={!!layout} onClose={() => setLayout(false)}>
-            <ModalDialog>
-              <ModalClose />
-              <DialogTitle>Description</DialogTitle>
-              <DialogContent>
-                <Typography level="body-md" fontWeight="lg">
-                  {experience.Description}
-                </Typography>
-              </DialogContent>
-            </ModalDialog>
-          </Modal>
-        </>
+            </>
+          }
+          description={experience.Accomplishments}
+          link={experience.link}
+        />
       ))}
     </Stack>
   );

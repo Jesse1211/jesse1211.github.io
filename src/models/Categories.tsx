@@ -1,12 +1,15 @@
-export type Categories = "Educations" | "Experiences" | "Projects";
+export type Categories = "Educations" | "Experiences" | "Projects" | "AboutMe";
 
 export interface Education {
   _id: string;
   StartDate: string;
   EndDate: string;
   School: string;
-  ReleventCourses: string[];
+  Major: string;
+  Expertise: string[];
   Grade: string;
+  Location: string;
+  Image: string;
 }
 
 export interface Experience {
@@ -17,7 +20,9 @@ export interface Experience {
   Company: string;
   Description: string;
   Accomplishments: string[];
-  Expertises: string[];
+  Location: string;
+  Image: string;
+  link: string;
 }
 
 export interface Project {
@@ -29,6 +34,16 @@ export interface Project {
   Description: string;
   Accomplishments: string[];
   Expertises: string[];
+  Location: string;
+  Additional?: string[];
 }
 
-export type RequestType = "GETONE" | "GETALL" | "UPDATE" | "ADD" | "DELETEONE" | "DELETEALL";
+export interface Introduction {
+  adderess: string;
+  chips: string[];
+  generalInformation: string;
+  line1: string;
+  parapraph: string;
+}
+
+export type LocalType = "zh-CN" | "en-US";

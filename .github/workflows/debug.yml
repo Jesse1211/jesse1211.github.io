@@ -1,4 +1,4 @@
-name: Node.js CI/CD 
+name: Node.js CI/CD
 
 on:
   push:
@@ -57,7 +57,7 @@ jobs:
         with:
           name: production-files
           path: ./dist
-      
+
   deploy:
     name: Deploy
     needs: build
