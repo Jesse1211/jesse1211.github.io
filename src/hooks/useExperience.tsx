@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { experienceService } from "../services/experience-service";
-import { Experience, RequestType } from "../models/Categories";
+import { Experience } from "../models/Categories";
+import { RequestType } from "../models/User";
 
 export function useExperience(
   requestType: RequestType,
   id?: string,
-  experience?: Experience
+  experience?: Experience,
 ): {
   busy: boolean;
   responseexperience?: Experience | Experience[] | string;
   error?: Error;
 } {
   const [responseexperience, setResponseexperience] = useState<
-  Experience | Experience[] | string
+    Experience | Experience[] | string
   >();
   const [busy, setBusy] = useState<boolean>(true);
   const [error, setError] = useState<Error>();
@@ -33,8 +34,7 @@ export function useExperience(
             })
             .catch((e: Error) => signal.aborted || setError(e))
             .finally(() => signal.aborted || setBusy(false));
-        }
-        else setResponseexperience("No ID provided");
+        } else setResponseexperience("No ID provided");
         break;
       case "GETALL":
         experienceService
@@ -58,8 +58,7 @@ export function useExperience(
             })
             .catch((e: Error) => signal.aborted || setError(e))
             .finally(() => signal.aborted || setBusy(false));
-        }
-        else setResponseexperience("No data provided");
+        } else setResponseexperience("No data provided");
         break;
       case "DELETEONE":
         if (id !== undefined) {

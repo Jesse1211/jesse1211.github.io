@@ -1,10 +1,8 @@
 import { FC, useEffect, useState } from "react";
-import { Alert, Box, Button, CircularProgress, Stack } from "@mui/joy";
+import { Box, Button, Stack } from "@mui/joy";
+import TypeWriter from "typewriter-effect";
 import Fade from "@mui/material/Fade";
 import { Categories } from "../models/Categories";
-import { useEducationGetAll } from "../hooks/useEducationGetAll";
-import { useProjectGetAll } from "../hooks/useProjectGetAll";
-import { useExperienceGetAll } from "../hooks/useExperienceGetAll";
 import { HomeNavigationFade } from "./HomeNavigation";
 import { Grow } from "@mui/material";
 import { StarAndPlanet } from "./canvas/StarAndPlanet";
@@ -15,22 +13,9 @@ export const Home: FC = () => {
   }, []);
 
   const [started, setStarted] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Categories>();
-  const {
-    busy: educationBusy,
-    responseEducation,
-    error: educationError,
-  } = useEducationGetAll();
-  const {
-    busy: projectBusy,
-    responseProject,
-    error: projectError,
-  } = useProjectGetAll();
-  const {
-    busy: experienceBusy,
-    responseExperience,
-    error: experienceError,
-  } = useExperienceGetAll();
+  const [selectedCategory, setSelectedCategory] = useState<
+    Categories | undefined
+  >();
 
   const onSetSelectedCategory = (category: Categories) => {
     if (category === selectedCategory) return;
@@ -41,49 +26,78 @@ export const Home: FC = () => {
     }, 100);
   };
 
-  if (educationError || projectError || experienceError) {
-    return <Alert color="danger">Something Wrong</Alert>;
-  }
-
-  if (educationBusy || projectBusy || experienceBusy) {
-    return <CircularProgress />;
-  }
-
   return (
-    <Stack mx="auto" flex={1} height={0.8} maxWidth={0.8} spacing={4} alignSelf="center" >
-      <Box height={10} width={100} />
-
-      <Fade in={started}>
-        <HomeNavigationFade setSelectedCategory={onSetSelectedCategory} />
-      </Fade>
-
-      <Fade in={!started}>
-        <Button
-          style={{
-            color: "#889def",
+    <Stack
+      p={3}
+      spacing={4}
+      flex={1}
+      maxWidth={0.9}
+      sx={{
+        marginTop: "10%",
+      }}
+    >
+      <Box
+        fontWeight="md"
+        sx={{
+          letterSpacing: "0.1vw",
+          sm: { fontSize: "0.5rem" },
+          md: { fontSize: "1rem" },
+          lg: { fontSize: "1.5rem" },
+        }}
+        position={"absolute"}
+        fontFamily={"Lucia Console, Cursive, monospace"}
+        color={"aqua"}
+      >
+        <TypeWriter
+          options={{ loop: true, delay: 160, autoStart: true }}
+          onInit={(typewriter) => {
+            typewriter
+              .typeString(
+                "<strong><span style='color:#7b00ff;'>Passion</span> is not a fleeting emotion but a <span style='color:#7b00ff;'>relentless force</span>.<strong>",
+              )
+              .pauseFor(1500)
+              .deleteAll()
+              .typeString(
+                "Studying is like exploring the universe, <strong><span style='color:#7b00ff;'>exciting yet satisfying</span><strong>.",
+              )
+              .pauseFor(1500)
+              .start();
           }}
-          variant="plain"
-          onClick={() => {
-            setStarted(!started);
-          }}
-        >
-          Start Discovery
-        </Button>
-      </Fade>
-
-      <Box height={1}>
-        <Grow
-          in={selectedCategory !== undefined}
-          {...(selectedCategory !== undefined ? { timeout: 1000 } : {})}
-        >
-          <HomeNavigationFade
-            selectedCategory={selectedCategory}
-            responseEducation={responseEducation}
-            responseProject={responseProject}
-            responseExperience={responseExperience}
-          />
-        </Grow>
+        />
       </Box>
+      <div className="blank"></div>
+      {started && (
+        <Fade in={started}>
+          <HomeNavigationFade setSelectedCategory={onSetSelectedCategory} />
+        </Fade>
+      )}
+
+      {!started && (
+        <Fade in={!started}>
+          <Button
+            style={{
+              color: "#889def",
+              maxWidth: "20%",
+              alignSelf: "center",
+            }}
+            variant="plain"
+            onClick={() => {
+              setStarted(!started);
+            }}
+          >
+            Start Discovery
+          </Button>
+        </Fade>
+      )}
+
+      <Grow
+        in={selectedCategory !== undefined}
+        {...(selectedCategory !== undefined ? { timeout: 1000 } : {})}
+      >
+        <HomeNavigationFade selectedCategory={selectedCategory} />
+      </Grow>
+
+      <Box height={10} width={100} />
     </Stack>
   );
 };

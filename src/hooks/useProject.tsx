@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { projectService } from "../services/project-service";
-import { Project, RequestType } from "../models/Categories";
+import { Project } from "../models/Categories";
+import { RequestType } from "../models/User";
 
 export function useProject(
   requestType: RequestType,
   id?: string,
-  project?: Project
+  project?: Project,
 ): {
   busy: boolean;
   responseProject?: Project | Project[] | string;
@@ -33,8 +34,7 @@ export function useProject(
             })
             .catch((e: Error) => signal.aborted || setError(e))
             .finally(() => signal.aborted || setBusy(false));
-        }
-        else setResponseProject("No ID provided");
+        } else setResponseProject("No ID provided");
         break;
       case "GETALL":
         projectService
@@ -58,8 +58,7 @@ export function useProject(
             })
             .catch((e: Error) => signal.aborted || setError(e))
             .finally(() => signal.aborted || setBusy(false));
-        }
-        else setResponseProject("No data provided");
+        } else setResponseProject("No data provided");
         break;
       case "DELETEONE":
         if (id !== undefined) {

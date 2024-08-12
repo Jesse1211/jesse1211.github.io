@@ -1,49 +1,42 @@
 import { Button, Stack } from "@mui/joy";
-import { FC, HTMLProps, forwardRef } from "react";
-import {
-  Categories,
-  Education,
-  Experience,
-  Project,
-} from "../models/Categories";
+import { FC, HTMLProps, forwardRef, useContext } from "react";
+import { Categories } from "../models/Categories";
 import { EducationView } from "./categories/EducationView";
 import { ExperienceView } from "./categories/ExperienceView";
 import { ProjectView } from "./categories/ProjectView";
+import { AboutMeView } from "./categories/AboutMeView/AboutMeView";
+import { PortfolioContext } from "./PortfolioContext";
 
 interface HomeNavigationFadeProps extends HTMLProps<HTMLDivElement> {
   setSelectedCategory?: (category: Categories) => void;
   selectedCategory?: Categories;
-  responseEducation?: Education[];
-  responseExperience?: Experience[];
-  responseProject?: Project[];
 }
 
 export const HomeNavigationFade = forwardRef<
   HTMLDivElement,
   HomeNavigationFadeProps
 >((props, ref) => {
-  const {
-    setSelectedCategory,
-    selectedCategory,
-    responseEducation,
-    responseExperience,
-    responseProject,
-    ...rest
-  } = props;
-
+  const { setSelectedCategory, selectedCategory, ...rest } = props;
+  const portfolioData = useContext(PortfolioContext);
+  const lang = portfolioData.$locale;
   return (
     <div ref={ref} {...rest}>
       {setSelectedCategory && (
         <HomeNavigation setSelectedCategory={setSelectedCategory} />
       )}
-      {selectedCategory === "Educations" && responseEducation && (
-        <EducationView responseEducation={responseEducation} />
+      {selectedCategory === "Educations" && (
+        <EducationView responseEducation={portfolioData.data[lang].education} />
       )}
-      {selectedCategory === "Experiences" && responseExperience && (
-        <ExperienceView responseExperience={responseExperience} />
+      {selectedCategory === "Experiences" && (
+        <ExperienceView
+          responseExperience={portfolioData.data[lang].experience}
+        />
       )}
-      {selectedCategory === "Projects" && responseProject && (
-        <ProjectView responseProject={responseProject} />
+      {selectedCategory === "Projects" && (
+        <ProjectView responseProject={portfolioData.data[lang].projects} />
+      )}
+      {selectedCategory === "AboutMe" && (
+        <AboutMeView introduction={portfolioData.data[lang].introduction} />
       )}
     </div>
   );
@@ -52,28 +45,46 @@ export const HomeNavigationFade = forwardRef<
 const HomeNavigation: FC<{
   setSelectedCategory: (category: Categories) => void;
 }> = ({ setSelectedCategory }) => {
+  const portfolioData = useContext(PortfolioContext);
   return (
-    <Stack direction="row" spacing={6} justifyContent="center" top={0}>
+    <Stack
+      direction="row"
+      gap={4}
+      justifyContent={"center"}
+      overflow={"auto"}
+      flexWrap={"wrap"}
+    >
       <Button
+        size="md"
         onClick={() => setSelectedCategory("Educations")}
-        style={{ color: "#889def" }}
+        style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
-        Educations
+        {portfolioData.$locale === "zh-CN" ? "教育" : "Education"}
       </Button>
       <Button
+        size="md"
         onClick={() => setSelectedCategory("Experiences")}
-        style={{ color: "#889def" }}
+        style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
-        Experiences
+        {portfolioData.$locale === "zh-CN" ? "经历" : "Experience"}
       </Button>
       <Button
+        size="md"
         onClick={() => setSelectedCategory("Projects")}
-        style={{ color: "#889def" }}
+        style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
       >
-        Projects
+        {portfolioData.$locale === "zh-CN" ? "项目" : "Project"}
+      </Button>
+      <Button
+        size="md"
+        onClick={() => setSelectedCategory("AboutMe")}
+        style={{ color: "#889def", maxWidth: "25%" }}
+        variant="plain"
+      >
+        {portfolioData.$locale === "zh-CN" ? "第一人称" : "Myself"}
       </Button>
     </Stack>
   );

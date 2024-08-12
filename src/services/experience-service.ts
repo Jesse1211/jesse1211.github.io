@@ -2,7 +2,7 @@ import axios from "axios";
 import { Experience } from "../models/Categories";
 
 const client = axios.create({
-  baseURL: "http://127.0.0.1:5000",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   //   headers: {
   //     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxMjE2MzgzNiwianRpIjoiMmJmODE1NDktMDRmMi00NzExLWE2ZWYtNjc2NDZiYWUwMWUzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6bnVsbCwibmJmIjoxNzEyMTYzODM2LCJjc3JmIjoiZDM0ZDUzOGQtYjE4YS00YTZiLWFlMGYtOWFkZWExZjIyZjQyIiwiZXhwIjoxNzEyMTY0NzM2fQ.1W6zOnmbP8vZ6UhgzvIbvGFxG92llkMm5bcgPYWQVX4"
   //   },
@@ -11,24 +11,27 @@ const client = axios.create({
 export const experienceService = {
   async addExperience(
     experience: Experience,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<string> {
     const response = await client.post<string>(
       `add_experience`,
       {
         experience,
       },
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     return response.data;
   },
   async getExperience(
     experienceId: string,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<Experience> {
-    const response = await client.get<Experience>(`get_experience/${experienceId}`, {
-      signal: abortSignal,
-    });
+    const response = await client.get<Experience>(
+      `get_experience/${experienceId}`,
+      {
+        signal: abortSignal,
+      },
+    );
     return response.data;
   },
   async getExperiences(abortSignal?: AbortSignal): Promise<Experience[]> {
@@ -40,22 +43,22 @@ export const experienceService = {
   },
   async updateExperience(
     experience: Experience,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<string> {
     const response = await client.post<string>(
       `update_experience`,
       { experience },
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     return response.data;
   },
   async deleteExperience(
     experienceId: string,
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<string> {
     const response = await client.delete<string>(
       `delete_experience/${experienceId}`,
-      { signal: abortSignal }
+      { signal: abortSignal },
     );
     return response.data;
   },

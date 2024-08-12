@@ -18,5 +18,4 @@ export const Background = () => {
 
     return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
-
 };
