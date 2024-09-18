@@ -19,10 +19,10 @@ export interface Experience {
   Title: string;
   Company: string;
   Description: string;
-  Accomplishments: string[];
   Location: string;
   Image: string;
-  link: string;
+  Link: string;
+  Brief: Map<string, string[]>;
 }
 
 export interface Project {

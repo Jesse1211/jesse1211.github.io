@@ -63,37 +63,108 @@ export const experienceUS: Experience[] = [
     _id: "1",
     StartDate: "Jan 2024",
     EndDate: "Present",
-    Title: "Full-Stack Developer",
-    Company: "DIAPER Infant Nutrition Project",
+    Title: "Full-Stack Developer, Team Lead",
+    Company: "FOrnell University DIAPER",
     Location: "Ithaca, NY",
-    Description: "",
-    Accomplishments: [
-      "Overhauling over 3000 lines of code, updating 20 deprecated packages, introduced generic functions, refined 20 API endpoints to decrease latency, added JWT token to increase security compliance by 100% in front-end React and back-end Flask",
-      "Making seamless user interaction experiences by transitioning from Multi-Page Application (MPA) to Single-Page Application (SPA) with migrating from JavaScript to TypeScript using Vite to improve code scalability and integration possibilities. ",
-      "Redesigning and optimized an continuous CI/CD pipeline to enhance deployment efficiently by implementing GitHub Webhooks to detect code base changes, utilizing Jenkins to update Docker images in Nexus repository, and configuring ArgoCD to monitor and apply updates to Kubernetes deployments by pulling Docker images from Nexus.",
-      "Creating 3 Confluence documentation sets to clarify design architecture, reduced 5 hours for each new hire onboarding",
-    ],
+    Description:
+      "Daily Infroamtion About Poop Enhances Research, aims to explore how the physical, biochemical,and microbial properties of stool can indicate infant gastrointestinal health.",
+    Brief: new Map([
+      [
+        "Now available on Web, Google Play, Apple TestFlight platforms and launched in NYC hospitals.",
+        [
+          "For participants: Developed mobile app with 60+ widgets by Flutter to collect infant's daily surveys and stool images.",
+          "For researchers: Engineered web app with 5 visual types by React, TypeScript to present infants' microbiomes and participants' surveys.",
+          "For Developers: Deployed 6 containerized Flask microservices by Docker with 85% code coverage of unit tests, built a CI/CD pipeline to automate apps launching with K8s and Jenkins to increase deployment frequency.",
+        ],
+      ],
+      [
+        "Led 6 developers to deliver new features and maintain the existing codebase.",
+        [
+          "mobile app: animation, international language.",
+          "web app: graphs and charts for microbiome and metabolic in web app.",
+          "machine learning: stool image enhancement, image classification.",
+        ],
+      ],
+      [
+        "Details",
+        [
+          "Overhauled over 10,000+ lines of code, updated Flask from v1.0.2 to v3.0.3, Flutter from v2.3.0 to v3.24.1 etc.",
+          "Introduced generic functions, refined 40+ API services structure, added JWT token to increase security compliance by 100% in front-end React and back-end Flask.",
+          "Transitioned from Multi-Page Application (MPA) to Single-Page Application (SPA) as a Progressive Web App (PWA) with Vite.",
+          "Utilized AWS EC2 instance Jenkins for continue integeration purpose, detected code base changes and build Docker Images from GitHub.",
+          "Leveraged lightweight kubernetes K3S in AWS EC2 instance to deploy Docker images, and configured ArgoCD to monitor and apply updates to Kubernetes deployments by pulling Docker images from Nexus.",
+          "Creating 3 Confluence documentation sets to clarify design architecture, reduced 5 hours for each new hire onboarding.",
+        ],
+      ],
+    ]),
     Image: "./Cornell_University_Logo.png",
-    link: "https://dashboard.diaper-project.com",
+    Link: "https://dashboard.diaper-project.com",
   },
   {
     _id: "2",
+    StartDate: "Jul 2024",
+    EndDate: "Present",
+    Title: "Full-Stack Developer",
+    Company: "Meta Compass Inc.",
+    Location: "Remote",
+    Description: "Better all-in-one AI platform",
+    Brief: new Map([
+      [
+        "Implemented web app to help digital designers find Midjourney images with parameters with 2000 MAU",
+        [],
+      ],
+      [
+        "Leveraged AWS S3 to exhibit 40%+ lower latency for binary image CRUD operations",
+        [],
+      ],
+      [
+        "Deployed services on Vercel and AWS LightSail to ensure cost-effective and prepare future service expansion",
+        [],
+      ],
+    ]),
+    Image: "./Metachat_Logo.png",
+    Link: "https://www.metachat.one/#/",
+  },
+  {
+    _id: "3",
     StartDate: "Oct 2022",
     EndDate: "Dec 2023",
     Title: "Co-founder & Full-Stack Developer",
     Company: "EduRoute Inc.",
     Location: "Davis, CA",
-    Description: "",
-    Accomplishments: [
-      "Led and developed full-stack web app eduroute.ai in C# Dotnet and TypeScript React for college degree plan generator product with a team of 5 designers and developers",
-      "Engineered and maintained class scheduling product schedgo.com with 2000 MAUs",
-      "Implemented the Search engine to achieve typo-tolerance, semantic search and hybrid search cross all data collections",
-      "Orchestrated batch jobs for ETL processing by command-line tool for efficient indexing and storage of scraped data in databases",
-      "Contributed code to the Typesense Search Nuget Package on GitHub, implemented Typesense to leverage new features including Vector Embedding and Hybrid Search for semantic search capabilities",
-      "Designed and implemented referral system to end-to-end",
-    ],
+    Description: "An EdTech startup making education easy",
+    Brief: new Map([
+      [
+        "EduRoute",
+        [
+          "EduRoute aim to generate optimized class schedules and degree plans based on each student's unique needs and goals.",
+          "Designed & developed Progressive Web App (PWA) using React in TypeScript.",
+          "Contributed code to the Typesense Search Nuget Package v0.25.0 on GitHub.",
+          "Implemented the Typescript Search to achieve typo-tolerance, semantic and hybrid search cross 3 data collections.",
+        ],
+      ],
+      [
+        "SchedGo",
+        [
+          "✨SchedGo is an AI-powered web & mobile academic planner that generates optimized class schedules & degree plans based on each student's unique needs and goals.",
+          "🚀The class scheduler has been used and loved by 2,000+ students across 4 colleges in California.",
+          "Now available on Web, Google Play, Apple TestFlight platforms.",
+          "Led and developed web app in C# Dotnet and TypeScript React for college degree plan generator product with a team of 5 designers and developers",
+          "Developed containerized microservices using modern .NET in C#",
+          "Implemented the Typescript Search to achieve typo-tolerance, semantic and hybrid search across 3 data collections",
+          "Designed and implemented referral system, google map navigation system to end-to-end",
+        ],
+      ],
+      [
+        "Accomplishments",
+        [
+          "Generated 2,000+ Monthly Active Users (MAUs) and saved 10,000+ hours for students every term",
+          "Won 1st Prize & People's Choice Award totaling $30,000 at 23rd UC Davis Big Bang Business Competition",
+        ],
+      ],
+    ]),
     Image: "./Schedgo.png",
-    link: "https://eduroute.ai/",
+    Link: "https://eduroute.ai/",
   },
 ];
 export const projectUS: Project[] = [
