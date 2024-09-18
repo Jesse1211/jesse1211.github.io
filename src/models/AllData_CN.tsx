@@ -63,7 +63,7 @@ export const experienceCN: Experience[] = [
       "创建3套Confluence文档集,明确设计架构,为每位新员工节省5小时的入职时间",
     ],
     Image: "./Cornell_University_Logo.png",
-    link: "https://dashboard.diaper-project.com",
+    Link: "https://dashboard.diaper-project.com",
   },
   {
     _id: "2",
@@ -82,7 +82,7 @@ export const experienceCN: Experience[] = [
       "设计并实施端到端的推荐系统",
     ],
     Image: "./Schedgo.png",
-    link: "https://eduroute.ai/",
+    Link: "https://eduroute.ai/",
   },
 ];
 

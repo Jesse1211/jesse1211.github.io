@@ -63,8 +63,8 @@ export const ExperienceView: FC<{
               </CardOverflow>
             </>
           }
-          description={experience.Accomplishments}
-          link={experience.link}
+          description={experience.Brief}
+          link={experience.Link}
         />
       ))}
     </Stack>
