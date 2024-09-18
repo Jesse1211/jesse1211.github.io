@@ -15,7 +15,7 @@ import { TransitEnterexit } from "@mui/icons-material";
 
 export const CardContainer: FC<{
   cardView: ReactNode;
-  description?: string[];
+  description?: string[] | Map<string, string[]>;
   link?: string;
 }> = ({ cardView, description, link }) => {
   const [layout, setLayout] = useState<boolean>(false);
@@ -75,11 +75,24 @@ export const CardContainer: FC<{
             <ModalClose />
             <DialogTitle>Accomplishments</DialogTitle>
             <DialogContent>
-              {description.map((accomplishment, index) => (
-                <Typography level="body-sm" fontWeight="md" key={index}>
-                  🎯 {accomplishment}
-                </Typography>
-              ))}
+              {description instanceof Map
+                ? Array.from(description).map(([key, value], index) => (
+                    <Stack key={index}>
+                      <Typography level="body-sm" fontWeight="md">
+                        🎯 {key}
+                      </Typography>
+                      {value.map((accomplishment, index) => (
+                        <Typography level="body-sm" fontWeight="md" key={index}>
+                          🎯 {accomplishment}
+                        </Typography>
+                      ))}
+                    </Stack>
+                  ))
+                : description.map((accomplishment, index) => (
+                    <Typography level="body-sm" fontWeight="md" key={index}>
+                      🎯 {accomplishment}
+                    </Typography>
+                  ))}
             </DialogContent>
           </ModalDialog>
         </Modal>
