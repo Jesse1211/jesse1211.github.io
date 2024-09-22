@@ -22,7 +22,8 @@ export interface Experience {
   Location: string;
   Image: string;
   Link: string;
-  Brief: Map<string, string[]>;
+  Brief?: Map<string, string[]>;
+  Accomplishments?: string[];
 }
 
 export interface Project {

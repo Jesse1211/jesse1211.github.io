@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { Box } from "@mui/joy";
 import TypeWriter from "typewriter-effect";
-import React from "react";
 
 export const Quote: FC = () => {
   return (
