@@ -95,11 +95,12 @@ export const App: FC = () => {
       <JoyCssVarsProvider defaultMode="system" theme={THEME}>
         <canvas className="canvas"></canvas>
         <CssBaseline />
+        <Outlet />
         <PortfolioProvider>
           <Navigation />
+
           <Home />
         </PortfolioProvider>
-        <Outlet />
         <Footer />
       </JoyCssVarsProvider>
     </MaterialCssVarsProvider>
