@@ -80,6 +80,14 @@ const HomeNavigation: FC<{
       </Button>
       <Button
         size="md"
+        onClick={() => (window.location.href = "https://blog.jesseliu.me")}
+        style={{ color: "#889def", maxWidth: "25%" }}
+        variant="plain"
+      >
+        {portfolioData.$locale === "zh-CN" ? "我的博客" : "My Blog"}
+      </Button>
+      <Button
+        size="md"
         onClick={() => setSelectedCategory("AboutMe")}
         style={{ color: "#889def", maxWidth: "25%" }}
         variant="plain"
