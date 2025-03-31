@@ -10,6 +10,8 @@ export interface Education {
   Grade: string;
   Location: string;
   Image: string;
+  Moto: string;
+  Description: string;
 }
 
 export interface Experience {
