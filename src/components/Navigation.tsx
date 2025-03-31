@@ -16,7 +16,7 @@ export const Navigation: FC = () => {
         startDecorator={<Translate />}
         onClick={() => {
           portfolioData.onLocaleChange(
-            portfolioData.$locale === "en-US" ? "zh-CN" : "en-US",
+            portfolioData.$locale === "en-US" ? "zh-CN" : "en-US"
           );
         }}
       >
