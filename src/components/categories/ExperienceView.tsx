@@ -10,19 +10,13 @@ import {
 import { FC } from "react";
 import { Experience } from "../../models/Categories";
 import { CardContainer } from "./CardContainer";
+import { stackStyles } from "../../styles";
 
 export const ExperienceView: FC<{
   responseExperience: Experience[];
 }> = ({ responseExperience }) => {
   return (
-    <Stack
-      direction={"row"}
-      flexWrap={"wrap"}
-      gap={4}
-      justifyContent={"center"}
-      overflow={"auto"}
-      paddingBottom={4}
-    >
+    <Stack sx={stackStyles.categoryView}>
       {responseExperience.map((experience, index) => (
         <CardContainer
           key={index}
