@@ -8,9 +8,12 @@ export const educationCN: Education[] = [
     School: "康奈尔大学",
     Major: "工程硕士,计算机科学",
     Expertise: ["编程语言", "数据库", "计算机网络", "计算机图形学", "创业管理"],
-    Grade: "3.70/4.00",
+    Grade: "3.71/4.00",
     Location: "纽约州伊萨卡",
     Image: "./Cornell_University_Logo.png",
+    Moto: "Breaking the rules of conventional wisdom.",
+    Description:
+      "Where I honed my software engineering skills and discovered my passion — challenging conventional wisdom.",
   },
   {
     _id: "2",
@@ -22,6 +25,9 @@ export const educationCN: Education[] = [
     Location: "加州戴维斯",
     Grade: "3.88/4.00",
     Image: "./UCDavis_logo.png",
+    Moto: "Greater Together for the Greater Good.",
+    Description:
+      "Driven by curiosity, I discovered a new field and developed a solid foundation in computer science.",
   },
   {
     _id: "3",
@@ -33,6 +39,9 @@ export const educationCN: Education[] = [
     Location: "加州旧金山",
     Grade: "3.97/4.00",
     Image: "./CCSF_Logo.png",
+    Moto: "The Truth Shall Make You Free",
+    Description:
+      "I found motivation through studying — it's never boring with clear goals.",
   },
   {
     _id: "4",
@@ -44,6 +53,8 @@ export const educationCN: Education[] = [
     Location: "副学士,加州伯克利",
     Grade: "3.50/4.00",
     Image: "./Berkeley_city_College_logo.png",
+    Moto: "Transforms lives.",
+    Description: "The moment my life started to change.",
   },
 ];
 

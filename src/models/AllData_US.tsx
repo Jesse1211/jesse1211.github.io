@@ -6,7 +6,7 @@ export const educationUS: Education[] = [
     StartDate: "Jan 2024",
     EndDate: "Dec 2024",
     School: "Cornell University",
-    Major: "Master of Engineer, Computer Science",
+    Major: "Master of Engineering, Computer Science",
     Expertise: [
       "Programming Languages",
       "Database",
@@ -14,9 +14,12 @@ export const educationUS: Education[] = [
       "Computer Graphics",
       "Entrepreneurship Management",
     ],
-    Grade: "3.70/4.00",
+    Grade: "3.71/4.00",
     Location: "Ithaca, NY",
     Image: "./Cornell_University_Logo.png",
+    Moto: "Breaking the rules of conventional wisdom.",
+    Description:
+      "Where I honed my software engineering skills and discovered my passion — challenging conventional wisdom.",
   },
   {
     _id: "2",
@@ -34,6 +37,9 @@ export const educationUS: Education[] = [
     Location: "Davis, CA",
     Grade: "3.88/4.00",
     Image: "./UCDavis_logo.png",
+    Moto: "Greater Together for the Greater Good.",
+    Description:
+      "Driven by curiosity, I discovered a new field and developed a solid foundation in computer science.",
   },
   {
     _id: "3",
@@ -45,6 +51,9 @@ export const educationUS: Education[] = [
     Location: "San Francisco, CA",
     Grade: "3.97/4.00",
     Image: "./CCSF_Logo.png",
+    Moto: "The Truth Shall Make You Free.",
+    Description:
+      "I found motivation through studying — it's never boring with clear goals.",
   },
   {
     _id: "4",
@@ -56,6 +65,8 @@ export const educationUS: Education[] = [
     Location: "Associate, Berkeley, CA",
     Grade: "3.50/4.00",
     Image: "./Berkeley_city_College_logo.png",
+    Moto: "Transforms lives.",
+    Description: "The moment my life started to change.",
   },
 ];
 export const experienceUS: Experience[] = [
@@ -64,7 +75,7 @@ export const experienceUS: Experience[] = [
     StartDate: "Jan 2024",
     EndDate: "Present",
     Title: "Full-Stack Developer, Team Lead",
-    Company: "FOrnell University DIAPER",
+    Company: "Cornell University DIAPER",
     Location: "Ithaca, NY",
     Description:
       "Daily Infroamtion About Poop Enhances Research, aims to explore how the physical, biochemical,and microbial properties of stool can indicate infant gastrointestinal health.",
