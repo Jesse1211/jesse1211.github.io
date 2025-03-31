@@ -10,19 +10,13 @@ import {
 import { FC } from "react";
 import { Education } from "../../models/Categories";
 import { CardContainer } from "./CardContainer";
+import { stackStyles } from "../../styles";
 
 export const EducationView: FC<{
   responseEducation: Education[];
 }> = ({ responseEducation }) => {
   return (
-    <Stack
-      direction={"row"}
-      flexWrap={"wrap"}
-      gap={4}
-      justifyContent={"center"}
-      overflow={"auto"}
-      paddingBottom={4}
-    >
+    <Stack sx={stackStyles.categoryView}>
       {responseEducation.map((education: Education, key) => (
         <CardContainer
           key={key}
