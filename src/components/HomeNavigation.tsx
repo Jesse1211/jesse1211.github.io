@@ -3,7 +3,6 @@ import { FC, HTMLProps, forwardRef, useContext } from "react";
 import { Categories } from "../models/Categories";
 import { EducationView } from "./categories/EducationView";
 import { ExperienceView } from "./categories/ExperienceView";
-import { ProjectView } from "./categories/ProjectView";
 import { AboutMeView } from "./categories/AboutMeView/AboutMeView";
 import { PortfolioContext } from "./PortfolioContext";
 import "../App.css";
@@ -34,9 +33,6 @@ export const HomeNavigationFade = forwardRef<
           responseExperience={portfolioData.data[lang].experience}
         />
       )}
-      {selectedCategory === "Projects" && (
-        <ProjectView responseProject={portfolioData.data[lang].projects} />
-      )}
       {selectedCategory === "AboutMe" && (
         <AboutMeView introduction={portfolioData.data[lang].introduction} />
       )}
@@ -57,10 +53,6 @@ const HomeNavigation: FC<{
     {
       Label: portfolioData.$locale === "zh-CN" ? "经历" : "Experience",
       onClick: () => setSelectedCategory("Experiences"),
-    },
-    {
-      Label: portfolioData.$locale === "zh-CN" ? "项目" : "Project",
-      onClick: () => setSelectedCategory("Projects"),
     },
     {
       Label: portfolioData.$locale === "zh-CN" ? "我的博客" : "My Blog",
