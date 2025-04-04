@@ -7,3 +7,12 @@ export const stackStyles = {
     alignItems: "center",
   },
 };
+
+export const cardStyles = {
+  cardOverflow: {
+    alignItems: "center",
+    width: { xs: "100%", md: "75%", lg: "50%" },
+    margin: "auto",
+    textAlign: "center",
+  },
+};

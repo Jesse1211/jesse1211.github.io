@@ -1,16 +1,8 @@
-import {
-  CardContent,
-  Typography,
-  CardCover,
-  Stack,
-  CardOverflow,
-  AspectRatio,
-  Divider,
-} from "@mui/joy";
+import { Typography, Stack, CardOverflow } from "@mui/joy";
 import { FC } from "react";
 import { Education } from "../../models/Categories";
 import { CardContainer } from "./CardContainer";
-import { stackStyles } from "../../styles";
+import { cardStyles, stackStyles } from "../../styles";
 
 export const EducationView: FC<{
   responseEducation: Education[];
@@ -20,40 +12,30 @@ export const EducationView: FC<{
       {responseEducation.map((education: Education, key) => (
         <CardContainer
           key={key}
-          cardView={
-            <>
-              <AspectRatio ratio="2">
-                <CardOverflow>
-                  <CardCover style={{ display: "contents" }}>
-                    <img
-                      src={education.Image}
-                      loading="lazy"
-                      style={{ width: "auto" }}
-                    />
-                  </CardCover>
-                </CardOverflow>
-              </AspectRatio>
-              <CardContent sx={{ alignItems: "center" }}>
-                <Typography level="body-md" fontWeight="lg">
-                  {education.School}
-                </Typography>
-                <Typography level="body-sm" fontWeight="lg">
-                  {education.Major}
-                </Typography>
-              </CardContent>
-              <CardOverflow>
-                <Divider inset="context" />
-                <Stack height="70px" justifyContent="center">
-                  <Typography level="body-sm" fontWeight="md">
-                    GPA: {education.Grade}
-                  </Typography>
+          logoSrc={education.Image}
+          metaDataCardView={
+            <CardOverflow sx={cardStyles.cardOverflow}>
+              <Typography level="body-md" fontWeight="lg">
+                {education.School}
+              </Typography>
+              <Typography level="body-sm" fontWeight="lg">
+                {education.Major}
+              </Typography>
+              <Typography level="body-sm" fontWeight="md">
+                {"GPA: " + education.Grade}
+              </Typography>
 
-                  <Typography level="body-sm" fontWeight="md">
-                    {education.StartDate} - {education.EndDate}
-                  </Typography>
-                </Stack>
-              </CardOverflow>
-            </>
+              <Typography level="body-sm" fontWeight="md">
+                {education.StartDate} - {education.EndDate}
+              </Typography>
+            </CardOverflow>
+          }
+          additionalCardView={
+            <CardOverflow sx={cardStyles.cardOverflow}>
+              <Typography level="body-sm" fontWeight="lg">
+                "{education.Description}"
+              </Typography>
+            </CardOverflow>
           }
         />
       ))}
