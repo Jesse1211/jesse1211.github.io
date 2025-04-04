@@ -23,7 +23,7 @@ export interface Experience {
   Description: string;
   Location: string;
   Image: string;
-  Link: string;
+  Link?: string;
   Brief: Map<string, string[]>;
 }
 
