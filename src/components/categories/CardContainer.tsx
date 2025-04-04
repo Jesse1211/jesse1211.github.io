@@ -1,102 +1,44 @@
-import {
-  Box,
-  Button,
-  Card,
-  DialogContent,
-  DialogTitle,
-  Modal,
-  ModalClose,
-  ModalDialog,
-  Stack,
-  Typography,
-} from "@mui/joy";
-import { FC, ReactNode, useState } from "react";
-import { TransitEnterexit } from "@mui/icons-material";
+import { Card, Stack } from "@mui/joy";
+import { FC, ReactNode } from "react";
 
 export const CardContainer: FC<{
-  cardView: ReactNode;
-  description?: string[] | Map<string, string[]>;
-  link?: string;
-}> = ({ cardView, description, link }) => {
-  const [layout, setLayout] = useState<boolean>(false);
-
+  logoSrc?: string;
+  metaDataCardView: ReactNode;
+  additionalCardView: ReactNode;
+}> = ({ logoSrc, metaDataCardView, additionalCardView }) => {
   return (
-    <>
-      <Box
-        flex={1}
-        sx={{
-          minWidth: { xs: 0.7, md: 0.4, lg: 0.3 },
-          maxWidth: { xs: 0.7, md: 0.4, lg: 0.3 },
-          minHeight: { xs: 0.3, md: 0.45, lg: 0.45 },
-          maxHeight: { xs: 0.3, md: 0.45, lg: 0.45 },
-        }}
-        style={{ filter: "opacity(0.9)" }}
+    <Card
+      size="lg"
+      variant="soft"
+      sx={{
+        width: { xs: 0.8, md: 0.75, lg: 0.6 },
+        height: { xs: 0.3, md: 0.45, lg: 0.45 },
+        display: "flex",
+        flexDirection: { xs: "column", md: "row", lg: "row" },
+      }}
+      style={{ filter: "opacity(0.9)" }}
+    >
+      <Stack
+        direction={{ xs: "column", md: "column", lg: "row" }}
+        width={1}
+        display="flex"
+        justifyContent="space-around"
+        alignItems="center"
       >
-        <Card
-          sx={{ height: 1, justifyContent: "space-between" }}
-          size="md"
-          variant="soft"
-        >
-          {cardView}
-          {description && (
-            <Stack
-              direction={"row"}
-              justifyContent={description && !link ? "center" : "space-between"}
-            >
-              {link !== undefined && (
-                <Button
-                  size="sm"
-                  component="a"
-                  variant="outlined"
-                  href={link}
-                  target="_blank"
-                  color="neutral"
-                  endDecorator={<TransitEnterexit />}
-                >
-                  Visit Site
-                </Button>
-              )}
-              {description && (
-                <Button
-                  size="sm"
-                  variant="outlined"
-                  onClick={() => setLayout(!layout)}
-                >
-                  View Details
-                </Button>
-              )}
-            </Stack>
-          )}
-        </Card>
-      </Box>
-      {layout && description && (
-        <Modal open={!!layout} onClose={() => setLayout(false)}>
-          <ModalDialog>
-            <ModalClose />
-            <DialogTitle>Accomplishments</DialogTitle>
-            <DialogContent>
-              {description instanceof Map
-                ? Array.from(description).map(([key, value], index) => (
-                    <Stack key={index}>
-                      <Typography level="body-sm" fontWeight="md">
-                        🎯 {key}
-                      </Typography>
-                      {value.map((accomplishment, index) => (
-                        <Typography level="body-sm" fontWeight="md" key={index}>
-                          🎯 {accomplishment}
-                        </Typography>
-                      ))}
-                    </Stack>
-                  ))
-                : description.map((accomplishment, index) => (
-                    <Typography level="body-sm" fontWeight="md" key={index}>
-                      🎯 {accomplishment}
-                    </Typography>
-                  ))}
-            </DialogContent>
-          </ModalDialog>
-        </Modal>
-      )}
-    </>
+        {logoSrc && (
+          <img
+            src={logoSrc}
+            loading="lazy"
+            style={{
+              width: "50%",
+              objectFit: "contain",
+            }}
+          />
+        )}
+        {metaDataCardView}
+      </Stack>
+
+      {additionalCardView}
+    </Card>
   );
 };

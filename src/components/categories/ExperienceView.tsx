@@ -1,16 +1,13 @@
 import {
-  CardContent,
   Typography,
-  CardCover,
   Stack,
-  AspectRatio,
   CardOverflow,
-  Divider,
 } from "@mui/joy";
 import { FC } from "react";
 import { Experience } from "../../models/Categories";
 import { CardContainer } from "./CardContainer";
-import { stackStyles } from "../../styles";
+import { cardStyles, stackStyles } from "../../styles";
+import { DescriptionModal } from "../DescriptionModal";
 
 export const ExperienceView: FC<{
   responseExperience: Experience[];
@@ -20,45 +17,37 @@ export const ExperienceView: FC<{
       {responseExperience.map((experience, index) => (
         <CardContainer
           key={index}
-          cardView={
-            <>
-              <AspectRatio ratio="2">
-                <CardOverflow>
-                  <CardCover style={{ display: "contents" }}>
-                    <img
-                      src={experience.Image}
-                      loading="lazy"
-                      style={{ width: "auto" }}
-                    />
-                  </CardCover>
-                </CardOverflow>
-              </AspectRatio>
-              <CardContent sx={{ alignItems: "center" }}>
-                <Typography level="body-md" fontWeight="lg">
-                  {experience.Company}
-                </Typography>
-              </CardContent>
-              <CardOverflow>
-                <Divider inset="context" />
+          logoSrc={experience.Image}
+          metaDataCardView={
+            <CardOverflow sx={cardStyles.cardOverflow}>
+              <Typography level="body-md" fontWeight="lg">
+                {experience.Company}
+              </Typography>
 
-                <Typography level="body-sm" fontWeight="md" marginTop={"5%"}>
-                  {experience.Title}
-                </Typography>
+              <Typography level="body-sm" fontWeight="lg">
+                {experience.Title}
+              </Typography>
 
-                <Stack direction={"row"} justifyContent={"space-between"}>
-                  <Typography level="body-sm" fontWeight="md">
-                    {experience.StartDate} - {experience.EndDate}
-                  </Typography>
+              <Typography level="body-sm" fontWeight="md">
+                {experience.StartDate} - {experience.EndDate}
+              </Typography>
 
-                  <Typography level="body-sm" fontWeight="md">
-                    {experience.Location}
-                  </Typography>
-                </Stack>
-              </CardOverflow>
-            </>
+              <Typography level="body-sm" fontWeight="md">
+                {experience.Location}
+              </Typography>
+            </CardOverflow>
           }
-          description={experience.Brief}
-          link={experience.Link}
+          additionalCardView={
+            <CardOverflow sx={cardStyles.cardOverflow}>
+              <Typography level="body-sm" fontWeight="md">
+                {experience.Description}
+              </Typography>
+              <DescriptionModal
+                brief={experience.Brief}
+                link={experience.Link}
+              />
+            </CardOverflow>
+          }
         />
       ))}
     </Stack>
