@@ -12,8 +12,8 @@ import {
 } from "@mui/material/styles";
 import { Footer } from "./components/Footer";
 import { Home } from "./components/Home";
-import { PortfolioProvider } from "./components/PortfolioContext";
 import { Navigation } from "./components/Navigation";
+import { PortfolioProvider } from "./components/PortfolioProvider";
 
 const materialTheme = materialExtendTheme();
 // const LOCALES_LIST = [
