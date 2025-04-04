@@ -4,15 +4,15 @@ import Fade from "@mui/material/Fade";
 import { Categories } from "../models/Categories";
 import { HomeNavigationFade } from "./HomeNavigation";
 import { Grow } from "@mui/material";
-// import { StarAndPlanet } from "./canvas/StarAndPlanet";
+import { StarAndPlanet } from "./canvas/StarAndPlanet";
 import { Quote } from "./Quote";
 import "../App.css";
 
 export const Home: FC = () => {
-  // useEffect(() => {
-  //   // TODO: 定时更改Canvas的颜色
-  //   StarAndPlanet();
-  // }, []);
+  useEffect(() => {
+    // TODO: 定时更改Canvas的颜色
+    StarAndPlanet();
+  }, []);
 
   const [started, setStarted] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<
