@@ -1,4 +1,4 @@
-export type Categories = "Educations" | "Experiences" | "Projects" | "AboutMe";
+export type Categories = "Educations" | "Experiences" | "AboutMe";
 
 export interface Education {
   _id: string;
@@ -24,21 +24,7 @@ export interface Experience {
   Location: string;
   Image: string;
   Link: string;
-  Brief?: Map<string, string[]>;
-  Accomplishments?: string[];
-}
-
-export interface Project {
-  _id: string;
-  StartDate: string;
-  EndDate: string;
-  Title: string;
-  Company: string;
-  Description: string;
-  Accomplishments: string[];
-  Expertises: string[];
-  Location: string;
-  Additional?: string[];
+  Brief: Map<string, string[]>;
 }
 
 export interface Introduction {
