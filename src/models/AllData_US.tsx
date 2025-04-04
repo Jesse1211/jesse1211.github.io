@@ -197,7 +197,6 @@ export const experienceUS: Experience[] = [
     Description: "",
     Location: "Davis, CA",
     Image: "",
-    Link: "",
     Brief: new Map([
       [
         "Led a team in the development of an engaging RPG game with top-down and side-on scenes and 6 features in C# Unity",
@@ -218,7 +217,6 @@ export const experienceUS: Experience[] = [
     Description: "",
     Location: "Davis, CA",
     Image: "",
-    Link: "",
     Brief: new Map([
       [
         "Implemented dynamic route matching, programmatic navigation, redirect to connect all static pages, Element-Ui, loadash, vee-validate, Vuex to manage 18 webpages with API calls in Vue2 and JavaScript",
