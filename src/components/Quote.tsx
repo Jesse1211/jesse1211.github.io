@@ -21,13 +21,11 @@ export const Quote: FC = () => {
         onInit={(typewriter) => {
           typewriter
             .typeString(
-              "<strong><span style='color:#7b00ff;'>Passion</span> is not a fleeting emotion but a <span style='color:#7b00ff;'>relentless force</span>.<strong>"
+              "<strong>Never <span style='color:#7b00ff;'>hold yourself back.</span><strong>"
             )
             .pauseFor(1500)
             .deleteAll()
-            .typeString(
-              "Studying is like exploring the universe, <strong><span style='color:#7b00ff;'>exciting yet satisfying</span><strong>."
-            )
+            .typeString("Follow the path, enjoy the journey.")
             .pauseFor(1500)
             .start();
         }}
