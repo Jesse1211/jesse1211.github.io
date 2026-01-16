@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-website-spa
+  labels:
+    app: my-website-spa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-website-spa
+  template:
+    metadata:
+      labels:
+        app: my-website-spa
+    spec:
+      containers:
+        - name: web
+          image: my-website-spa:local
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 5100
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5100
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5100
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 2
+            failureThreshold: 3
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1011
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault

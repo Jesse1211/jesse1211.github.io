@@ -1,0 +1,18 @@
+node_modules
+pnpm-store
+.pnpm-store
+.pnpm
+.dist
+build
+coverage
+.DS_Store
+.git
+.gitignore
+.vscode
+.idea
+
+# Vite output
+dist
+
+# Docker
+Dockerfile
