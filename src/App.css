@@ -84,5 +84,14 @@
     transparent 1px,
     transparent 4px
   );
-  mix-blend-mode: screen;
+}
+
+/* Respect reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  .term-cursor {
+    animation: none;
+  }
+  .term-scanlines {
+    display: none;
+  }
 }
