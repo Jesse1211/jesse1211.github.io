@@ -3,13 +3,7 @@ import { Box, Stack } from "@mui/joy";
 import { Experience } from "../../models/Categories";
 import { GlassPanel, Chip } from "../terminal";
 import { DescriptionModal } from "../DescriptionModal";
-
-const KV: FC<{ k: string; v: string }> = ({ k, v }) => (
-  <Box sx={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: 1 }}>
-    <Box className="term-accent">{k}</Box>
-    <Box>{v}</Box>
-  </Box>
-);
+import { KV } from "./KV";
 
 export const ExperienceDetail: FC<{ data: Experience; slug: string }> = ({
   data,
@@ -37,7 +31,7 @@ export const ExperienceDetail: FC<{ data: Experience; slug: string }> = ({
       <Stack spacing={0.6} sx={{ flex: 1 }}>
         <KV k="Company:" v={data.Company} />
         <KV k="Title:" v={data.Title} />
-        <KV k="Period:" v={`${data.StartDate} – ${data.EndDate}`} />
+        <KV k="Period:" v={`${data.StartDate} - ${data.EndDate}`} />
         <KV k="Location:" v={data.Location} />
         {data.Description && (
           <Box sx={{ pt: 1 }}>{data.Description}</Box>
