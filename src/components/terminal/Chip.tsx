@@ -8,6 +8,7 @@ export const Chip: FC<{
 }> = ({ onClick, active, children }) => (
   <Box
     component={onClick ? "button" : "span"}
+    {...(onClick ? { type: "button" as const } : {})}
     onClick={onClick}
     sx={{
       display: "inline-flex",
@@ -27,6 +28,12 @@ export const Chip: FC<{
         ? {
             background: "hsla(180,100%,70%,0.18)",
             boxShadow: "0 0 12px hsla(180,100%,70%,0.5)",
+          }
+        : undefined,
+      "&:focus-visible": onClick
+        ? {
+            outline: "none",
+            boxShadow: "0 0 0 2px hsla(180,100%,70%,0.6)",
           }
         : undefined,
     }}

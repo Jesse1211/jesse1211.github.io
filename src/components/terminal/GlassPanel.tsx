@@ -1,12 +1,13 @@
 import { FC, ReactNode } from "react";
 import { Box } from "@mui/joy";
+import type { SxProps } from "@mui/joy/styles/types";
 import { TitleBar } from "./TitleBar";
 
 export const GlassPanel: FC<{
   title?: string;
   glow?: "none" | "hover" | "active";
   children: ReactNode;
-  sx?: object;
+  sx?: SxProps;
 }> = ({ title, glow = "hover", children, sx }) => {
   const glowShadow =
     glow === "active"
@@ -17,11 +18,13 @@ export const GlassPanel: FC<{
   return (
     <Box
       className="term-glass term-mono"
-      sx={{
-        boxShadow: glowShadow,
-        overflow: "hidden",
-        ...sx,
-      }}
+      sx={[
+        {
+          boxShadow: glowShadow,
+          overflow: "hidden",
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
     >
       {title && <TitleBar label={title} />}
       <Box sx={{ p: { xs: 2, md: 2.5 } }}>{children}</Box>
