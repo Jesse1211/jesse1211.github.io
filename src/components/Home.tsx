@@ -78,9 +78,11 @@ export const Home: FC = () => {
               )}
               {stage >= 3 && (
                 <>
-                  <Prompt symbol=">"><Box sx={{ color: "aqua" }}>{motto1}</Box></Prompt>
                   <Prompt symbol=">">
-                    <Box>{motto2}</Box>
+                    <Box className="term-accent">{motto1}</Box>
+                  </Prompt>
+                  <Prompt symbol=">">
+                    <Box className="term-accent">{motto2}</Box>
                   </Prompt>
                   <Prompt>
                     <TypeLine
