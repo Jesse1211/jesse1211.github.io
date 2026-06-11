@@ -14,74 +14,22 @@ import { Footer } from "./components/Footer";
 import { Home } from "./components/Home";
 import { Navigation } from "./components/Navigation";
 import { PortfolioProvider } from "./components/PortfolioProvider";
+import { LocationProvider } from "./state/LocationProvider";
+import { fontStack } from "./theme/terminal";
 
 const materialTheme = materialExtendTheme();
-// const LOCALES_LIST = [
-//   {
-//     label: "English",
-//     value: "en-US",
-//   },
-//   {
-//     label: "简体中文",
-//     value: "zh-CN",
-//   },
-// ];
-
-// const LOCALE_DATA = {
-//   "en-US": enUS,
-//   // "zh-CN": zhCN,
-// };
-
-// const initializeIntl = () => {
-//   let currentLocale = intl.determineLocale({
-//     urlLocaleKey: "lang", // Example: https://fe-tool.com/react-intl-universal?lang=en-US
-//     cookieLocaleKey: "lang", // Example: "lang=en-US" in cookie
-//   });
-
-//   const locales = LOCALES_LIST.filter(
-//     (item) => item.value.toLowerCase() === currentLocale.toLowerCase()
-//   );
-
-//   if (locales.length === 0) {
-//     currentLocale = "en-US";
-//   }
-
-//   return currentLocale;
-// };
 
 export const App: FC = () => {
-  // const [currentLocale, setCurrentLocale] = useState(initializeIntl());
-
-  // useEffect(() => {
-  //   intl.init({
-  //     currentLocale,
-  //     locales: LOCALE_DATA,
-  //   });
-  //   // setInitDone(true)
-  //   document.cookie = `lang=${currentLocale}`;
-  //   document.title = intl.get("PORTFOLIO_ZHIYUAN_WANG");
-  // }, [currentLocale]);
-
-  // const onLocaleChange = (locale: string) => {
-  //   // set document cookie
-  //   // setInitDone(false)
-  //   setCurrentLocale(locale);
-  // };
-
   const THEME = extendTheme({
     components: {
       JoyButton: {
         styleOverrides: {
-          root: () => ({
-            fontFamily: "fantasy",
-          }),
+          root: () => ({ fontFamily: fontStack }),
         },
       },
       JoyTypography: {
         styleOverrides: {
-          root: () => ({
-            fontFamily: "Lucia Console, monospace",
-          }),
+          root: () => ({ fontFamily: fontStack }),
         },
       },
     },
@@ -89,19 +37,21 @@ export const App: FC = () => {
 
   return (
     <MaterialCssVarsProvider
-      defaultMode="system"
+      defaultMode="dark"
       theme={{ [MATERIAL_THEME_ID]: materialTheme }}
     >
-      <JoyCssVarsProvider defaultMode="system" theme={THEME}>
+      <JoyCssVarsProvider defaultMode="dark" theme={THEME}>
         <canvas className="canvas"></canvas>
         <CssBaseline />
         <Outlet />
         <PortfolioProvider>
-          <Navigation />
-
-          <Home />
+          <LocationProvider>
+            <Navigation />
+            <Home />
+          </LocationProvider>
         </PortfolioProvider>
         <Footer />
+        <div className="term-scanlines" aria-hidden />
       </JoyCssVarsProvider>
     </MaterialCssVarsProvider>
   );
