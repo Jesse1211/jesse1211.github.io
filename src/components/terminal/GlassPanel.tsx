@@ -22,6 +22,7 @@ export const GlassPanel: FC<{
         {
           boxShadow: glowShadow,
           overflow: "hidden",
+          position: "relative",
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
