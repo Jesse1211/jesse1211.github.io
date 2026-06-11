@@ -33,7 +33,7 @@ export const Home: FC = () => {
     ? "走自己的路, 享受这段旅程."
     : "Follow the path, enjoy the journey.";
   const categories: { key: string; label: string; target: string; external?: string }[] = [
-    { key: "education", label: cn ? "education/" : "education/", target: "~/education" },
+    { key: "education", label: "education/", target: "~/education" },
     { key: "experience", label: "experience/", target: "~/experience" },
     { key: "blog", label: "blog/", target: "", external: "https://blog.jesseliu.me" },
     { key: "about", label: "about/", target: "~/about" },
@@ -97,7 +97,7 @@ export const Home: FC = () => {
                       key={c.key}
                       onClick={() =>
                         c.external
-                          ? (window.location.href = c.external)
+                          ? window.open(c.external, "_blank", "noopener,noreferrer")
                           : goto(c.target)
                       }
                     >
@@ -106,9 +106,7 @@ export const Home: FC = () => {
                   ))}
                 </Stack>
               )}
-              <Prompt showCursor>
-                <span />
-              </Prompt>
+              <Prompt showCursor />
             </Stack>
           ) : (
             <Box sx={{ mt: 1 }}>
