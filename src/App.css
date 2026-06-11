@@ -1,13 +1,88 @@
-.home-button {
-    color: "#889def";
-    max-width: "20%";
-    align-self: "center";
-    font-size: "1.5rem";
+/* Glass-terminal utility classes. Tokens live in src/theme/terminal.ts. */
+
+.term-glass {
+  background: hsla(240, 60%, 15%, 0.30);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid hsla(180, 100%, 70%, 0.4);
+  border-radius: 4px;
+  color: hsla(180, 30%, 92%, 0.95);
 }
 
-.category-button {
-    color: "#889def";
-    max-width: "25%";
-    align-self: "center";
-    font-size: "1.5rem";
+.term-mono {
+  font-family: "JetBrains Mono", "Fira Code", "Courier New", ui-monospace,
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.term-accent {
+  color: hsla(180, 100%, 70%, 0.85);
+}
+
+.term-dim {
+  color: hsla(180, 30%, 85%, 0.65);
+}
+
+/* Blinking block cursor */
+.term-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  vertical-align: -0.15em;
+  margin-left: 2px;
+  background: hsla(180, 100%, 70%, 0.85);
+  animation: term-blink 1s steps(2, start) infinite;
+}
+
+@keyframes term-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* Hover row state used by ls-style lists. */
+.term-row {
+  display: grid;
+  grid-template-columns: 4em 12em 10em 1fr;
+  gap: 12px;
+  padding: 6px 10px;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-left-color 0.12s ease;
+  text-align: left;
+  background: transparent;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  color: inherit;
+  font: inherit;
+  width: 100%;
+}
+
+.term-row:hover,
+.term-row:focus-visible {
+  background-color: hsla(180, 100%, 70%, 0.08);
+  border-left-color: hsla(180, 100%, 70%, 0.85);
+  outline: none;
+}
+
+.term-row[aria-expanded="true"] {
+  background-color: hsla(180, 100%, 70%, 0.12);
+  border-left-color: hsla(180, 100%, 70%, 0.85);
+}
+
+/* Full-screen scanline overlay. Mounted once at the App root. */
+.term-scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    to bottom,
+    hsla(180, 100%, 70%, 0.04) 0,
+    hsla(180, 100%, 70%, 0.04) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  mix-blend-mode: screen;
 }
