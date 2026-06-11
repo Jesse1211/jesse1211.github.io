@@ -2,13 +2,7 @@ import { FC } from "react";
 import { Box, Stack } from "@mui/joy";
 import { Education } from "../../models/Categories";
 import { GlassPanel } from "../terminal";
-
-const KV: FC<{ k: string; v: string }> = ({ k, v }) => (
-  <Box sx={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: 1 }}>
-    <Box className="term-accent">{k}</Box>
-    <Box>{v}</Box>
-  </Box>
-);
+import { KV } from "./KV";
 
 export const EducationDetail: FC<{ data: Education; slug: string }> = ({
   data,
@@ -37,7 +31,7 @@ export const EducationDetail: FC<{ data: Education; slug: string }> = ({
         <KV k="School:" v={data.School} />
         <KV k="Major:" v={data.Major} />
         <KV k="GPA:" v={data.Grade} />
-        <KV k="Period:" v={`${data.StartDate} – ${data.EndDate}`} />
+        <KV k="Period:" v={`${data.StartDate} - ${data.EndDate}`} />
         <KV k="Location:" v={data.Location} />
         <KV k="Moto:" v={`"${data.Moto}"`} />
         <Box sx={{ pt: 1, fontStyle: "italic", color: "hsla(180,30%,85%,0.75)" }}>
