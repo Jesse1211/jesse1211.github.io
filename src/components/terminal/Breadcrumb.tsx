@@ -1,6 +1,35 @@
-import { FC, Fragment } from "react";
+import { FC, Fragment, ReactNode } from "react";
 import { Box, Stack } from "@mui/joy";
 import { useLocation } from "../../state/LocationContext";
+
+const ACCENT_BRIGHT = "hsla(180,100%,80%,1)";
+const FOCUS_RING = "0 0 0 2px hsla(180,100%,70%,0.6)";
+
+const clickableSx = {
+  background: "none",
+  border: 0,
+  color: "inherit",
+  font: "inherit",
+  cursor: "pointer",
+  p: 0,
+  "&:hover": { color: ACCENT_BRIGHT },
+  "&:focus-visible": { outline: "none", boxShadow: FOCUS_RING },
+} as const;
+
+const ClickableSegment: FC<{ onClick: () => void; children: ReactNode }> = ({
+  onClick,
+  children,
+}) => (
+  <Box component="button" type="button" onClick={onClick} sx={clickableSx}>
+    {children}
+  </Box>
+);
+
+const CurrentSegment: FC<{ children: ReactNode }> = ({ children }) => (
+  <Box component="span" sx={{ color: ACCENT_BRIGHT }}>
+    {children}
+  </Box>
+);
 
 export const Breadcrumb: FC = () => {
   const { path, goto, goHome } = useLocation();
@@ -21,56 +50,20 @@ export const Breadcrumb: FC = () => {
         jesse@portfolio
       </Box>
       <Box component="span">:</Box>
-      <Box
-        component="button"
-        type="button"
-        onClick={goHome}
-        sx={{
-          background: "none",
-          border: 0,
-          color: "inherit",
-          font: "inherit",
-          cursor: "pointer",
-          p: 0,
-          "&:hover": { color: "hsla(180,100%,80%,1)" },
-          "&:focus-visible": {
-            outline: "none",
-            boxShadow: "0 0 0 2px hsla(180,100%,70%,0.6)",
-          },
-        }}
-      >
-        ~
-      </Box>
+      <ClickableSegment onClick={goHome}>~</ClickableSegment>
       {segments.map((seg, i) => {
         const target = "~/" + segments.slice(0, i + 1).join("/");
         const isLast = i === segments.length - 1;
         return (
           <Fragment key={target}>
             <Box component="span">/</Box>
-            <Box
-              component={isLast ? "span" : "button"}
-              {...(isLast ? {} : { type: "button" as const })}
-              onClick={isLast ? undefined : () => goto(target)}
-              sx={{
-                background: "none",
-                border: 0,
-                color: isLast ? "hsla(180,100%,80%,1)" : "inherit",
-                font: "inherit",
-                cursor: isLast ? "default" : "pointer",
-                p: 0,
-                "&:hover": isLast
-                  ? undefined
-                  : { color: "hsla(180,100%,80%,1)" },
-                "&:focus-visible": isLast
-                  ? undefined
-                  : {
-                      outline: "none",
-                      boxShadow: "0 0 0 2px hsla(180,100%,70%,0.6)",
-                    },
-              }}
-            >
-              {seg}
-            </Box>
+            {isLast ? (
+              <CurrentSegment>{seg}</CurrentSegment>
+            ) : (
+              <ClickableSegment onClick={() => goto(target)}>
+                {seg}
+              </ClickableSegment>
+            )}
           </Fragment>
         );
       })}
