@@ -32,8 +32,9 @@ const CurrentSegment: FC<{ children: ReactNode }> = ({ children }) => (
 );
 
 export const Breadcrumb: FC = () => {
-  const { path, goto, goHome } = useLocation();
+  const { path, goto, goHome, goUp } = useLocation();
   const segments = path === "~" ? [] : path.replace(/^~\//, "").split("/");
+  const atHome = path === "~";
 
   return (
     <Stack
@@ -44,6 +45,7 @@ export const Breadcrumb: FC = () => {
         fontSize: 13,
         color: "hsla(180,30%,85%,0.7)",
         flexWrap: "wrap",
+        alignItems: "center",
       }}
     >
       <Box component="span" className="term-accent">
@@ -70,6 +72,25 @@ export const Breadcrumb: FC = () => {
       <Box component="span" className="term-accent" sx={{ ml: 0.5 }}>
         $
       </Box>
+      {!atHome && (
+        <Box
+          component="button"
+          type="button"
+          onClick={goUp}
+          sx={{
+            ...clickableSx,
+            ml: 1,
+            px: 0.75,
+            py: 0.1,
+            border: "1px solid hsla(180,100%,70%,0.4)",
+            borderRadius: 0.5,
+          }}
+          aria-label="Go up one level"
+          title="cd .."
+        >
+          ..
+        </Box>
+      )}
     </Stack>
   );
 };
