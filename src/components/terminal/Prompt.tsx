@@ -3,7 +3,7 @@ import { Box, Stack } from "@mui/joy";
 import { Cursor } from "./Cursor";
 
 export const Prompt: FC<{
-  children: ReactNode;
+  children?: ReactNode;
   showCursor?: boolean;
   symbol?: string;
 }> = ({ children, showCursor = false, symbol = "$" }) => (
