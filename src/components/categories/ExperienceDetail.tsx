@@ -1,16 +1,39 @@
 import { FC } from "react";
 import { Box, Stack } from "@mui/joy";
 import { Experience } from "../../models/Categories";
-import { GlassPanel, Chip } from "../terminal";
+import { Chip } from "../terminal";
 import { DescriptionModal } from "../DescriptionModal";
-import { KV } from "./KV";
 
-export const ExperienceDetail: FC<{ data: Experience; slug: string }> = ({
-  data,
-  slug,
-}) => (
-  <GlassPanel title={`$ cat ${slug}/info.md`} glow="hover">
-    <Stack direction={{ xs: "column", md: "row" }} spacing={2.5} alignItems="flex-start">
+const LABEL_WIDTH = "5.5em";
+
+const Field: FC<{ k: string; v: string }> = ({ k, v }) => (
+  <Box sx={{ display: "flex", gap: 1 }}>
+    <Box
+      className="term-dim"
+      sx={{ minWidth: LABEL_WIDTH, flexShrink: 0 }}
+    >
+      {k}
+    </Box>
+    <Box sx={{ wordBreak: "break-word" }}>{v}</Box>
+  </Box>
+);
+
+export const ExperienceDetail: FC<{ data: Experience }> = ({ data }) => (
+  <Box
+    sx={{
+      pl: { xs: 2, md: 4 },
+      pt: 0.5,
+      pb: 1.5,
+      borderLeft: "1px dashed hsla(180,100%,70%,0.25)",
+      ml: { xs: 2, md: 3 },
+      fontSize: "0.95em",
+    }}
+  >
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      spacing={2}
+      alignItems="flex-start"
+    >
       {data.Image && (
         <Box
           component="img"
@@ -18,33 +41,37 @@ export const ExperienceDetail: FC<{ data: Experience; slug: string }> = ({
           alt={data.Company}
           loading="lazy"
           sx={{
-            width: 120,
-            height: 120,
+            width: 72,
+            height: 72,
             objectFit: "contain",
-            border: "1px solid hsla(180,100%,70%,0.4)",
-            borderRadius: 1,
-            p: 1,
-            background: "hsla(180,100%,70%,0.05)",
+            flexShrink: 0,
+            opacity: 0.9,
           }}
         />
       )}
-      <Stack spacing={0.6} sx={{ flex: 1 }}>
-        <KV k="Company:" v={data.Company} />
-        <KV k="Title:" v={data.Title} />
-        <KV k="Period:" v={`${data.StartDate} - ${data.EndDate}`} />
-        <KV k="Location:" v={data.Location} />
-        {data.Description && (
-          <Box sx={{ pt: 1 }}>{data.Description}</Box>
-        )}
-        <Stack direction="row" spacing={1} sx={{ pt: 1, flexWrap: "wrap" }}>
-          <DescriptionModal brief={data.Brief} link={data.Link} />
-          {data.Link && (
-            <Chip onClick={() => window.open(data.Link, "_blank", "noopener,noreferrer")}>
-              $ open {data.Link}
-            </Chip>
-          )}
-        </Stack>
+      <Stack spacing={0.4} sx={{ flex: 1, minWidth: 0 }}>
+        <Field k="Company:" v={data.Company} />
+        <Field k="Title:" v={data.Title} />
+        <Field k="Period:" v={`${data.StartDate} - ${data.EndDate}`} />
+        <Field k="Location:" v={data.Location} />
       </Stack>
     </Stack>
-  </GlassPanel>
+    {data.Description && (
+      <Box sx={{ mt: 1.5, color: "hsla(180,30%,85%,0.85)" }}>
+        {data.Description}
+      </Box>
+    )}
+    <Stack direction="row" spacing={1} sx={{ mt: 1.5, flexWrap: "wrap" }}>
+      <DescriptionModal brief={data.Brief} link={data.Link} />
+      {data.Link && (
+        <Chip
+          onClick={() =>
+            window.open(data.Link, "_blank", "noopener,noreferrer")
+          }
+        >
+          $ open {data.Link}
+        </Chip>
+      )}
+    </Stack>
+  </Box>
 );
