@@ -5,6 +5,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import { Box, Stack } from "@mui/joy";
 import { StarAndPlanet } from "./canvas/StarAndPlanet";
@@ -32,6 +33,7 @@ const STAGGER_MS = 80;
 const TYPING_BUFFER_MS = 120;
 
 type Location = "home" | "education" | "experience" | "about";
+type WindowState = "normal" | "minimized" | "fullscreen";
 
 const i18n = (key: LocaleKey, cn: boolean): string => {
   switch (key) {
@@ -91,6 +93,12 @@ export const Home: FC = () => {
   const { $locale, data } = useContext(PortfolioContext);
   const cn = $locale === "zh-CN";
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [windowState, setWindowState] = useState<WindowState>("normal");
+
+  const handleMinimize = () => setWindowState("minimized");
+  const handleFullscreen = () =>
+    setWindowState((s) => (s === "fullscreen" ? "normal" : "fullscreen"));
+  const handleRestore = () => setWindowState("normal");
 
   // Entries we've previously rendered. Used to skip typing animations
   // and reveal delays on subsequent renders (e.g. locale switch).
@@ -284,27 +292,50 @@ export const Home: FC = () => {
   };
 
   const location = currentLocationOf(history);
-  const trailingItems = trailingSuggestions(location);
+  // If the last history entry is already a categories chips menu,
+  // hide the trailing prompt's own chips so they don't appear
+  // twice back-to-back.
+  const lastEntry = history[history.length - 1];
+  const trailingItems =
+    lastEntry?.kind === "categories" ? [] : trailingSuggestions(location);
 
-  return (
-    <Stack
-      spacing={3}
-      sx={{
+  if (windowState === "minimized") {
+    return <TerminalDock onRestore={handleRestore} />;
+  }
+
+  const isFullscreen = windowState === "fullscreen";
+  const stackSx = isFullscreen
+    ? {
+        width: "100vw",
+        maxWidth: "100vw",
+        height: "100vh",
+        maxHeight: "100vh",
+        my: 0,
+        position: "fixed" as const,
+        inset: 0,
+        zIndex: 20,
+        fontSize: { xs: 14, md: 16, lg: 17 },
+      }
+    : {
         width: { xs: "94%", md: "88%", lg: "82%", xl: "75%" },
         maxWidth: 1200,
         height: { xs: "82vh", md: "78vh" },
         maxHeight: 820,
         my: { xs: 2, md: 3 },
-        position: "relative",
+        position: "relative" as const,
         zIndex: 1,
         fontSize: { xs: 14, md: 16, lg: 17 },
-      }}
-    >
+      };
+
+  return (
+    <Stack spacing={3} sx={stackSx}>
       <GlassPanel
         title={`~/jesse — zsh`}
         glow="active"
         sx={{ flex: 1, minHeight: 0 }}
         bodyRef={scrollRef}
+        onYellow={handleMinimize}
+        onGreen={handleFullscreen}
       >
         <Stack spacing={1.2}>
           {(() => {
@@ -345,6 +376,58 @@ const SectionDivider: FC = () => (
       mb: 1.5,
     }}
   />
+);
+
+// macOS-style minimized dock entry. Click anywhere on it to restore.
+const TerminalDock: FC<{ onRestore: () => void }> = ({ onRestore }) => (
+  <Box
+    component="button"
+    type="button"
+    onClick={onRestore}
+    aria-label="restore terminal"
+    title="restore terminal"
+    className="term-mono"
+    sx={{
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      zIndex: 20,
+      px: 1.5,
+      py: 0.75,
+      background: "hsla(240, 55%, 8%, 0.55)",
+      backdropFilter: "blur(24px) saturate(140%)",
+      WebkitBackdropFilter: "blur(24px) saturate(140%)",
+      border: "1px solid hsla(180,100%,70%,0.45)",
+      borderRadius: "10px",
+      cursor: "pointer",
+      color: "hsla(180,30%,85%,0.85)",
+      fontSize: 12,
+      letterSpacing: "0.5px",
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 1,
+      transition: "box-shadow .15s, transform .15s",
+      boxShadow: "0 4px 18px hsla(0,0%,0%,0.35)",
+      "&:hover": {
+        transform: "translate(-50%, calc(-50% - 2px))",
+        boxShadow: "0 8px 22px hsla(0,0%,0%,0.45), 0 0 12px hsla(180,100%,70%,0.35)",
+      },
+      "&:focus-visible": {
+        outline: "none",
+        boxShadow: "0 0 0 2px hsla(180,100%,70%,0.6)",
+      },
+    }}
+  >
+    <Box component="span" sx={{ display: "inline-flex", gap: 0.6 }}>
+      <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#ff5f57" }} />
+      <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#febc2e" }} />
+      <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#28c840" }} />
+    </Box>
+    <Box component="span" sx={{ ml: 0.5 }}>
+      ~/jesse — zsh
+    </Box>
+  </Box>
 );
 
 const CategoryChips: FC<{
