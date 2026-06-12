@@ -1,55 +1,37 @@
-import {
-  Typography,
-  Stack,
-  CardOverflow,
-} from "@mui/joy";
-import { FC } from "react";
+import { FC, Fragment } from "react";
+import { Box } from "@mui/joy";
 import { Experience } from "../../models/Categories";
-import { CardContainer } from "./CardContainer";
-import { cardStyles, stackStyles } from "../../styles";
-import { DescriptionModal } from "../DescriptionModal";
+import { useLocation } from "../../state/LocationContext";
+import { experienceSlug } from "../../state/locationSlug";
+import { ExperienceRow } from "./ExperienceRow";
+import { ExperienceDetail } from "./ExperienceDetail";
 
 export const ExperienceView: FC<{
+  entryId: string;
   responseExperience: Experience[];
-}> = ({ responseExperience }) => {
+}> = ({ entryId, responseExperience }) => {
+  const { toggle, isExpanded } = useLocation();
   return (
-    <Stack sx={stackStyles.categoryView}>
-      {responseExperience.map((experience, index) => (
-        <CardContainer
-          key={index}
-          logoSrc={experience.Image}
-          metaDataCardView={
-            <CardOverflow sx={cardStyles.cardOverflow}>
-              <Typography level="body-md" fontWeight="lg">
-                {experience.Company}
-              </Typography>
-
-              <Typography level="body-sm" fontWeight="lg">
-                {experience.Title}
-              </Typography>
-
-              <Typography level="body-sm" fontWeight="md">
-                {experience.StartDate} - {experience.EndDate}
-              </Typography>
-
-              <Typography level="body-sm" fontWeight="md">
-                {experience.Location}
-              </Typography>
-            </CardOverflow>
-          }
-          additionalCardView={
-            <CardOverflow sx={cardStyles.cardOverflow}>
-              <Typography level="body-sm" fontWeight="md">
-                {experience.Description}
-              </Typography>
-              <DescriptionModal
-                brief={experience.Brief}
-                link={experience.Link}
-              />
-            </CardOverflow>
-          }
-        />
-      ))}
-    </Stack>
+    <Box>
+      <Box className="term-dim" sx={{ px: 1.25, pb: 0.5 }}>
+        total {responseExperience.length}
+      </Box>
+      {responseExperience.map((e, i) => {
+        const slug = experienceSlug(e, i);
+        const open = isExpanded(entryId, "experience", slug);
+        return (
+          <Fragment key={slug}>
+            <ExperienceRow
+              data={e}
+              slug={slug}
+              index={i}
+              expanded={open}
+              onToggle={() => toggle(entryId, "experience", slug)}
+            />
+            {open && <ExperienceDetail data={e} />}
+          </Fragment>
+        );
+      })}
+    </Box>
   );
 };
