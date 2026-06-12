@@ -9,7 +9,10 @@ export const GlassPanel: FC<{
   children: ReactNode;
   sx?: SxProps;
   bodyRef?: Ref<HTMLDivElement>;
-}> = ({ title, glow = "hover", children, sx, bodyRef }) => {
+  onRed?: () => void;
+  onYellow?: () => void;
+  onGreen?: () => void;
+}> = ({ title, glow = "hover", children, sx, bodyRef, onRed, onYellow, onGreen }) => {
   const glowShadow =
     glow === "active"
       ? "0 0 18px hsla(180,100%,70%,0.7)"
@@ -37,7 +40,14 @@ export const GlassPanel: FC<{
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
     >
-      {title && <TitleBar label={title} />}
+      {title && (
+        <TitleBar
+          label={title}
+          onRed={onRed}
+          onYellow={onYellow}
+          onGreen={onGreen}
+        />
+      )}
       <Box
         ref={bodyRef}
         className="term-scroll"
