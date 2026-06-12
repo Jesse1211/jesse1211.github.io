@@ -1,18 +1,28 @@
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC, ReactNode, useLayoutEffect, useState } from "react";
 import { Box } from "@mui/joy";
 
-// Renders children with opacity 0 → 1, mounted on a delay. Used to
-// stagger newly-appended history entries one after another, and to
-// hide the trailing active prompt until the typing/reveal sequence
-// finishes.
+// Reveals children after a delay.
+//
+//   mode="expand" (default): children grow from height 0 to their
+//   natural height while fading in. Used for newly-appended history
+//   entries so they "push down" the layout rather than pop.
+//
+//   mode="fade": children always occupy their full layout box;
+//   only opacity transitions. Use this for the trailing active
+//   prompt, where collapsing/expanding the height would cause the
+//   visible terminal content to jump every time history grows.
 export const Reveal: FC<{
   delayMs: number;
+  durationMs?: number;
+  mode?: "expand" | "fade";
   children: ReactNode;
-}> = ({ delayMs, children }) => {
+}> = ({ delayMs, durationMs = 260, mode = "expand", children }) => {
   const [visible, setVisible] = useState(delayMs <= 0);
-  useEffect(() => {
-    // Reset to invisible whenever the delay changes (e.g. after the
-    // user appends new history that pushes the tail further out).
+  // useLayoutEffect runs synchronously before the browser paints, so
+  // when delayMs jumps from 0 to a positive value (history grew), we
+  // flip visible→false BEFORE the user can see the previous "true"
+  // state painted. Avoids a brief flash of the trailing prompt.
+  useLayoutEffect(() => {
     if (delayMs <= 0) {
       setVisible(true);
       return;
@@ -21,11 +31,32 @@ export const Reveal: FC<{
     const t = window.setTimeout(() => setVisible(true), delayMs);
     return () => window.clearTimeout(t);
   }, [delayMs]);
+
+  if (mode === "fade") {
+    return (
+      <Box
+        sx={{
+          opacity: visible ? 1 : 0,
+          // Fade IN with a transition; fade OUT (when delayMs increases
+          // again on new history) is instant so the user never sees a
+          // brief visible-then-gone flash of the trailing prompt.
+          transition: visible ? `opacity ${durationMs}ms ease` : "none",
+        }}
+      >
+        {children}
+      </Box>
+    );
+  }
+
   return (
     <Box
       sx={{
+        overflow: "hidden",
         opacity: visible ? 1 : 0,
-        transition: "opacity .15s ease",
+        maxHeight: visible ? "4000px" : "0px",
+        transition: visible
+          ? `max-height ${durationMs}ms cubic-bezier(.2,.7,.2,1), opacity ${Math.round(durationMs * 0.7)}ms ease ${Math.round(durationMs * 0.15)}ms`
+          : `max-height ${durationMs}ms cubic-bezier(.2,.7,.2,1), opacity ${Math.round(durationMs * 0.5)}ms ease`,
       }}
     >
       {children}

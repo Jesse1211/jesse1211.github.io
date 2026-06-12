@@ -106,10 +106,24 @@ export const Home: FC = () => {
   }, [history]);
 
   // Auto-scroll to the bottom of the terminal whenever history grows.
+  // Reveals stagger over `tailDelay` ms and each one grows its
+  // max-height over ~260ms, so keep pinning scrollTop until the
+  // tail of the latest sequence has had time to settle.
   useLayoutEffect(() => {
     const node = scrollRef.current;
-    if (node) node.scrollTop = node.scrollHeight;
-  }, [history.length]);
+    if (!node) return;
+    const start = performance.now();
+    const deadline = tailDelay + 500;
+    let raf = 0;
+    const tick = () => {
+      node.scrollTop = node.scrollHeight;
+      if (performance.now() - start < deadline) {
+        raf = window.requestAnimationFrame(tick);
+      }
+    };
+    raf = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(raf);
+  }, [history.length, tailDelay]);
 
   const handleCategoryClick = (
     menuEntryId: string,
@@ -251,13 +265,24 @@ export const Home: FC = () => {
         sx={{ flex: 1, minHeight: 0 }}
         bodyRef={scrollRef}
       >
-        <Stack spacing={1.8}>
-          {history.map((entry) => (
-            <Reveal key={entry.id} delayMs={revealDelay[entry.id] ?? 0}>
-              {renderEntry(entry)}
-            </Reveal>
-          ))}
-          <Reveal delayMs={tailDelay}>
+        <Stack spacing={1.2}>
+          {(() => {
+            let seenCmd = false;
+            return history.map((entry) => {
+              const showDivider = entry.kind === "cmd" && seenCmd;
+              if (entry.kind === "cmd") seenCmd = true;
+              return (
+                <Reveal
+                  key={entry.id}
+                  delayMs={revealDelay[entry.id] ?? 0}
+                >
+                  {showDivider && <SectionDivider />}
+                  {renderEntry(entry)}
+                </Reveal>
+              );
+            });
+          })()}
+          <Reveal delayMs={tailDelay} mode="fade">
             <Prompt showCursor path={path} />
           </Reveal>
         </Stack>
@@ -265,6 +290,17 @@ export const Home: FC = () => {
     </Stack>
   );
 };
+
+const SectionDivider: FC = () => (
+  <Box
+    aria-hidden
+    sx={{
+      borderTop: "1px dashed hsla(180,100%,70%,0.18)",
+      mt: 0.5,
+      mb: 1.5,
+    }}
+  />
+);
 
 const CategoryChips: FC<{
   menuEntryId: string;
