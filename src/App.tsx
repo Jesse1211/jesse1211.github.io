@@ -47,10 +47,21 @@ export const App: FC = () => {
         <PortfolioProvider>
           <LocationProvider>
             <Navigation />
-            <Home />
+            <div
+              style={{
+                minHeight: "100vh",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <Home />
+              <Footer />
+            </div>
           </LocationProvider>
         </PortfolioProvider>
-        <Footer />
         <div className="term-scanlines" aria-hidden />
       </JoyCssVarsProvider>
     </MaterialCssVarsProvider>

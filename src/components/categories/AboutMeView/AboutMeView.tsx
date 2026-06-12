@@ -1,20 +1,16 @@
 import { FC } from "react";
 import { Box, Stack } from "@mui/joy";
 import { Introduction } from "../../../models/Categories";
-import { GlassPanel, Prompt } from "../../terminal";
+import { Prompt } from "../../terminal";
 import SocialMediaButtons from "./SocialMedialButtons";
 
 export const AboutMeView: FC<{ introduction: Introduction }> = ({
   introduction,
 }) => (
-  <GlassPanel glow="hover">
-    <Prompt>
-      <Box component="span">cat profile.txt</Box>
-    </Prompt>
+  <Box>
     <Stack
       direction={{ xs: "column", md: "row" }}
       spacing={2.5}
-      sx={{ mt: 1.5 }}
       alignItems="flex-start"
     >
       <Box
@@ -39,7 +35,7 @@ export const AboutMeView: FC<{ introduction: Introduction }> = ({
         </Box>
       </Stack>
     </Stack>
-    <Box sx={{ mt: 2.5 }}>
+    <Box sx={{ mt: 2 }}>
       <Prompt>
         <Box component="span">contact --list</Box>
       </Prompt>
@@ -47,5 +43,5 @@ export const AboutMeView: FC<{ introduction: Introduction }> = ({
         <SocialMediaButtons />
       </Box>
     </Box>
-  </GlassPanel>
+  </Box>
 );

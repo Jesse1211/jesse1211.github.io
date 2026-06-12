@@ -3,8 +3,8 @@
 
 export const palette = {
   bg: "#0e0f43",
-  glassBg: "hsla(240, 60%, 15%, 0.30)",
-  glassBgOpaque: "hsla(240, 60%, 12%, 0.85)", // fallback when backdrop-filter is unsupported
+  glassBg: "hsla(240, 55%, 6%, 0.97)",
+  glassBgOpaque: "hsla(240, 55%, 6%, 1)", // fallback when backdrop-filter is unsupported
   accent: "hsla(180, 100%, 70%, 0.85)",
   accentStrong: "hsla(180, 100%, 80%, 1)",
   accentDim: "hsla(180, 100%, 70%, 0.4)",
@@ -23,8 +23,8 @@ export const fontStack =
 
 export const glassSx = {
   background: palette.glassBg,
-  backdropFilter: "blur(16px) saturate(140%)",
-  WebkitBackdropFilter: "blur(16px) saturate(140%)",
+  backdropFilter: "blur(48px) saturate(140%)",
+  WebkitBackdropFilter: "blur(48px) saturate(140%)",
   border: `1px solid ${palette.accentDim}`,
   borderRadius: "4px",
   color: palette.text,
