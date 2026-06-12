@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "deploy": "npx gh-pages -d dist -b deployment"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -18,8 +17,6 @@
     "@mui/material": "^5.17.1",
     "@types/zdog": "^1.1.7",
     "framer-motion": "^11.18.2",
-    "gh-pages": "^6.3.0",
-    "pnpm": "^9.15.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.0",
