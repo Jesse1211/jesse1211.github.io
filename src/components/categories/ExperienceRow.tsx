@@ -2,26 +2,95 @@ import { FC } from "react";
 import { Box } from "@mui/joy";
 import { Experience } from "../../models/Categories";
 
+const rowSx = {
+  display: "grid",
+  gridTemplateColumns: "7em 2em 1.7em 14em 11em 1fr 1em",
+  columnGap: "10px",
+  alignItems: "center",
+  px: 1.25,
+  py: 0.5,
+  borderLeft: "2px solid transparent",
+  cursor: "pointer",
+  transition: "background-color .12s, border-left-color .12s",
+  textAlign: "left",
+  background: "transparent",
+  border: 0,
+  color: "inherit",
+  font: "inherit",
+  width: "100%",
+  "&:hover, &:focus-visible": {
+    backgroundColor: "hsla(180,100%,70%,0.08)",
+    borderLeftColor: "hsla(180,100%,70%,0.85)",
+    outline: "none",
+  },
+  "&[aria-expanded='true']": {
+    backgroundColor: "hsla(180,100%,70%,0.12)",
+    borderLeftColor: "hsla(180,100%,70%,0.85)",
+  },
+} as const;
+
 export const ExperienceRow: FC<{
   data: Experience;
   slug: string;
+  index: number;
   expanded: boolean;
   onToggle: () => void;
-}> = ({ data, slug, expanded, onToggle }) => (
+}> = ({ data, slug, index, expanded, onToggle }) => (
   <Box
     component="button"
     type="button"
-    className="term-row term-mono"
+    className="term-mono"
     aria-expanded={expanded}
     onClick={onToggle}
+    sx={rowSx}
   >
-    <Box className="term-accent">drwx</Box>
-    <Box>{slug}</Box>
-    <Box className="term-dim">
+    <Box component="span" className="term-accent">
+      drwxr-xr-x
+    </Box>
+    <Box component="span" className="term-dim">
+      {index + 1}
+    </Box>
+    <Box
+      component="span"
+      sx={{
+        width: 22,
+        height: 22,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {data.Image && (
+        <Box
+          component="img"
+          src={data.Image}
+          alt=""
+          loading="lazy"
+          sx={{ width: 22, height: 22, objectFit: "contain" }}
+        />
+      )}
+    </Box>
+    <Box component="span">{slug}</Box>
+    <Box component="span" className="term-dim">
       {data.StartDate} - {data.EndDate}
     </Box>
-    <Box>
-      {data.Company} {data.Title ? <span>· {data.Title}</span> : null}
+    <Box
+      component="span"
+      sx={{
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {data.Company}
+      {data.Title && (
+        <Box component="span" className="term-dim" sx={{ ml: 0.5 }}>
+          · {data.Title}
+        </Box>
+      )}
+    </Box>
+    <Box component="span" className="term-accent" sx={{ textAlign: "right" }}>
+      {expanded ? "▾" : "▸"}
     </Box>
   </Box>
 );
