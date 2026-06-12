@@ -1,44 +1,37 @@
-import { Typography, Stack, CardOverflow } from "@mui/joy";
-import { FC } from "react";
+import { FC, Fragment } from "react";
+import { Box } from "@mui/joy";
 import { Education } from "../../models/Categories";
-import { CardContainer } from "./CardContainer";
-import { cardStyles, stackStyles } from "../../styles";
+import { useLocation } from "../../state/LocationContext";
+import { educationSlug } from "../../state/locationSlug";
+import { EducationRow } from "./EducationRow";
+import { EducationDetail } from "./EducationDetail";
 
 export const EducationView: FC<{
+  entryId: string;
   responseEducation: Education[];
-}> = ({ responseEducation }) => {
+}> = ({ entryId, responseEducation }) => {
+  const { toggle, isExpanded } = useLocation();
   return (
-    <Stack sx={stackStyles.categoryView}>
-      {responseEducation.map((education: Education, key) => (
-        <CardContainer
-          key={key}
-          logoSrc={education.Image}
-          metaDataCardView={
-            <CardOverflow sx={cardStyles.cardOverflow}>
-              <Typography level="body-md" fontWeight="lg">
-                {education.School}
-              </Typography>
-              <Typography level="body-sm" fontWeight="lg">
-                {education.Major}
-              </Typography>
-              <Typography level="body-sm" fontWeight="md">
-                {"GPA: " + education.Grade}
-              </Typography>
-
-              <Typography level="body-sm" fontWeight="md">
-                {education.StartDate} - {education.EndDate}
-              </Typography>
-            </CardOverflow>
-          }
-          additionalCardView={
-            <CardOverflow sx={cardStyles.cardOverflow}>
-              <Typography level="body-sm" fontWeight="lg">
-                "{education.Description}"
-              </Typography>
-            </CardOverflow>
-          }
-        />
-      ))}
-    </Stack>
+    <Box>
+      <Box className="term-dim" sx={{ px: 1.25, pb: 0.5 }}>
+        total {responseEducation.length}
+      </Box>
+      {responseEducation.map((e, i) => {
+        const slug = educationSlug(e, i);
+        const open = isExpanded(entryId, "education", slug);
+        return (
+          <Fragment key={slug}>
+            <EducationRow
+              data={e}
+              slug={slug}
+              index={i}
+              expanded={open}
+              onToggle={() => toggle(entryId, "education", slug)}
+            />
+            {open && <EducationDetail data={e} />}
+          </Fragment>
+        );
+      })}
+    </Box>
   );
 };

@@ -1,13 +1,81 @@
-.home-button {
-    color: "#889def";
-    max-width: "20%";
-    align-self: "center";
-    font-size: "1.5rem";
+/* Glass-terminal utility classes. Tokens live in src/theme/terminal.ts. */
+
+.term-mono {
+  font-family: "JetBrains Mono", "Fira Code", "Courier New", ui-monospace,
+    monospace;
+  font-variant-numeric: tabular-nums;
 }
 
-.category-button {
-    color: "#889def";
-    max-width: "25%";
-    align-self: "center";
-    font-size: "1.5rem";
+.term-accent {
+  color: hsla(180, 100%, 70%, 0.85);
+}
+
+.term-dim {
+  color: hsla(180, 30%, 85%, 0.65);
+}
+
+/* Blinking block cursor */
+.term-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  vertical-align: -0.15em;
+  margin-left: 2px;
+  background: hsla(180, 100%, 70%, 0.85);
+  animation: term-blink 1s steps(2, start) infinite;
+}
+
+@keyframes term-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* Full-screen scanline overlay. Mounted once at the App root. */
+.term-scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    to bottom,
+    hsla(180, 100%, 70%, 0.04) 0,
+    hsla(180, 100%, 70%, 0.04) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+/* Themed scrollbar for the in-panel scroll container. */
+.term-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: hsla(180, 100%, 70%, 0.4) transparent;
+}
+
+.term-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.term-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.term-scroll::-webkit-scrollbar-thumb {
+  background: hsla(180, 100%, 70%, 0.35);
+  border-radius: 4px;
+}
+
+.term-scroll::-webkit-scrollbar-thumb:hover {
+  background: hsla(180, 100%, 70%, 0.6);
+}
+
+/* Respect reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  .term-cursor {
+    animation: none;
+  }
+  .term-scanlines {
+    display: none;
+  }
 }
