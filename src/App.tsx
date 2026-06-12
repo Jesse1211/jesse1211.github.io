@@ -58,8 +58,8 @@ export const App: FC = () => {
               }}
             >
               <Home />
-              <Footer />
             </div>
+            <Footer />
           </LocationProvider>
         </PortfolioProvider>
         <div className="term-scanlines" aria-hidden />
