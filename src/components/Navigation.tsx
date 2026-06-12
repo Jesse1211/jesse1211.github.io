@@ -38,8 +38,13 @@ export const Navigation: FC = () => {
       direction="row"
       spacing={1}
       alignItems="center"
-      className="term-glass term-mono"
+      className="term-mono"
       sx={{
+        background: "hsla(240, 55%, 6%, 0.85)",
+        backdropFilter: "blur(36px) saturate(140%)",
+        WebkitBackdropFilter: "blur(36px) saturate(140%)",
+        border: "1px solid hsla(180,100%,70%,0.4)",
+        borderRadius: "4px",
         position: "fixed",
         top: 12,
         right: 12,
