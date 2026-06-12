@@ -55,7 +55,6 @@ export const LocationProvider: FC<{ children: ReactNode }> = ({ children }) => {
         action: { kind: "enterCategory", category },
       },
       { id: nextId("ls"), kind: "lsCategory", category },
-      { id: nextId("hint"), kind: "hint", current: category },
     ],
     [nextId],
   );
@@ -71,7 +70,6 @@ export const LocationProvider: FC<{ children: ReactNode }> = ({ children }) => {
         action: { kind: "enterAbout" },
       },
       { id: nextId("about"), kind: "about" },
-      { id: nextId("hint"), kind: "hint", current: "about" },
     ],
     [nextId],
   );

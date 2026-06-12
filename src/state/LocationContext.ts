@@ -15,8 +15,6 @@ export type CmdAction =
   | { kind: "enterHome" }
   | { kind: "lsCategories" };
 
-export type HintContext = "education" | "experience" | "about";
-
 export type HistoryEntry =
   | {
       id: string;
@@ -30,8 +28,7 @@ export type HistoryEntry =
   | { id: string; kind: "answerKey"; key: LocaleKey; animate: boolean }
   | { id: string; kind: "categories" }
   | { id: string; kind: "lsCategory"; category: "education" | "experience" }
-  | { id: string; kind: "about" }
-  | { id: string; kind: "hint"; current: HintContext };
+  | { id: string; kind: "about" };
 
 export interface LocationValue {
   path: string; // "~", "~/education", "~/education/01-cornell"

@@ -9,6 +9,7 @@ import {
 import { Box, Stack } from "@mui/joy";
 import { StarAndPlanet } from "./canvas/StarAndPlanet";
 import {
+  Cursor,
   GlassPanel,
   Prompt,
   TypeLine,
@@ -18,7 +19,6 @@ import {
 import { useLocation } from "../state/LocationContext";
 import type {
   CmdAction,
-  HintContext,
   HistoryEntry,
   LocaleKey,
 } from "../state/LocationContext";
@@ -30,6 +30,8 @@ import { AboutMeView } from "./categories/AboutMeView/AboutMeView";
 const TYPING_MS_PER_CHAR = 20; // fast
 const STAGGER_MS = 80;
 const TYPING_BUFFER_MS = 120;
+
+type Location = "home" | "education" | "experience" | "about";
 
 const i18n = (key: LocaleKey, cn: boolean): string => {
   switch (key) {
@@ -49,13 +51,43 @@ const i18n = (key: LocaleKey, cn: boolean): string => {
 const typingDuration = (text: string): number =>
   text.length * TYPING_MS_PER_CHAR + TYPING_BUFFER_MS;
 
+// Walk the history backwards to find the most recent enterX action,
+// which tells us what kind of suggestions to surface beside the
+// trailing prompt.
+const currentLocationOf = (history: HistoryEntry[]): Location => {
+  for (let i = history.length - 1; i >= 0; i--) {
+    const e = history[i];
+    if (e.kind !== "cmd" || !e.action) continue;
+    switch (e.action.kind) {
+      case "enterCategory":
+        return e.action.category;
+      case "enterAbout":
+        return "about";
+      case "enterHome":
+        return "home";
+      case "lsCategories":
+        // ls categories/ is a menu, not a "place" — keep looking back.
+        continue;
+    }
+  }
+  return "home";
+};
+
 export const Home: FC = () => {
   useEffect(() => {
     StarAndPlanet();
   }, []);
 
-  const { history, bootstrap, replayFrom, chooseFromMenu, path } =
-    useLocation();
+  const {
+    history,
+    bootstrap,
+    replayFrom,
+    chooseFromMenu,
+    enterCategory,
+    enterAbout,
+    enterHome,
+    path,
+  } = useLocation();
   const { $locale, data } = useContext(PortfolioContext);
   const cn = $locale === "zh-CN";
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -138,6 +170,20 @@ export const Home: FC = () => {
       chooseFromMenu(menuEntryId, { kind: "enterCategory", category: key });
     } else if (key === "about") {
       chooseFromMenu(menuEntryId, { kind: "enterAbout" });
+    }
+  };
+
+  const handleTrailingAction = (action: CmdAction) => {
+    switch (action.kind) {
+      case "enterCategory":
+        return enterCategory(action.category);
+      case "enterAbout":
+        return enterAbout();
+      case "enterHome":
+        return enterHome();
+      case "lsCategories":
+        // Not used in trailing chips.
+        return;
     }
   };
 
@@ -234,16 +280,11 @@ export const Home: FC = () => {
         );
       case "about":
         return <AboutMeView introduction={data[$locale].introduction} />;
-      case "hint":
-        return (
-          <HintChips
-            hintEntryId={e.id}
-            current={e.current}
-            onAction={(action) => chooseFromMenu(e.id, action)}
-          />
-        );
     }
   };
+
+  const location = currentLocationOf(history);
+  const trailingItems = trailingSuggestions(location);
 
   return (
     <Stack
@@ -283,7 +324,11 @@ export const Home: FC = () => {
             });
           })()}
           <Reveal delayMs={tailDelay} mode="fade">
-            <Prompt showCursor path={path} />
+            <TrailingPrompt
+              path={path}
+              items={trailingItems}
+              onAction={handleTrailingAction}
+            />
           </Reveal>
         </Stack>
       </GlassPanel>
@@ -329,11 +374,12 @@ const CategoryChips: FC<{
   );
 };
 
-type HintItem = { label: string; action: CmdAction };
+type TrailingItem =
+  | { label: string; action: CmdAction; external?: undefined }
+  | { label: string; external: string; action?: undefined };
 
-const hintItemsFor = (current: HintContext): HintItem[] => {
-  // Show jumps to the other top-level dirs first, then up to home.
-  const items: HintItem[] = [];
+const trailingSuggestions = (current: Location): TrailingItem[] => {
+  const items: TrailingItem[] = [];
   if (current !== "education") {
     items.push({
       label: "education/",
@@ -346,42 +392,46 @@ const hintItemsFor = (current: HintContext): HintItem[] => {
       action: { kind: "enterCategory", category: "experience" },
     });
   }
+  items.push({ label: "blog/", external: "https://blog.jesseliu.me" });
   if (current !== "about") {
     items.push({ label: "about/", action: { kind: "enterAbout" } });
   }
-  items.push({ label: "~", action: { kind: "enterHome" } });
+  if (current !== "home") {
+    items.push({ label: "~", action: { kind: "enterHome" } });
+  }
   return items;
 };
 
-const HintChips: FC<{
-  hintEntryId: string;
-  current: HintContext;
+const TrailingPrompt: FC<{
+  path: string;
+  items: TrailingItem[];
   onAction: (action: CmdAction) => void;
-}> = ({ hintEntryId, current, onAction }) => {
-  const items = hintItemsFor(current);
-  return (
-    <Stack
-      direction="row"
-      spacing={1.2}
-      flexWrap="wrap"
-      sx={{ pt: 0.5, alignItems: "center" }}
+}> = ({ path, items, onAction }) => (
+  <Prompt path={path}>
+    <Box
+      component="span"
+      sx={{
+        display: "inline-flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        gap: 1,
+      }}
     >
-      <Box
-        component="span"
-        sx={{
-          color: "hsla(180,30%,85%,0.55)",
-          fontStyle: "italic",
-          fontSize: "0.9em",
-          mr: 0.5,
-        }}
-      >
-        # next:
-      </Box>
+      <Cursor />
       {items.map((it, i) => (
-        <Chip key={`${hintEntryId}-${i}`} onClick={() => onAction(it.action)}>
+        <Chip
+          key={i}
+          onClick={() => {
+            if (it.external) {
+              window.open(it.external, "_blank", "noopener,noreferrer");
+            } else if (it.action) {
+              onAction(it.action);
+            }
+          }}
+        >
           [{it.label}]
         </Chip>
       ))}
-    </Stack>
-  );
-};
+    </Box>
+  </Prompt>
+);
