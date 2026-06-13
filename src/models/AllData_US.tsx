@@ -73,7 +73,7 @@ export const experienceUS: Experience[] = [
   {
     _id: "1",
     StartDate: "Sep 2025",
-    EndDate: "Jul 2026",
+    EndDate: "Jun 2026",
     Title: "Platform Software Engineer",
     Company: "ProtonBase",
     Location: "Hangzhou, China",
