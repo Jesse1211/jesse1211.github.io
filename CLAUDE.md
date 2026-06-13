@@ -229,6 +229,77 @@ src/
   `trailingSuggestions`, `CategoryChips`, and add the corresponding
   `enterX` to the provider + a `CmdAction` variant.
 
+## Editing portfolio data
+
+All visible content lives in `src/models/AllData_US.tsx` and
+`src/models/AllData_CN.tsx`. **Both files must stay in sync** —
+the locale switch in the navigation bar reads from whichever
+matches `$locale`. If you only edit one, switching language reveals
+stale or missing data.
+
+The `Experience` shape is defined in `src/models/Categories.tsx`:
+
+```ts
+{
+  _id: string;          // "1".."N", contiguous; see below
+  StartDate: string;    // "Sep 2025" / "2025年9月"
+  EndDate: string;      // "Jun 2026" / "2026年6月" / "Present" / "至今"
+  Title: string;
+  Company: string;
+  Location: string;
+  Description: string;  // one-line summary, shown in detail
+  Image?: string;       // "./protonbase.png" — file lives in public/
+  Link?: string;        // becomes a "$ open <url>" chip
+  Brief: Map<string, string[]>;
+}
+```
+
+`Brief` is a 2-level hierarchy: each key is a heading (rendered with
+`▸`), each value is a list of sub-bullets (rendered with `-`). Pass
+`[]` for a heading with no sub-bullets. Example:
+
+```ts
+Brief: new Map([
+  [
+    "Built X with Y impact",
+    [
+      "Sub-bullet 1.",
+      "Sub-bullet 2.",
+    ],
+  ],
+  ["A standalone line with no sub-bullets", []],
+])
+```
+
+`Education` is similar but flatter — see the existing entries for
+field shape.
+
+### `_id` is contiguous
+
+`_id` values must be `"1"`, `"2"`, … without gaps. The slug helpers
+(`educationSlug` / `experienceSlug` in `src/state/locationSlug.ts`)
+derive the row's URL-style identifier from this, and the
+LocationContext's `expanded` Set keys depend on it. When inserting
+in the middle, **renumber all later entries** — `git grep '_id: "'
+src/models/` is the quick check.
+
+### Images
+
+Logos and other assets go in `public/<name>.png`. Vite copies the
+entire `public/` tree into `dist/` at build time. Reference them
+from data as `"./name.png"` (with the leading `./`) so the path
+works under the custom domain root.
+
+**Never put assets in `dist/` directly** — `pnpm build` wipes that
+directory.
+
+### List order
+
+`experienceUS[0]` renders first in the `$ ls -la experience/`
+output (top of the list). The convention is reverse-chronological:
+the most recent role goes at index 0. New role goes to the top,
+everything else shifts down.
+
 ## Gotchas / non-obvious decisions
 
 - **Joy `<Box>` overrides CSS classes for `background`** — use `sx`
