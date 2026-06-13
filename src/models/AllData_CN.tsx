@@ -62,7 +62,7 @@ export const experienceCN: Experience[] = [
   {
     _id: "1",
     StartDate: "2025年9月",
-    EndDate: "2026年7月",
+    EndDate: "2026年6月",
     Title: "平台软件工程师",
     Company: "ProtonBase",
     Location: "中国杭州",
