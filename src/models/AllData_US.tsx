@@ -72,6 +72,37 @@ export const educationUS: Education[] = [
 export const experienceUS: Experience[] = [
   {
     _id: "1",
+    StartDate: "Sep 2025",
+    EndDate: "Jul 2026",
+    Title: "Platform Software Engineer",
+    Company: "ProtonBase",
+    Location: "Hangzhou, China",
+    Description:
+      "Cloud-native data warehouse platform — Kubernetes-based multi-tenant infrastructure with disaggregated storage and compute.",
+    Brief: new Map([
+      [
+        "Built multi-tenant, cloud-native data warehouse platform on Kubernetes with a disaggregated storage-compute architecture",
+        [
+          "Custom Kubernetes operators managing a four-layer resource model.",
+          "Datacloud — tenant isolation boundary.",
+          "Catalog — shared storage layer.",
+          "Warebase — compute cluster.",
+          "SuperNode — individual node.",
+        ],
+      ],
+      [
+        "Optimized Point-In-Time Recovery from scheduled batch processing to continuous monitoring with a flow-controlled concurrent pipeline",
+        [
+          "Reduced backup time by 70%.",
+          "Reduced WAL backlog by 500%.",
+        ],
+      ],
+    ]),
+    Image: "./protonbase.png",
+    Link: "https://protonbase.com",
+  },
+  {
+    _id: "2",
     StartDate: "Jan 2024",
     EndDate: "Jul 2025",
     Title: "Full-Stack Developer, Team Lead",
@@ -123,7 +154,7 @@ export const experienceUS: Experience[] = [
     Link: "https://dashboard.diaper-project.com",
   },
   {
-    _id: "2",
+    _id: "3",
     StartDate: "Oct 2022",
     EndDate: "Dec 2023",
     Title: "Co-founder & Full-Stack Developer",
@@ -164,7 +195,7 @@ export const experienceUS: Experience[] = [
     Link: "https://eduroute.ai/",
   },
   {
-    _id: "3",
+    _id: "4",
     StartDate: "May 2023",
     EndDate: "Jun 2023",
     Title: "Team Leader: 2D RPG Game Development",
@@ -183,7 +214,7 @@ export const experienceUS: Experience[] = [
     ]),
   },
   {
-    _id: "4",
+    _id: "5",
     StartDate: "Aug.2023",
     EndDate: "Dec.2023",
     Title: "Shopping website front-end",
