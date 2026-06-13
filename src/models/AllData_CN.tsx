@@ -62,7 +62,7 @@ export const experienceCN: Experience[] = [
   {
     _id: "1",
     StartDate: "2024年1月",
-    EndDate: "至今",
+    EndDate: "2025年7月",
     Title: "全栈开发工程师, 团队负责人",
     Company: "康奈尔大学 DIAPER 实验室",
     Location: "纽约州伊萨卡",
@@ -113,25 +113,6 @@ export const experienceCN: Experience[] = [
   },
   {
     _id: "2",
-    StartDate: "2024年7月",
-    EndDate: "至今",
-    Title: "全栈开发工程师",
-    Company: "Meta Compass Inc.",
-    Location: "远程",
-    Description: "更优的一体化 AI 平台",
-    Brief: new Map([
-      [
-        "开发网页应用, 帮助设计师快速查找带参数的 Midjourney 图像, 月活跃用户达 2000",
-        [],
-      ],
-      ["使用 AWS S3 进行图片的增删查改操作, 延迟降低超 40%", []],
-      ["部署服务于 Vercel 与 AWS LightSail 平台, 确保性价比与未来扩展性", []],
-    ]),
-    Image: "./Metachat_Logo.png",
-    Link: "https://www.metachat.one/#/",
-  },
-  {
-    _id: "3",
     StartDate: "2022年10月",
     EndDate: "2023年12月",
     Title: "联合创始人 & 全栈开发工程师",
@@ -172,7 +153,7 @@ export const experienceCN: Experience[] = [
     Link: "https://eduroute.ai/",
   },
   {
-    _id: "4",
+    _id: "3",
     StartDate: "2023年5月",
     EndDate: "2023年6月",
     Title: "团队负责人: 2D RPG 游戏开发",
@@ -190,7 +171,7 @@ export const experienceCN: Experience[] = [
     ]),
   },
   {
-    _id: "5",
+    _id: "4",
     StartDate: "2023年8月",
     EndDate: "2023年12月",
     Title: "购物网站前端开发",

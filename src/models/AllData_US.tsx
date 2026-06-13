@@ -73,7 +73,7 @@ export const experienceUS: Experience[] = [
   {
     _id: "1",
     StartDate: "Jan 2024",
-    EndDate: "Present",
+    EndDate: "Jul 2025",
     Title: "Full-Stack Developer, Team Lead",
     Company: "Cornell University DIAPER Lab",
     Location: "Ithaca, NY",
@@ -124,31 +124,6 @@ export const experienceUS: Experience[] = [
   },
   {
     _id: "2",
-    StartDate: "Jul 2024",
-    EndDate: "Present",
-    Title: "Full-Stack Developer",
-    Company: "Meta Compass Inc.",
-    Location: "Remote",
-    Description: "Better all-in-one AI platform",
-    Brief: new Map([
-      [
-        "Implemented web app to help digital designers find Midjourney images with parameters with 2000 MAU",
-        [],
-      ],
-      [
-        "Leveraged AWS S3 to exhibit 40%+ lower latency for binary image CRUD operations",
-        [],
-      ],
-      [
-        "Deployed services on Vercel and AWS LightSail to ensure cost-effective and prepare future service expansion",
-        [],
-      ],
-    ]),
-    Image: "./Metachat_Logo.png",
-    Link: "https://www.metachat.one/#/",
-  },
-  {
-    _id: "3",
     StartDate: "Oct 2022",
     EndDate: "Dec 2023",
     Title: "Co-founder & Full-Stack Developer",
@@ -189,7 +164,7 @@ export const experienceUS: Experience[] = [
     Link: "https://eduroute.ai/",
   },
   {
-    _id: "4",
+    _id: "3",
     StartDate: "May 2023",
     EndDate: "Jun 2023",
     Title: "Team Leader: 2D RPG Game Development",
@@ -208,7 +183,7 @@ export const experienceUS: Experience[] = [
     ]),
   },
   {
-    _id: "5",
+    _id: "4",
     StartDate: "Aug.2023",
     EndDate: "Dec.2023",
     Title: "Shopping website front-end",
