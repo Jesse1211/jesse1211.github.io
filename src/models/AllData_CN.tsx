@@ -61,6 +61,37 @@ export const educationCN: Education[] = [
 export const experienceCN: Experience[] = [
   {
     _id: "1",
+    StartDate: "2025年9月",
+    EndDate: "2026年7月",
+    Title: "平台软件工程师",
+    Company: "ProtonBase",
+    Location: "中国杭州",
+    Description:
+      "云原生数据仓库平台 —— 基于 Kubernetes 的多租户基础设施, 存储与计算解耦架构。",
+    Brief: new Map([
+      [
+        "基于 Kubernetes 与 存储-计算解耦架构, 构建多租户、云原生的数据仓库平台",
+        [
+          "通过自研 Kubernetes Operator 管理四层资源模型。",
+          "Datacloud —— 租户隔离边界。",
+          "Catalog —— 共享存储层。",
+          "Warebase —— 计算集群。",
+          "SuperNode —— 单节点。",
+        ],
+      ],
+      [
+        "将 PITR 时间点恢复从定时批处理迁移到带流控的并发管道连续监控",
+        [
+          "备份耗时降低 70%。",
+          "WAL 积压减少 500%。",
+        ],
+      ],
+    ]),
+    Image: "./protonbase.png",
+    Link: "https://protonbase.com",
+  },
+  {
+    _id: "2",
     StartDate: "2024年1月",
     EndDate: "2025年7月",
     Title: "全栈开发工程师, 团队负责人",
@@ -112,7 +143,7 @@ export const experienceCN: Experience[] = [
     Link: "https://dashboard.diaper-project.com",
   },
   {
-    _id: "2",
+    _id: "3",
     StartDate: "2022年10月",
     EndDate: "2023年12月",
     Title: "联合创始人 & 全栈开发工程师",
@@ -153,7 +184,7 @@ export const experienceCN: Experience[] = [
     Link: "https://eduroute.ai/",
   },
   {
-    _id: "3",
+    _id: "4",
     StartDate: "2023年5月",
     EndDate: "2023年6月",
     Title: "团队负责人: 2D RPG 游戏开发",
@@ -171,7 +202,7 @@ export const experienceCN: Experience[] = [
     ]),
   },
   {
-    _id: "4",
+    _id: "5",
     StartDate: "2023年8月",
     EndDate: "2023年12月",
     Title: "购物网站前端开发",
