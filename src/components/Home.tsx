@@ -27,6 +27,8 @@ import { PortfolioContext } from "./PortfolioContext";
 import { EducationView } from "./categories/EducationView";
 import { ExperienceView } from "./categories/ExperienceView";
 import { AboutMeView } from "./categories/AboutMeView/AboutMeView";
+import ScrollReveal from "./effects/ScrollReveal";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const TYPING_MS_PER_CHAR = 20; // fast
 const STAGGER_MS = 80;
@@ -145,20 +147,27 @@ export const Home: FC = () => {
     for (const e of history) seenIdsRef.current.add(e.id);
   }, [history]);
 
-  // Auto-scroll to the bottom of the terminal whenever history grows.
-  // Reveals stagger over `tailDelay` ms and each one grows its
-  // max-height over ~260ms, so keep pinning scrollTop until the
-  // tail of the latest sequence has had time to settle.
+  // Smoothly scroll toward the bottom when history grows. A snap-to-
+  // bottom would teleport past ScrollTrigger thresholds; easing the
+  // scroll lets each newly-revealed line cross its trigger as it
+  // passes the reveal point. We refresh ScrollTrigger first so the new
+  // content's scrollHeight is measured.
   useLayoutEffect(() => {
     const node = scrollRef.current;
     if (!node) return;
+    ScrollTrigger.refresh();
     const start = performance.now();
-    const deadline = tailDelay + 500;
+    const deadline = tailDelay + 700;
     let raf = 0;
     const tick = () => {
-      node.scrollTop = node.scrollHeight;
-      if (performance.now() - start < deadline) {
+      const target = node.scrollHeight - node.clientHeight;
+      const delta = target - node.scrollTop;
+      // Ease ~18% of the remaining distance per frame.
+      node.scrollTop += delta * 0.18;
+      if (performance.now() - start < deadline && Math.abs(delta) > 0.5) {
         raf = window.requestAnimationFrame(tick);
+      } else {
+        node.scrollTop = target;
       }
     };
     raf = window.requestAnimationFrame(tick);
@@ -343,13 +352,20 @@ export const Home: FC = () => {
             return history.map((entry) => {
               const showDivider = entry.kind === "cmd" && seenCmd;
               if (entry.kind === "cmd") seenCmd = true;
+              const alreadySeen = seenIdsRef.current.has(entry.id);
               return (
-                <Reveal
-                  key={entry.id}
-                  delayMs={revealDelay[entry.id] ?? 0}
-                >
+                <Reveal key={entry.id} delayMs={revealDelay[entry.id] ?? 0}>
                   {showDivider && <SectionDivider />}
-                  {renderEntry(entry)}
+                  <ScrollReveal
+                    scrollContainerRef={scrollRef}
+                    disabled={alreadySeen}
+                    enableBlur
+                    baseOpacity={0.12}
+                    baseRotation={2}
+                    blurStrength={4}
+                  >
+                    {renderEntry(entry)}
+                  </ScrollReveal>
                 </Reveal>
               );
             });
