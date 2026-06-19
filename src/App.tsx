@@ -16,7 +16,6 @@ import { Navigation } from "./components/Navigation";
 import { PortfolioProvider } from "./components/PortfolioProvider";
 import { LocationProvider } from "./state/LocationProvider";
 import { fontStack } from "./theme/terminal";
-import TargetCursor from "./components/effects/TargetCursor";
 import PrismBackground from "./components/canvas/PrismBackground";
 
 const materialTheme = materialExtendTheme();
@@ -43,7 +42,6 @@ export const App: FC = () => {
       theme={{ [MATERIAL_THEME_ID]: materialTheme }}
     >
       <JoyCssVarsProvider defaultMode="dark" theme={THEME}>
-        <TargetCursor />
         <PrismBackground />
         <canvas id="zdog-canvas" className="canvas"></canvas>
         <CssBaseline />
