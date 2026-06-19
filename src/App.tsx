@@ -17,6 +17,7 @@ import { PortfolioProvider } from "./components/PortfolioProvider";
 import { LocationProvider } from "./state/LocationProvider";
 import { fontStack } from "./theme/terminal";
 import TargetCursor from "./components/effects/TargetCursor";
+import PrismBackground from "./components/canvas/PrismBackground";
 
 const materialTheme = materialExtendTheme();
 
@@ -43,6 +44,7 @@ export const App: FC = () => {
     >
       <JoyCssVarsProvider defaultMode="dark" theme={THEME}>
         <TargetCursor />
+        <PrismBackground />
         <canvas className="canvas"></canvas>
         <CssBaseline />
         <Outlet />
