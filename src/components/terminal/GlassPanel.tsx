@@ -33,9 +33,7 @@ export const GlassPanel: FC<{
         className="term-mono"
         sx={[
           {
-            background: "hsla(240, 55%, 8%, 0.35)",
-            backdropFilter: "blur(32px) saturate(140%)",
-            WebkitBackdropFilter: "blur(32px) saturate(140%)",
+            background: "transparent",
             border: "1px solid hsla(180,100%,70%,0.18)",
             borderRadius: "4px",
             color: "hsla(180,30%,92%,0.95)",

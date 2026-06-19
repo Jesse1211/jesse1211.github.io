@@ -12,21 +12,32 @@
     />
     <style>
       html,
-      body,
-      #root {
+      body {
         height: 100%;
+        /* Base color sits behind Prism (z-index -2) and the Zdog canvas. */
         background: #0e0f43;
         font-family: "JetBrains Mono", "Fira Code", "Courier New", ui-monospace,
           monospace;
         color: hsla(180, 30%, 92%, 0.95);
+      }
+      #root {
+        height: 100%;
+        /* MUST stay transparent. #root paints at z-index 0 — above the
+           negative-z background canvases — so an opaque fill here would
+           occlude Prism + Zdog entirely. */
+        background: transparent;
       }
       #zdog-canvas {
         display: block;
         width: 100%;
         height: 100%;
         position: fixed;
+        inset: 0;
         background: transparent;
-        z-index: -1;
+        /* Non-negative z-index. The Zdog stars/floaters sit ABOVE Prism
+           (z-index 1) but BELOW the terminal. Negative z-index here put
+           it behind the page base layer and it never composited. */
+        z-index: 2;
       }
     </style>
   </head>
