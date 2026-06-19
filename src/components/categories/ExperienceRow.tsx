@@ -2,6 +2,19 @@ import { FC } from "react";
 import { Box } from "@mui/joy";
 import { Experience } from "../../models/Categories";
 
+// On narrow screens the fixed-em columns exceed the panel width, so we
+// let the row scroll horizontally inside this wrapper instead of being
+// clipped (the panel body is overflowX:hidden). Desktop is wide enough
+// that the row fits and no scrollbar appears.
+const scrollerSx = {
+  width: "100%",
+  overflowX: "auto",
+  overflowY: "hidden",
+  scrollbarWidth: "thin",
+  scrollbarColor: "hsla(180,100%,70%,0.4) transparent",
+  WebkitOverflowScrolling: "touch",
+} as const;
+
 const rowSx = {
   display: "grid",
   gridTemplateColumns: "7em 2em 1.7em 14em 11em 1fr 1em",
@@ -17,7 +30,10 @@ const rowSx = {
   border: 0,
   color: "inherit",
   font: "inherit",
+  // Keep intrinsic width so columns don't collapse; wrapper scrolls when
+  // it exceeds the viewport.
   width: "100%",
+  minWidth: "37em",
   "&:hover, &:focus-visible": {
     backgroundColor: "hsla(180,100%,70%,0.08)",
     borderLeftColor: "hsla(180,100%,70%,0.85)",
@@ -36,6 +52,7 @@ export const ExperienceRow: FC<{
   expanded: boolean;
   onToggle: () => void;
 }> = ({ data, slug, index, expanded, onToggle }) => (
+  <Box className="term-scroll" sx={scrollerSx}>
   <Box
     component="button"
     type="button"
@@ -92,5 +109,6 @@ export const ExperienceRow: FC<{
     <Box component="span" className="term-accent" sx={{ textAlign: "right" }}>
       {expanded ? "▾" : "▸"}
     </Box>
+  </Box>
   </Box>
 );

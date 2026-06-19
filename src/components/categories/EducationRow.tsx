@@ -2,6 +2,21 @@ import { FC } from "react";
 import { Box } from "@mui/joy";
 import { Education } from "../../models/Categories";
 
+// On narrow screens the fixed-em columns exceed the panel width, so we
+// let the row scroll horizontally inside this wrapper instead of being
+// clipped (the panel body is overflowX:hidden). Desktop is wide enough
+// that the row fits and no scrollbar appears.
+const scrollerSx = {
+  width: "100%",
+  overflowX: "auto",
+  overflowY: "hidden",
+  // Thin themed scrollbar to match the terminal (term-scroll class also
+  // applied for the webkit rules).
+  scrollbarWidth: "thin",
+  scrollbarColor: "hsla(180,100%,70%,0.4) transparent",
+  WebkitOverflowScrolling: "touch",
+} as const;
+
 const rowSx = {
   display: "grid",
   gridTemplateColumns: "7em 2em 1.7em 14em 11em 1fr 1em",
@@ -17,7 +32,11 @@ const rowSx = {
   border: 0,
   color: "inherit",
   font: "inherit",
+  // Keep the row's intrinsic width so columns don't collapse; the
+  // wrapper scrolls when this exceeds the viewport. ~37em covers the
+  // fixed columns + gaps + the 1fr school column.
   width: "100%",
+  minWidth: "37em",
   "&:hover, &:focus-visible": {
     backgroundColor: "hsla(180,100%,70%,0.08)",
     borderLeftColor: "hsla(180,100%,70%,0.85)",
@@ -36,6 +55,7 @@ export const EducationRow: FC<{
   expanded: boolean;
   onToggle: () => void;
 }> = ({ data, slug, index, expanded, onToggle }) => (
+  <Box className="term-scroll" sx={scrollerSx}>
   <Box
     component="button"
     type="button"
@@ -78,5 +98,6 @@ export const EducationRow: FC<{
     <Box component="span" className="term-accent" sx={{ textAlign: "right" }}>
       {expanded ? "▾" : "▸"}
     </Box>
+  </Box>
   </Box>
 );
