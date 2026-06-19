@@ -45,7 +45,7 @@ export const App: FC = () => {
       <JoyCssVarsProvider defaultMode="dark" theme={THEME}>
         <TargetCursor />
         <PrismBackground />
-        <canvas className="canvas"></canvas>
+        <canvas id="zdog-canvas" className="canvas"></canvas>
         <CssBaseline />
         <Outlet />
         <PortfolioProvider>
