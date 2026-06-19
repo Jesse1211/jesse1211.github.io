@@ -4,6 +4,13 @@
   border-radius: inherit;
   overflow: visible;
   isolation: isolate;
+  /* When used as a flex child (e.g. the terminal panel) the wrapper and
+     its in-flow content layer must propagate the height constraint down
+     to the glass body, otherwise the scroll body never gets a bounded
+     height and content overflows the viewport. The consumer sets
+     display:flex + flex:1 on the root via the `style` prop; this keeps
+     the column direction even without it. */
+  flex-direction: column;
 }
 
 .eb-canvas-container {
@@ -23,6 +30,12 @@
   position: relative;
   border-radius: inherit;
   z-index: 1;
+  /* In-flow child of .electric-border. Must stretch so the panel inside
+     fills the constrained wrapper height (fixes overflow / no-scroll). */
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .eb-layers {

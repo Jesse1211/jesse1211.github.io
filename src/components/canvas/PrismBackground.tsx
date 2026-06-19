@@ -23,15 +23,18 @@ const PrismBackground: FC = () => {
     }
 
     // ---- Tunable config (palette + motion). ----
-    const height = 3.5;
-    const baseWidth = 5.5;
-    const glow = 1;
-    const noise = 0.35;
+    // animationType "3drotate": the prism tumbles in 3D (vs the default
+    // base-wobble "rotate"). Values mirror the ReactBits playground.
+    const animationType: "rotate" | "3drotate" = "3drotate";
+    const height = 3.7;
+    const baseWidth = 5.4;
+    const glow = 0.45;
+    const noise = 0.65;
     const transparent = true;
-    const scale = 3.6;
-    const hueShift = 0.45; // toward cyan
-    const colorFrequency = 1.1;
-    const timeScale = 0.4;
+    const scale = 4.9;
+    const hueShift = 0.2;
+    const colorFrequency = 3.05;
+    const timeScale = 1.1;
 
     const H = Math.max(0.001, height);
     const BW = Math.max(0.001, baseWidth);
@@ -197,7 +200,8 @@ const PrismBackground: FC = () => {
         iTime: { value: 0 },
         uHeight: { value: H },
         uBaseHalf: { value: BASE_HALF },
-        uUseBaseWobble: { value: 1 },
+        // 3drotate drives rotation via uRot each frame; base wobble off.
+        uUseBaseWobble: { value: animationType === "3drotate" ? 0 : 1 },
         uRot: { value: new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]) },
         uGlow: { value: GLOW },
         uOffsetPx: { value: offsetPxBuf },
@@ -231,11 +235,62 @@ const PrismBackground: FC = () => {
     ro.observe(container);
     resize();
 
+    // Euler → column-major mat3 (verbatim from ReactBits Prism).
+    const rotBuf = new Float32Array(9);
+    const setMat3FromEuler = (
+      yawY: number,
+      pitchX: number,
+      rollZ: number,
+      out: Float32Array,
+    ) => {
+      const cy = Math.cos(yawY);
+      const sy = Math.sin(yawY);
+      const cx = Math.cos(pitchX);
+      const sx = Math.sin(pitchX);
+      const cz = Math.cos(rollZ);
+      const sz = Math.sin(rollZ);
+      const r00 = cy * cz + sy * sx * sz;
+      const r01 = -cy * sz + sy * sx * cz;
+      const r02 = sy * cx;
+      const r10 = cx * sz;
+      const r11 = cx * cz;
+      const r12 = -sx;
+      const r20 = -sy * cz + cy * sx * sz;
+      const r21 = sy * sz + cy * sx * cz;
+      const r22 = cy * cx;
+      out[0] = r00;
+      out[1] = r10;
+      out[2] = r20;
+      out[3] = r01;
+      out[4] = r11;
+      out[5] = r21;
+      out[6] = r02;
+      out[7] = r12;
+      out[8] = r22;
+      return out;
+    };
+
+    // Per-load random spin rates/phases so the tumble differs each reload.
+    const wX = 0.3 + Math.random() * 0.6;
+    const wY = 0.2 + Math.random() * 0.7;
+    const wZ = 0.1 + Math.random() * 0.5;
+    const phX = Math.random() * Math.PI * 2;
+    const phZ = Math.random() * Math.PI * 2;
+
     let raf = 0;
     const t0 = performance.now();
     const render = (t: number) => {
       const time = (t - t0) * 0.001;
       program.uniforms.iTime.value = time;
+
+      if (animationType === "3drotate") {
+        const tScaled = time * TS;
+        const yaw = tScaled * wY;
+        const pitch = Math.sin(tScaled * wX + phX) * 0.6;
+        const roll = Math.sin(tScaled * wZ + phZ) * 0.5;
+        program.uniforms.uRot.value = setMat3FromEuler(yaw, pitch, roll, rotBuf);
+      }
+
       renderer.render({ scene: mesh });
       raf = requestAnimationFrame(render);
     };
