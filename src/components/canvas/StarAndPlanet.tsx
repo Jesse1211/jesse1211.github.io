@@ -204,7 +204,7 @@ const BOX_CONFIGS: BoxConfig[] = BOX_SHAPES.map((s) => ({
 // of slowly rotating stars.
 export const StarAndPlanet = () => {
   const illo = new Illustration({
-    element: "canvas",
+    element: "#zdog-canvas",
     dragRotate: true,
     resize: true,
     zoom: 1.5,

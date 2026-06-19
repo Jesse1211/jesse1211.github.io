@@ -53,12 +53,30 @@ const ScrollReveal: FC<ScrollRevealProps> = ({
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || disabled) return;
+    if (!el) return;
 
-    const scroller =
+    if (disabled) {
+      gsap.set(el, { rotate: 0 });
+      el.querySelectorAll<HTMLElement>(".word").forEach((w) => {
+        gsap.set(w, { opacity: 1, filter: "blur(0px)" });
+      });
+      return;
+    }
+
+    const scrollerEl =
       scrollContainerRef && scrollContainerRef.current
         ? scrollContainerRef.current
-        : undefined;
+        : null;
+
+    const scroller = scrollerEl ?? undefined;
+
+    if (scrollerEl && scrollerEl.scrollHeight <= scrollerEl.clientHeight) {
+      gsap.set(el, { rotate: 0 });
+      el.querySelectorAll<HTMLElement>(".word").forEach((w) =>
+        gsap.set(w, { opacity: 1, filter: "blur(0px)" }),
+      );
+      return;
+    }
 
     const triggers: ScrollTrigger[] = [];
 

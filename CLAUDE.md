@@ -188,10 +188,11 @@ units per reload, so the layout differs every refresh.
 
 The Prism WebGL layer (`src/components/canvas/PrismBackground.tsx`,
 `z-index: -2`) renders BEHIND the Zdog canvas. The Zdog canvas is
-styled by the bare `canvas {}` rule in `index.html`, which gives it
-`background: transparent` and `z-index: -1` so both layers are
-visible. Prism's `.prism-container` uses `z-index: -2`. Both sit
-behind the terminal (`zIndex: 1`). Prism is disabled under
+styled by the `#zdog-canvas {}` rule in `index.html` (scoped to that
+id so it does not leak onto Prism's or ElectricBorder's canvases),
+which gives it `background: transparent` and `z-index: -1` so both
+layers are visible. Prism's `.prism-container` uses `z-index: -2`.
+Both sit behind the terminal (`zIndex: 1`). Prism is disabled under
 `prefers-reduced-motion`. Two rAF loops run (Zdog + Prism) — this
 is intentional fusion, not a bug.
 
