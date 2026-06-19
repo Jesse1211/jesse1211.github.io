@@ -366,6 +366,8 @@ everything else shifts down.
 - **`axios` and `gh-pages` are intentionally NOT in
   `package.json`**. The site reads from static `models/AllData_*`,
   no HTTP calls. Deploys go through Pages Actions, no manual CLI.
+  (Note: `gsap` and `ogl` ARE intentional deps now — see the
+  ReactBits gotcha below.)
 - **ElectricBorder wraps GlassPanel from the OUTSIDE** — its glow
   needs `overflow: visible`, while the panel keeps `overflow: hidden`
   for the scroll body. The glass `border` alpha was dropped to `0.18`
@@ -387,3 +389,8 @@ Those captured the original design discussion; recent commits on
 `main` since the merge supersede some of those decisions (`hint`
 entries removed, ring sphere replaced with multi-shape floaters,
 window controls added).
+
+The four ReactBits effects (ElectricBorder, TargetCursor, Prism,
+scroll-driven ScrollReveal) are specced in
+`docs/superpowers/specs/2026-06-19-reactbits-effects-design.md` and
+planned in `docs/superpowers/plans/2026-06-19-reactbits-effects.md`.
