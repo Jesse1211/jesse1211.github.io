@@ -28,6 +28,7 @@ import { EducationView } from "./categories/EducationView";
 import { ExperienceView } from "./categories/ExperienceView";
 import { AboutMeView } from "./categories/AboutMeView/AboutMeView";
 import ScrollReveal from "./effects/ScrollReveal";
+import ElectricBorder from "./effects/ElectricBorder";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const TYPING_MS_PER_CHAR = 20; // fast
@@ -332,7 +333,8 @@ export const Home: FC = () => {
         maxHeight: 820,
         my: { xs: 2, md: 3 },
         position: "relative" as const,
-        zIndex: 1,
+        // Above the background canvases (Prism z1, Zdog z2).
+        zIndex: 3,
         fontSize: { xs: 14, md: 16, lg: 17 },
       };
 
@@ -395,55 +397,65 @@ const SectionDivider: FC = () => (
 );
 
 // macOS-style minimized dock entry. Click anywhere on it to restore.
+// Wrapped in ElectricBorder so it matches the main terminal frame.
+// ElectricBorder is the fixed, centered outer element (its glow needs
+// overflow:visible, so positioning lives here, not on the button).
 const TerminalDock: FC<{ onRestore: () => void }> = ({ onRestore }) => (
-  <Box
-    component="button"
-    type="button"
-    onClick={onRestore}
-    aria-label="restore terminal"
-    title="restore terminal"
-    className="term-mono"
-    sx={{
+  <ElectricBorder
+    color="hsl(180, 100%, 70%)"
+    speed={1}
+    chaos={0.18}
+    borderRadius={10}
+    style={{
       position: "fixed",
       top: "50%",
       left: "50%",
       transform: "translate(-50%, -50%)",
       zIndex: 20,
-      px: 1.5,
-      py: 0.75,
-      background: "hsla(240, 55%, 8%, 0.55)",
-      backdropFilter: "blur(24px) saturate(140%)",
-      WebkitBackdropFilter: "blur(24px) saturate(140%)",
-      border: "1px solid hsla(180,100%,70%,0.45)",
-      borderRadius: "10px",
-      cursor: "pointer",
-      color: "hsla(180,30%,85%,0.85)",
-      fontSize: 12,
-      letterSpacing: "0.5px",
-      display: "inline-flex",
-      alignItems: "center",
-      gap: 1,
-      transition: "box-shadow .15s, transform .15s",
-      boxShadow: "0 4px 18px hsla(0,0%,0%,0.35)",
-      "&:hover": {
-        transform: "translate(-50%, calc(-50% - 2px))",
-        boxShadow: "0 8px 22px hsla(0,0%,0%,0.45), 0 0 12px hsla(180,100%,70%,0.35)",
-      },
-      "&:focus-visible": {
-        outline: "none",
-        boxShadow: "0 0 0 2px hsla(180,100%,70%,0.6)",
-      },
     }}
   >
-    <Box component="span" sx={{ display: "inline-flex", gap: 0.6 }}>
-      <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#ff5f57" }} />
-      <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#febc2e" }} />
-      <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#28c840" }} />
+    <Box
+      component="button"
+      type="button"
+      onClick={onRestore}
+      aria-label="restore terminal"
+      title="restore terminal"
+      className="term-mono"
+      sx={{
+        px: 1.5,
+        py: 0.75,
+        background: "hsla(240, 55%, 8%, 0.55)",
+        backdropFilter: "blur(24px) saturate(140%)",
+        WebkitBackdropFilter: "blur(24px) saturate(140%)",
+        border: "1px solid hsla(180,100%,70%,0.18)",
+        borderRadius: "10px",
+        cursor: "pointer",
+        color: "hsla(180,30%,85%,0.85)",
+        fontSize: 12,
+        letterSpacing: "0.5px",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 1,
+        transition: "background-color .15s",
+        "&:hover": {
+          backgroundColor: "hsla(180,100%,70%,0.12)",
+        },
+        "&:focus-visible": {
+          outline: "none",
+          boxShadow: "0 0 0 2px hsla(180,100%,70%,0.6)",
+        },
+      }}
+    >
+      <Box component="span" sx={{ display: "inline-flex", gap: 0.6 }}>
+        <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#ff5f57" }} />
+        <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#febc2e" }} />
+        <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#28c840" }} />
+      </Box>
+      <Box component="span" sx={{ ml: 0.5 }}>
+        ~/jesse — zsh
+      </Box>
     </Box>
-    <Box component="span" sx={{ ml: 0.5 }}>
-      ~/jesse — zsh
-    </Box>
-  </Box>
+  </ElectricBorder>
 );
 
 const CategoryChips: FC<{
