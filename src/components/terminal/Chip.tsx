@@ -9,6 +9,7 @@ export const Chip: FC<{
   <Box
     component={onClick ? "button" : "span"}
     {...(onClick ? { type: "button" as const } : {})}
+    className={onClick ? "cursor-target" : undefined}
     onClick={onClick}
     sx={{
       display: "inline-flex",
