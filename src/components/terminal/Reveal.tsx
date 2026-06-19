@@ -15,7 +15,7 @@ export const Reveal: FC<{
   durationMs?: number;
   mode?: "expand" | "fade";
   children: ReactNode;
-}> = ({ delayMs, durationMs = 260, mode = "fade", children }) => {
+}> = ({ delayMs, durationMs = 260, mode = "expand", children }) => {
   const [visible, setVisible] = useState(delayMs <= 0);
   useLayoutEffect(() => {
     if (delayMs <= 0) {
