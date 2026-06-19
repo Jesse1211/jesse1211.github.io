@@ -24,6 +24,12 @@ Deployed to https://jesseliu.me via GitHub Pages (Actions mode).
   *Gotchas* below.
 - **Zdog** loaded from CDN in `index.html` (not bundled). Provides the
   3D star + drifting shapes background canvas.
+- **GSAP + ScrollTrigger** (bundled) — drives `TargetCursor` (site-wide
+  custom cursor) and the scroll-driven `ScrollReveal` terminal reveal.
+- **OGL** (bundled) — WebGL lib for the `Prism` background layer.
+- **ReactBits** components (MIT, copied into `src/components/effects/`
+  and `src/components/canvas/`): ElectricBorder, TargetCursor,
+  ScrollReveal, Prism. Not an npm package — source lives in-repo.
 - **typewriter-effect** for per-line typing animation.
 - **No tests.** Verification = `pnpm lint && pnpm build` pass + manual
   browser check.
@@ -119,28 +125,50 @@ skip the typewriter — typing only plays on first appearance.
 
 ### `Reveal` component
 
-`src/components/terminal/Reveal.tsx` has two modes:
+`src/components/terminal/Reveal.tsx` is now layout-only and has two
+modes:
 
 - `mode="expand"` (default): `overflow: hidden` + `max-height: 0 →
   4000px` so new history pushes existing content down. Used for
   every history entry.
-- `mode="fade"`: opacity only, layout box always reserved. **Used for
-  the trailing prompt only**, because expanding/collapsing it on
-  every new chip click made the panel jump.
+- `mode="fade"`: opacity only, layout box always reserved. The
+  trailing prompt passes `mode="fade"` explicitly, because
+  expanding/collapsing it on every new chip click made the panel
+  jump.
 
 `Reveal` uses `useLayoutEffect` (not `useEffect`) to flip `visible`
 to `false` *before* paint when `delayMs` jumps to a positive value.
 Combined with `transition: none` on the fade-out direction, this
 eliminates a 1-frame flash of the trailing prompt right after the
-user clicks a chip.
+user clicks a chip. Opacity/blur reveal is now handled by
+`ScrollReveal`, not `Reveal` — see below.
+
+### Scroll-driven reveal (replaces timer reveal)
+
+Each history entry is wrapped in `ScrollReveal`
+(`src/components/effects/ScrollReveal.tsx`) whose scroller is the
+GlassPanel body (`scrollRef`). As the panel scrolls, each entry
+rotates + (for string children) blurs/fades in via GSAP
+ScrollTrigger. `Reveal.tsx` is now layout-only: `mode="expand"`
+does the height push-down, `mode="fade"` is the trailing prompt.
+Already-seen entries pass `disabled` to ScrollReveal so locale
+switches don't re-animate. Auto-scroll eases `scrollTop` toward the
+bottom (≈18%/frame) instead of snapping, so each line crosses its
+ScrollTrigger threshold as it passes the reveal point.
+`ScrollTrigger.refresh()` runs on each history append.
+
+ScrollReveal kills ONLY its own triggers on unmount (tracked in a
+ref) — never `ScrollTrigger.getAll().kill()`, which would tear down
+every other entry's reveal.
 
 ### Auto-scroll (`Home.tsx`)
 
-`useLayoutEffect` runs an `requestAnimationFrame` loop on every
-`history.length` change, pinning `scrollTop` to `scrollHeight` for
-the full `tailDelay + 500ms` window. This is because reveals expand
-their max-height over ~260ms each — a one-shot scroll would miss the
-later expansions.
+`useLayoutEffect` runs a `requestAnimationFrame` loop on every
+`history.length` change, easing `scrollTop` toward `scrollHeight`
+(≈18% of the remaining distance per frame) rather than snapping.
+This keeps each new line crossing its ScrollTrigger reveal threshold
+smoothly. The loop runs for the full `tailDelay + 500ms` window so
+late-expanding entries are also covered.
 
 ### Window controls
 
@@ -157,6 +185,15 @@ side-effect, not React state). Three shape factories share a common
 `Floater` interface (anchor + group + drift + spin params): sphere
 (ring stack), polygon, box. Positions are randomized across ±420
 units per reload, so the layout differs every refresh.
+
+The Prism WebGL layer (`src/components/canvas/PrismBackground.tsx`,
+`z-index: -2`) renders BEHIND the Zdog canvas. The Zdog canvas is
+styled by the bare `canvas {}` rule in `index.html`, which gives it
+`background: transparent` and `z-index: -1` so both layers are
+visible. Prism's `.prism-container` uses `z-index: -2`. Both sit
+behind the terminal (`zIndex: 1`). Prism is disabled under
+`prefers-reduced-motion`. Two rAF loops run (Zdog + Prism) — this
+is intentional fusion, not a bug.
 
 ### Glass panel + MUI override gotcha
 
@@ -328,6 +365,17 @@ everything else shifts down.
 - **`axios` and `gh-pages` are intentionally NOT in
   `package.json`**. The site reads from static `models/AllData_*`,
   no HTTP calls. Deploys go through Pages Actions, no manual CLI.
+- **ElectricBorder wraps GlassPanel from the OUTSIDE** — its glow
+  needs `overflow: visible`, while the panel keeps `overflow: hidden`
+  for the scroll body. The glass `border` alpha was dropped to `0.18`
+  so the electric arcs are the dominant frame, not a double border.
+- **TargetCursor sets `document.body.style.cursor = 'none'`** and
+  snaps to `.cursor-target` elements (added to `Chip`). It
+  self-disables on touch/small screens via its built-in `isMobile`
+  guard — don't add a second guard.
+- **`gsap` and `ogl` ARE now in package.json** (correcting the
+  earlier "no extra deps" note). They power
+  TargetCursor/ScrollReveal and Prism respectively.
 
 ## Design history
 
