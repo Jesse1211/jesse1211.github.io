@@ -111,6 +111,14 @@ export const Home: FC = () => {
   const [animState, setAnimState] = useState<AnimState>("idle");
   const reducedMotion = prefersReducedMotion();
 
+  // FLIP fullscreen toggle: measure the Stack's box before the geometry
+  // change (first), let it jump to the new geometry (last), then apply
+  // an inverse transform and transition it away so the box appears to
+  // grow/shrink smoothly.
+  const stackElRef = useRef<HTMLDivElement | null>(null);
+  const flipFirstRectRef = useRef<DOMRect | null>(null);
+  const [flipping, setFlipping] = useState(false);
+
   const handleMinimize = () => {
     if (reducedMotion) {
       setWindowState("minimized");
@@ -125,6 +133,13 @@ export const Home: FC = () => {
     // Cancel any in-progress minimize/restore animation so the terminal
     // never gets stuck shrunk + pointer-events:none.
     setAnimState("idle");
+    if (reducedMotion) {
+      setWindowState((s) => (s === "fullscreen" ? "normal" : "fullscreen"));
+      return;
+    }
+    // FLIP: record the current box BEFORE the geometry change.
+    flipFirstRectRef.current =
+      stackElRef.current?.getBoundingClientRect() ?? null;
     setWindowState((s) => (s === "fullscreen" ? "normal" : "fullscreen"));
   };
 
@@ -221,6 +236,39 @@ export const Home: FC = () => {
     });
     return () => window.cancelAnimationFrame(raf);
   }, [animState]);
+
+  // FLIP play: after windowState changes geometry, invert from the
+  // recorded "first" box to the new "last" box, then animate to
+  // identity. Only runs when a first rect was captured (i.e. a real
+  // fullscreen toggle, not the initial render or a locale switch).
+  useLayoutEffect(() => {
+    const el = stackElRef.current;
+    const first = flipFirstRectRef.current;
+    flipFirstRectRef.current = null;
+    if (!el || !first || reducedMotion) return;
+
+    const last = el.getBoundingClientRect();
+    const dx = first.left - last.left;
+    const dy = first.top - last.top;
+    const fsx = first.width / last.width;
+    const fsy = first.height / last.height;
+    // Guard against degenerate rects.
+    if (!isFinite(fsx) || !isFinite(fsy) || fsx === 0 || fsy === 0) return;
+
+    // Invert: place the element visually back at its "first" box.
+    el.style.transformOrigin = "top left";
+    el.style.transition = "none";
+    el.style.transform = `translate(${dx}px, ${dy}px) scale(${fsx}, ${fsy})`;
+
+    setFlipping(true);
+    // Next frame: play to identity with a transition.
+    const raf = window.requestAnimationFrame(() => {
+      el.style.transition = `transform ${ANIM_MS}ms cubic-bezier(.4,0,.2,1)`;
+      el.style.transform = "translate(0px, 0px) scale(1, 1)";
+    });
+    return () => window.cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [windowState]);
 
   const handleCategoryClick = (
     menuEntryId: string,
@@ -357,15 +405,16 @@ export const Home: FC = () => {
     lastEntry?.kind === "categories" ? [] : trailingSuggestions(location);
 
   const shrunk = animState === "minimizing" || animState === "restoring";
-  const animSx = reducedMotion
-    ? {}
-    : {
-        transformOrigin: "center center" as const,
-        transition: `transform ${ANIM_MS}ms cubic-bezier(.4,0,.2,1), opacity ${ANIM_MS}ms`,
-        transform: shrunk ? `scale(${MINIMIZE_SCALE})` : "scale(1)",
-        opacity: shrunk ? 0 : 1,
-        pointerEvents: (shrunk ? "none" : "auto") as "none" | "auto",
-      };
+  const animSx =
+    reducedMotion || flipping
+      ? {}
+      : {
+          transformOrigin: "center center" as const,
+          transition: `transform ${ANIM_MS}ms cubic-bezier(.4,0,.2,1), opacity ${ANIM_MS}ms`,
+          transform: shrunk ? `scale(${MINIMIZE_SCALE})` : "scale(1)",
+          opacity: shrunk ? 0 : 1,
+          pointerEvents: (shrunk ? "none" : "auto") as "none" | "auto",
+        };
 
   const handleStackTransitionEnd = (
     e: TransitionEvent<HTMLDivElement>,
@@ -376,6 +425,18 @@ export const Home: FC = () => {
     if (animState === "minimizing") {
       setWindowState("minimized");
       setAnimState("idle");
+      return;
+    }
+    if (flipping) {
+      // FLIP finished — remove the inline overrides so React's sx (and
+      // any future minimize animation) controls the element again.
+      const el = stackElRef.current;
+      if (el) {
+        el.style.transform = "";
+        el.style.transition = "";
+        el.style.transformOrigin = "";
+      }
+      setFlipping(false);
     }
   };
 
@@ -410,6 +471,7 @@ export const Home: FC = () => {
 
   return (
     <Stack
+      ref={stackElRef}
       spacing={3}
       sx={{ ...stackSx, ...animSx }}
       onTransitionEnd={handleStackTransitionEnd}
