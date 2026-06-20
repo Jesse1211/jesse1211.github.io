@@ -1,5 +1,6 @@
 import {
   FC,
+  TransitionEvent,
   useContext,
   useEffect,
   useLayoutEffect,
@@ -37,6 +38,15 @@ const TYPING_BUFFER_MS = 120;
 
 type Location = "home" | "education" | "experience" | "about";
 type WindowState = "normal" | "minimized" | "fullscreen";
+
+type AnimState = "idle" | "minimizing" | "restoring";
+
+const prefersReducedMotion = (): boolean =>
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+
+const MINIMIZE_SCALE = 0.05;
+const ANIM_MS = 400;
 
 const i18n = (key: LocaleKey, cn: boolean): string => {
   switch (key) {
@@ -98,10 +108,32 @@ export const Home: FC = () => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [windowState, setWindowState] = useState<WindowState>("normal");
 
-  const handleMinimize = () => setWindowState("minimized");
+  const [animState, setAnimState] = useState<AnimState>("idle");
+  const reducedMotion = prefersReducedMotion();
+
+  const handleMinimize = () => {
+    if (reducedMotion) {
+      setWindowState("minimized");
+      return;
+    }
+    // Keep the terminal mounted and shrink it; the real unmount happens
+    // in onTransitionEnd once the scale-down finishes.
+    setAnimState("minimizing");
+  };
+
   const handleFullscreen = () =>
     setWindowState((s) => (s === "fullscreen" ? "normal" : "fullscreen"));
-  const handleRestore = () => setWindowState("normal");
+
+  const handleRestore = () => {
+    if (reducedMotion) {
+      setWindowState("normal");
+      return;
+    }
+    // Mount the terminal already-shrunk, then grow it in (see the
+    // useLayoutEffect below that flips restoring -> idle next frame).
+    setWindowState("normal");
+    setAnimState("restoring");
+  };
 
   // Entries we've previously rendered. Used to skip typing animations
   // and reveal delays on subsequent renders (e.g. locale switch).
@@ -174,6 +206,17 @@ export const Home: FC = () => {
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
   }, [history.length, tailDelay]);
+
+  // When restoring, the terminal mounts shrunk (scale 0.05 / opacity 0).
+  // Paint that frame, then flip to idle next frame so the grow-in
+  // transition actually animates instead of snapping.
+  useLayoutEffect(() => {
+    if (animState !== "restoring") return;
+    const raf = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => setAnimState("idle"));
+    });
+    return () => window.cancelAnimationFrame(raf);
+  }, [animState]);
 
   const handleCategoryClick = (
     menuEntryId: string,
@@ -309,6 +352,29 @@ export const Home: FC = () => {
   const trailingItems =
     lastEntry?.kind === "categories" ? [] : trailingSuggestions(location);
 
+  const shrunk = animState === "minimizing" || animState === "restoring";
+  const animSx = reducedMotion
+    ? {}
+    : {
+        transformOrigin: "center center" as const,
+        transition: `transform ${ANIM_MS}ms cubic-bezier(.4,0,.2,1), opacity ${ANIM_MS}ms`,
+        transform: shrunk ? `scale(${MINIMIZE_SCALE})` : "scale(1)",
+        opacity: shrunk ? 0 : 1,
+        pointerEvents: (shrunk ? "none" : "auto") as "none" | "auto",
+      };
+
+  const handleStackTransitionEnd = (
+    e: TransitionEvent<HTMLDivElement>,
+  ) => {
+    // Only react to the Stack's own transform transition, not bubbled
+    // child transitions.
+    if (e.target !== e.currentTarget || e.propertyName !== "transform") return;
+    if (animState === "minimizing") {
+      setWindowState("minimized");
+      setAnimState("idle");
+    }
+  };
+
   if (windowState === "minimized") {
     return <TerminalDock onRestore={handleRestore} />;
   }
@@ -339,7 +405,11 @@ export const Home: FC = () => {
       };
 
   return (
-    <Stack spacing={3} sx={stackSx}>
+    <Stack
+      spacing={3}
+      sx={{ ...stackSx, ...animSx }}
+      onTransitionEnd={handleStackTransitionEnd}
+    >
       <GlassPanel
         title={`~/jesse — zsh`}
         glow="active"
@@ -400,63 +470,72 @@ const SectionDivider: FC = () => (
 // Wrapped in ElectricBorder so it matches the main terminal frame.
 // ElectricBorder is the fixed, centered outer element (its glow needs
 // overflow:visible, so positioning lives here, not on the button).
-const TerminalDock: FC<{ onRestore: () => void }> = ({ onRestore }) => (
-  <ElectricBorder
-    color="hsl(180, 100%, 70%)"
-    speed={1}
-    chaos={0.18}
-    borderRadius={10}
-    style={{
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: 20,
-    }}
-  >
-    <Box
-      component="button"
-      type="button"
-      onClick={onRestore}
-      aria-label="restore terminal"
-      title="restore terminal"
-      className="term-mono"
-      sx={{
-        px: 1.5,
-        py: 0.75,
-        background: "hsla(240, 55%, 8%, 0.55)",
-        backdropFilter: "blur(24px) saturate(140%)",
-        WebkitBackdropFilter: "blur(24px) saturate(140%)",
-        border: "1px solid hsla(180,100%,70%,0.18)",
-        borderRadius: "10px",
-        cursor: "pointer",
-        color: "hsla(180,30%,85%,0.85)",
-        fontSize: 12,
-        letterSpacing: "0.5px",
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 1,
-        transition: "background-color .15s",
-        "&:hover": {
-          backgroundColor: "hsla(180,100%,70%,0.12)",
-        },
-        "&:focus-visible": {
-          outline: "none",
-          boxShadow: "0 0 0 2px hsla(180,100%,70%,0.6)",
-        },
+const TerminalDock: FC<{ onRestore: () => void }> = ({ onRestore }) => {
+  const [shown, setShown] = useState(false);
+  useLayoutEffect(() => {
+    const raf = window.requestAnimationFrame(() => setShown(true));
+    return () => window.cancelAnimationFrame(raf);
+  }, []);
+  return (
+    <ElectricBorder
+      color="hsl(180, 100%, 70%)"
+      speed={1}
+      chaos={0.18}
+      borderRadius={10}
+      style={{
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: `translate(-50%, -50%) scale(${shown ? 1 : 0.05})`,
+        opacity: shown ? 1 : 0,
+        transition: "transform 400ms cubic-bezier(.4,0,.2,1), opacity 400ms",
+        zIndex: 20,
       }}
     >
-      <Box component="span" sx={{ display: "inline-flex", gap: 0.6 }}>
-        <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#ff5f57" }} />
-        <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#febc2e" }} />
-        <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#28c840" }} />
+      <Box
+        component="button"
+        type="button"
+        onClick={onRestore}
+        aria-label="restore terminal"
+        title="restore terminal"
+        className="term-mono"
+        sx={{
+          px: 1.5,
+          py: 0.75,
+          background: "hsla(240, 55%, 8%, 0.55)",
+          backdropFilter: "blur(24px) saturate(140%)",
+          WebkitBackdropFilter: "blur(24px) saturate(140%)",
+          border: "1px solid hsla(180,100%,70%,0.18)",
+          borderRadius: "10px",
+          cursor: "pointer",
+          color: "hsla(180,30%,85%,0.85)",
+          fontSize: 12,
+          letterSpacing: "0.5px",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 1,
+          transition: "background-color .15s",
+          "&:hover": {
+            backgroundColor: "hsla(180,100%,70%,0.12)",
+          },
+          "&:focus-visible": {
+            outline: "none",
+            boxShadow: "0 0 0 2px hsla(180,100%,70%,0.6)",
+          },
+        }}
+      >
+        <Box component="span" sx={{ display: "inline-flex", gap: 0.6 }}>
+          <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#ff5f57" }} />
+          <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#febc2e" }} />
+          <Box sx={{ width: 9, height: 9, borderRadius: "50%", background: "#28c840" }} />
+        </Box>
+        <Box component="span" sx={{ ml: 0.5 }}>
+          ~/jesse — zsh
+        </Box>
       </Box>
-      <Box component="span" sx={{ ml: 0.5 }}>
-        ~/jesse — zsh
-      </Box>
-    </Box>
-  </ElectricBorder>
-);
+    </ElectricBorder>
+  );
+};
 
 const CategoryChips: FC<{
   menuEntryId: string;
