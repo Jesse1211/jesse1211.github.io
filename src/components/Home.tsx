@@ -8,6 +8,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type MutableRefObject,
 } from "react";
 import { Box, Stack } from "@mui/joy";
 import { StarAndPlanet } from "./canvas/StarAndPlanet";
@@ -67,6 +68,193 @@ const i18n = (key: LocaleKey, cn: boolean): string => {
 const typingDuration = (text: string): number =>
   text.length * TYPING_MS_PER_CHAR + TYPING_BUFFER_MS;
 
+const ANIM_EASING = "cubic-bezier(.4,0,.2,1)";
+
+type WindowAnimation = {
+  windowState: WindowState;
+  // The Stack's animation sx (minimize/restore scale + fade). Empty while
+  // the FLIP drives transform via inline styles, so React's sx never
+  // clobbers them.
+  animSx: Record<string, unknown>;
+  // Ref the Stack DOM node so the FLIP can measure + write inline styles.
+  stackElRef: MutableRefObject<HTMLDivElement | null>;
+  handleMinimize: () => void;
+  handleRestore: () => void;
+  handleFullscreen: () => void;
+  handleStackTransitionEnd: (e: TransitionEvent<HTMLDivElement>) => void;
+};
+
+// Owns the terminal window state machine and all three transitions:
+//   minimize/restore — scale-to-center + fade, driven by React sx.
+//   fullscreen       — FLIP (measure-first, invert, play to identity),
+//                      driven by inline styles written on the Stack node.
+// `animState` tracks the minimize/restore animation in flight; `flipping`
+// tracks the FLIP. Both feed `animSx`. Under prefers-reduced-motion every
+// transition is skipped and state switches synchronously.
+function useWindowAnimation(): WindowAnimation {
+  const reducedMotion = prefersReducedMotion();
+  const [windowState, setWindowState] = useState<WindowState>("normal");
+  const [animState, setAnimState] = useState<AnimState>("idle");
+
+  const stackElRef = useRef<HTMLDivElement | null>(null);
+  const flipFirstRectRef = useRef<DOMRect | null>(null);
+  const flipTimeoutRef = useRef<number | null>(null);
+  const [flipping, setFlipping] = useState(false);
+
+  // Remove the inline transform/transition the FLIP writes directly on the
+  // Stack so React's sx (and any later minimize animation) controls it
+  // again. Idempotent; safe to call from both transitionend and the
+  // timeout fallback.
+  const clearFlipStyles = useCallback(() => {
+    if (flipTimeoutRef.current !== null) {
+      window.clearTimeout(flipTimeoutRef.current);
+      flipTimeoutRef.current = null;
+    }
+    const el = stackElRef.current;
+    if (el) {
+      el.style.transform = "";
+      el.style.transition = "";
+      el.style.transformOrigin = "";
+    }
+    setFlipping(false);
+  }, []);
+
+  const handleMinimize = useCallback(() => {
+    if (reducedMotion) {
+      setWindowState("minimized");
+      return;
+    }
+    // Keep the terminal mounted and shrink it; the real unmount happens
+    // in onTransitionEnd once the scale-down finishes.
+    setAnimState("minimizing");
+  }, [reducedMotion]);
+
+  const handleRestore = useCallback(() => {
+    setWindowState("normal");
+    if (reducedMotion) return;
+    // Mount the terminal already-shrunk, then grow it in (see the
+    // useLayoutEffect below that flips restoring -> idle next frame).
+    setAnimState("restoring");
+  }, [reducedMotion]);
+
+  const handleFullscreen = useCallback(() => {
+    // Cancel any in-progress minimize/restore animation so the terminal
+    // never gets stuck shrunk + pointer-events:none.
+    setAnimState("idle");
+    if (!reducedMotion) {
+      // FLIP: record the current box BEFORE the geometry change.
+      flipFirstRectRef.current =
+        stackElRef.current?.getBoundingClientRect() ?? null;
+    }
+    setWindowState((s) => (s === "fullscreen" ? "normal" : "fullscreen"));
+  }, [reducedMotion]);
+
+  // When restoring, the terminal mounts shrunk (scale 0.05 / opacity 0).
+  // Paint that frame, then flip to idle next frame so the grow-in
+  // transition actually animates instead of snapping.
+  useLayoutEffect(() => {
+    if (animState !== "restoring") return;
+    const raf = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => setAnimState("idle"));
+    });
+    return () => window.cancelAnimationFrame(raf);
+  }, [animState]);
+
+  // FLIP play: after windowState changes geometry, invert from the
+  // recorded "first" box to the new "last" box, then animate to
+  // identity. Only runs when a first rect was captured (i.e. a real
+  // fullscreen toggle, not the initial render or a locale switch).
+  useLayoutEffect(() => {
+    const el = stackElRef.current;
+    const first = flipFirstRectRef.current;
+    flipFirstRectRef.current = null;
+    if (!el || !first || reducedMotion) return;
+
+    const last = el.getBoundingClientRect();
+    const dx = first.left - last.left;
+    const dy = first.top - last.top;
+    const fsx = first.width / last.width;
+    const fsy = first.height / last.height;
+    // Guard against degenerate rects.
+    if (!isFinite(fsx) || !isFinite(fsy) || fsx === 0 || fsy === 0) return;
+
+    // Invert: place the element visually back at its "first" box.
+    el.style.transformOrigin = "top left";
+    el.style.transition = "none";
+    el.style.transform = `translate(${dx}px, ${dy}px) scale(${fsx}, ${fsy})`;
+
+    setFlipping(true);
+    // Next frame: play to identity with a transition.
+    const raf = window.requestAnimationFrame(() => {
+      el.style.transition = `transform ${ANIM_MS}ms ${ANIM_EASING}`;
+      el.style.transform = "translate(0px, 0px) scale(1, 1)";
+    });
+    // Fallback: if transitionend never fires (interrupted toggle, dropped
+    // event), force-clear the inline styles so the Stack can never get
+    // stuck with a residual transform.
+    if (flipTimeoutRef.current !== null) {
+      window.clearTimeout(flipTimeoutRef.current);
+    }
+    flipTimeoutRef.current = window.setTimeout(clearFlipStyles, ANIM_MS + 80);
+    return () => window.cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [windowState]);
+
+  // Clear any pending FLIP timeout on unmount.
+  useEffect(
+    () => () => {
+      if (flipTimeoutRef.current !== null) {
+        window.clearTimeout(flipTimeoutRef.current);
+      }
+    },
+    [],
+  );
+
+  const handleStackTransitionEnd = useCallback(
+    (e: TransitionEvent<HTMLDivElement>) => {
+      // Only react to the Stack's own transform transition, not bubbled
+      // child transitions.
+      if (e.target !== e.currentTarget || e.propertyName !== "transform") {
+        return;
+      }
+      if (animState === "minimizing") {
+        setWindowState("minimized");
+        setAnimState("idle");
+      } else if (flipping) {
+        // FLIP finished — remove the inline overrides so React's sx (and
+        // any future minimize animation) controls the element again.
+        clearFlipStyles();
+      }
+    },
+    [animState, flipping, clearFlipStyles],
+  );
+
+  // Minimize/restore scale + fade. Disabled while the FLIP owns the
+  // inline transform (animSx would otherwise clobber it) or under
+  // reduced motion.
+  const shrunk = animState === "minimizing" || animState === "restoring";
+  const animSx: Record<string, unknown> =
+    reducedMotion || flipping
+      ? {}
+      : {
+          transformOrigin: "center center",
+          transition: `transform ${ANIM_MS}ms ${ANIM_EASING}, opacity ${ANIM_MS}ms`,
+          transform: shrunk ? `scale(${MINIMIZE_SCALE})` : "scale(1)",
+          opacity: shrunk ? 0 : 1,
+          pointerEvents: shrunk ? "none" : "auto",
+        };
+
+  return {
+    windowState,
+    animSx,
+    stackElRef,
+    handleMinimize,
+    handleRestore,
+    handleFullscreen,
+    handleStackTransitionEnd,
+  };
+}
+
 // Walk the history backwards to find the most recent enterX action,
 // which tells us what kind of suggestions to surface beside the
 // trailing prompt.
@@ -107,72 +295,16 @@ export const Home: FC = () => {
   const { $locale, data } = useContext(PortfolioContext);
   const cn = $locale === "zh-CN";
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [windowState, setWindowState] = useState<WindowState>("normal");
 
-  const [animState, setAnimState] = useState<AnimState>("idle");
-  const reducedMotion = prefersReducedMotion();
-
-  // FLIP fullscreen toggle: measure the Stack's box before the geometry
-  // change (first), let it jump to the new geometry (last), then apply
-  // an inverse transform and transition it away so the box appears to
-  // grow/shrink smoothly.
-  const stackElRef = useRef<HTMLDivElement | null>(null);
-  const flipFirstRectRef = useRef<DOMRect | null>(null);
-  const flipTimeoutRef = useRef<number | null>(null);
-  const [flipping, setFlipping] = useState(false);
-
-  // Remove the inline transform/transition the FLIP writes directly on the
-  // Stack so React's sx (and any later minimize animation) controls it
-  // again. Idempotent; safe to call from both transitionend and the
-  // timeout fallback.
-  const clearFlipStyles = useCallback(() => {
-    if (flipTimeoutRef.current !== null) {
-      window.clearTimeout(flipTimeoutRef.current);
-      flipTimeoutRef.current = null;
-    }
-    const el = stackElRef.current;
-    if (el) {
-      el.style.transform = "";
-      el.style.transition = "";
-      el.style.transformOrigin = "";
-    }
-    setFlipping(false);
-  }, []);
-
-  const handleMinimize = () => {
-    if (reducedMotion) {
-      setWindowState("minimized");
-      return;
-    }
-    // Keep the terminal mounted and shrink it; the real unmount happens
-    // in onTransitionEnd once the scale-down finishes.
-    setAnimState("minimizing");
-  };
-
-  const handleFullscreen = () => {
-    // Cancel any in-progress minimize/restore animation so the terminal
-    // never gets stuck shrunk + pointer-events:none.
-    setAnimState("idle");
-    if (reducedMotion) {
-      setWindowState((s) => (s === "fullscreen" ? "normal" : "fullscreen"));
-      return;
-    }
-    // FLIP: record the current box BEFORE the geometry change.
-    flipFirstRectRef.current =
-      stackElRef.current?.getBoundingClientRect() ?? null;
-    setWindowState((s) => (s === "fullscreen" ? "normal" : "fullscreen"));
-  };
-
-  const handleRestore = () => {
-    if (reducedMotion) {
-      setWindowState("normal");
-      return;
-    }
-    // Mount the terminal already-shrunk, then grow it in (see the
-    // useLayoutEffect below that flips restoring -> idle next frame).
-    setWindowState("normal");
-    setAnimState("restoring");
-  };
+  const {
+    windowState,
+    animSx,
+    stackElRef,
+    handleMinimize,
+    handleRestore,
+    handleFullscreen,
+    handleStackTransitionEnd,
+  } = useWindowAnimation();
 
   // Entries we've previously rendered. Used to skip typing animations
   // and reveal delays on subsequent renders (e.g. locale switch).
@@ -245,67 +377,6 @@ export const Home: FC = () => {
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
   }, [history.length, tailDelay]);
-
-  // When restoring, the terminal mounts shrunk (scale 0.05 / opacity 0).
-  // Paint that frame, then flip to idle next frame so the grow-in
-  // transition actually animates instead of snapping.
-  useLayoutEffect(() => {
-    if (animState !== "restoring") return;
-    const raf = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => setAnimState("idle"));
-    });
-    return () => window.cancelAnimationFrame(raf);
-  }, [animState]);
-
-  // FLIP play: after windowState changes geometry, invert from the
-  // recorded "first" box to the new "last" box, then animate to
-  // identity. Only runs when a first rect was captured (i.e. a real
-  // fullscreen toggle, not the initial render or a locale switch).
-  useLayoutEffect(() => {
-    const el = stackElRef.current;
-    const first = flipFirstRectRef.current;
-    flipFirstRectRef.current = null;
-    if (!el || !first || reducedMotion) return;
-
-    const last = el.getBoundingClientRect();
-    const dx = first.left - last.left;
-    const dy = first.top - last.top;
-    const fsx = first.width / last.width;
-    const fsy = first.height / last.height;
-    // Guard against degenerate rects.
-    if (!isFinite(fsx) || !isFinite(fsy) || fsx === 0 || fsy === 0) return;
-
-    // Invert: place the element visually back at its "first" box.
-    el.style.transformOrigin = "top left";
-    el.style.transition = "none";
-    el.style.transform = `translate(${dx}px, ${dy}px) scale(${fsx}, ${fsy})`;
-
-    setFlipping(true);
-    // Next frame: play to identity with a transition.
-    const raf = window.requestAnimationFrame(() => {
-      el.style.transition = `transform ${ANIM_MS}ms cubic-bezier(.4,0,.2,1)`;
-      el.style.transform = "translate(0px, 0px) scale(1, 1)";
-    });
-    // Fallback: if transitionend never fires (interrupted toggle, dropped
-    // event), force-clear the inline styles so the Stack can never get
-    // stuck with a residual transform.
-    if (flipTimeoutRef.current !== null) {
-      window.clearTimeout(flipTimeoutRef.current);
-    }
-    flipTimeoutRef.current = window.setTimeout(clearFlipStyles, ANIM_MS + 80);
-    return () => window.cancelAnimationFrame(raf);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [windowState]);
-
-  // Clear any pending FLIP timeout on unmount.
-  useEffect(
-    () => () => {
-      if (flipTimeoutRef.current !== null) {
-        window.clearTimeout(flipTimeoutRef.current);
-      }
-    },
-    [],
-  );
 
   const handleCategoryClick = (
     menuEntryId: string,
@@ -440,36 +511,6 @@ export const Home: FC = () => {
   const lastEntry = history[history.length - 1];
   const trailingItems =
     lastEntry?.kind === "categories" ? [] : trailingSuggestions(location);
-
-  const shrunk = animState === "minimizing" || animState === "restoring";
-  const animSx =
-    reducedMotion || flipping
-      ? {}
-      : {
-          transformOrigin: "center center" as const,
-          transition: `transform ${ANIM_MS}ms cubic-bezier(.4,0,.2,1), opacity ${ANIM_MS}ms`,
-          transform: shrunk ? `scale(${MINIMIZE_SCALE})` : "scale(1)",
-          opacity: shrunk ? 0 : 1,
-          pointerEvents: (shrunk ? "none" : "auto") as "none" | "auto",
-        };
-
-  const handleStackTransitionEnd = (
-    e: TransitionEvent<HTMLDivElement>,
-  ) => {
-    // Only react to the Stack's own transform transition, not bubbled
-    // child transitions.
-    if (e.target !== e.currentTarget || e.propertyName !== "transform") return;
-    if (animState === "minimizing") {
-      setWindowState("minimized");
-      setAnimState("idle");
-      return;
-    }
-    if (flipping) {
-      // FLIP finished — remove the inline overrides so React's sx (and
-      // any future minimize animation) controls the element again.
-      clearFlipStyles();
-    }
-  };
 
   if (windowState === "minimized") {
     return <TerminalDock onRestore={handleRestore} />;
