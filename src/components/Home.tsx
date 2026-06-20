@@ -1,6 +1,7 @@
 import {
   FC,
   TransitionEvent,
+  useCallback,
   useContext,
   useEffect,
   useLayoutEffect,
@@ -117,7 +118,26 @@ export const Home: FC = () => {
   // grow/shrink smoothly.
   const stackElRef = useRef<HTMLDivElement | null>(null);
   const flipFirstRectRef = useRef<DOMRect | null>(null);
+  const flipTimeoutRef = useRef<number | null>(null);
   const [flipping, setFlipping] = useState(false);
+
+  // Remove the inline transform/transition the FLIP writes directly on the
+  // Stack so React's sx (and any later minimize animation) controls it
+  // again. Idempotent; safe to call from both transitionend and the
+  // timeout fallback.
+  const clearFlipStyles = useCallback(() => {
+    if (flipTimeoutRef.current !== null) {
+      window.clearTimeout(flipTimeoutRef.current);
+      flipTimeoutRef.current = null;
+    }
+    const el = stackElRef.current;
+    if (el) {
+      el.style.transform = "";
+      el.style.transition = "";
+      el.style.transformOrigin = "";
+    }
+    setFlipping(false);
+  }, []);
 
   const handleMinimize = () => {
     if (reducedMotion) {
@@ -266,9 +286,26 @@ export const Home: FC = () => {
       el.style.transition = `transform ${ANIM_MS}ms cubic-bezier(.4,0,.2,1)`;
       el.style.transform = "translate(0px, 0px) scale(1, 1)";
     });
+    // Fallback: if transitionend never fires (interrupted toggle, dropped
+    // event), force-clear the inline styles so the Stack can never get
+    // stuck with a residual transform.
+    if (flipTimeoutRef.current !== null) {
+      window.clearTimeout(flipTimeoutRef.current);
+    }
+    flipTimeoutRef.current = window.setTimeout(clearFlipStyles, ANIM_MS + 80);
     return () => window.cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowState]);
+
+  // Clear any pending FLIP timeout on unmount.
+  useEffect(
+    () => () => {
+      if (flipTimeoutRef.current !== null) {
+        window.clearTimeout(flipTimeoutRef.current);
+      }
+    },
+    [],
+  );
 
   const handleCategoryClick = (
     menuEntryId: string,
@@ -430,13 +467,7 @@ export const Home: FC = () => {
     if (flipping) {
       // FLIP finished — remove the inline overrides so React's sx (and
       // any future minimize animation) controls the element again.
-      const el = stackElRef.current;
-      if (el) {
-        el.style.transform = "";
-        el.style.transition = "";
-        el.style.transformOrigin = "";
-      }
-      setFlipping(false);
+      clearFlipStyles();
     }
   };
 

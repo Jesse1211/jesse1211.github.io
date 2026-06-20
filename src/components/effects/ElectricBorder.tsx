@@ -175,9 +175,15 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
     const borderOffset = 60;
 
     const updateSize = () => {
-      const rect = container.getBoundingClientRect();
-      const width = rect.width + borderOffset * 2;
-      const height = rect.height + borderOffset * 2;
+      // Use offsetWidth/offsetHeight (the untransformed layout border-box)
+      // rather than getBoundingClientRect(), whose result includes any
+      // ancestor CSS transform. The terminal's fullscreen FLIP applies a
+      // scale() transform to an ancestor exactly while the fullscreen
+      // relayout triggers this resize; measuring the transformed box would
+      // lock the canvas to the wrong (scaled) size and never self-correct,
+      // since removing the transform later doesn't change the layout box.
+      const width = container.offsetWidth + borderOffset * 2;
+      const height = container.offsetHeight + borderOffset * 2;
 
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = width * dpr;
