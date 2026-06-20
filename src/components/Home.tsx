@@ -121,8 +121,12 @@ export const Home: FC = () => {
     setAnimState("minimizing");
   };
 
-  const handleFullscreen = () =>
+  const handleFullscreen = () => {
+    // Cancel any in-progress minimize/restore animation so the terminal
+    // never gets stuck shrunk + pointer-events:none.
+    setAnimState("idle");
     setWindowState((s) => (s === "fullscreen" ? "normal" : "fullscreen"));
+  };
 
   const handleRestore = () => {
     if (reducedMotion) {
