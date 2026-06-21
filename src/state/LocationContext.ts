@@ -13,7 +13,15 @@ export type CmdAction =
   | { kind: "enterCategory"; category: "education" | "experience" }
   | { kind: "enterAbout" }
   | { kind: "enterHome" }
-  | { kind: "lsCategories" };
+  | { kind: "lsCategories" }
+  // leetcode (Journey submodule)
+  | { kind: "enterLeetcode" } // ls leetcode/  → topics + guides + journey.log
+  | { kind: "enterLeetcodeTopic"; topic: string } // ls leetcode/<topic>/
+  | { kind: "enterJourneyLog" } // git log journey
+  | { kind: "enterGuides" } // ls leetcode/guides/
+  // blog (migrated JesseBlog)
+  | { kind: "enterBlog" } // ls blog/  → sections
+  | { kind: "enterBlogSection"; section: string }; // ls blog/<section>/
 
 export type HistoryEntry =
   | {
@@ -28,7 +36,15 @@ export type HistoryEntry =
   | { id: string; kind: "answerKey"; key: LocaleKey; animate: boolean }
   | { id: string; kind: "categories" }
   | { id: string; kind: "lsCategory"; category: "education" | "experience" }
-  | { id: string; kind: "about" };
+  | { id: string; kind: "about" }
+  // leetcode views
+  | { id: string; kind: "leetcodeRoot" }
+  | { id: string; kind: "leetcodeTopic"; topic: string }
+  | { id: string; kind: "journeyLog" }
+  | { id: string; kind: "guides" }
+  // blog views
+  | { id: string; kind: "blogRoot" }
+  | { id: string; kind: "blogSection"; section: string };
 
 export interface LocationValue {
   path: string; // "~", "~/education", "~/education/01-cornell"
@@ -39,6 +55,12 @@ export interface LocationValue {
   enterCategory: (category: "education" | "experience") => void;
   enterAbout: () => void;
   enterHome: () => void; // breadcrumb ~ when not already home
+  enterLeetcode: () => void;
+  enterLeetcodeTopic: (topic: string) => void;
+  enterJourneyLog: () => void;
+  enterGuides: () => void;
+  enterBlog: () => void;
+  enterBlogSection: (section: string) => void;
 
   // detail expansion (does not append)
   toggle: (entryId: string, category: CategoryRoot, slug: string) => void;
@@ -63,6 +85,12 @@ export const LocationContext = createContext<LocationValue>({
   enterCategory: () => {},
   enterAbout: () => {},
   enterHome: () => {},
+  enterLeetcode: () => {},
+  enterLeetcodeTopic: () => {},
+  enterJourneyLog: () => {},
+  enterGuides: () => {},
+  enterBlog: () => {},
+  enterBlogSection: () => {},
   toggle: () => {},
   isExpanded: () => false,
   bootstrap: () => {},

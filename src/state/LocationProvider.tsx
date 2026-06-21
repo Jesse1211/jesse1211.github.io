@@ -74,6 +74,98 @@ export const LocationProvider: FC<{ children: ReactNode }> = ({ children }) => {
     [nextId],
   );
 
+  // ---- leetcode (Journey submodule) builders
+  const buildEnterLeetcode = useCallback(
+    (fromPath: string): HistoryEntry[] => [
+      {
+        id: nextId("cmd"),
+        kind: "cmd",
+        text: "ls leetcode/",
+        animate: true,
+        atPath: fromPath,
+        action: { kind: "enterLeetcode" },
+      },
+      { id: nextId("lc"), kind: "leetcodeRoot" },
+    ],
+    [nextId],
+  );
+
+  const buildEnterLeetcodeTopic = useCallback(
+    (topic: string, fromPath: string): HistoryEntry[] => [
+      {
+        id: nextId("cmd"),
+        kind: "cmd",
+        text: `ls leetcode/${topic}/`,
+        animate: true,
+        atPath: fromPath,
+        action: { kind: "enterLeetcodeTopic", topic },
+      },
+      { id: nextId("lct"), kind: "leetcodeTopic", topic },
+    ],
+    [nextId],
+  );
+
+  const buildEnterJourneyLog = useCallback(
+    (fromPath: string): HistoryEntry[] => [
+      {
+        id: nextId("cmd"),
+        kind: "cmd",
+        text: "git log journey",
+        animate: true,
+        atPath: fromPath,
+        action: { kind: "enterJourneyLog" },
+      },
+      { id: nextId("jlog"), kind: "journeyLog" },
+    ],
+    [nextId],
+  );
+
+  const buildEnterGuides = useCallback(
+    (fromPath: string): HistoryEntry[] => [
+      {
+        id: nextId("cmd"),
+        kind: "cmd",
+        text: "ls leetcode/guides/",
+        animate: true,
+        atPath: fromPath,
+        action: { kind: "enterGuides" },
+      },
+      { id: nextId("guides"), kind: "guides" },
+    ],
+    [nextId],
+  );
+
+  // ---- blog (migrated JesseBlog) builders
+  const buildEnterBlog = useCallback(
+    (fromPath: string): HistoryEntry[] => [
+      {
+        id: nextId("cmd"),
+        kind: "cmd",
+        text: "ls blog/",
+        animate: true,
+        atPath: fromPath,
+        action: { kind: "enterBlog" },
+      },
+      { id: nextId("blog"), kind: "blogRoot" },
+    ],
+    [nextId],
+  );
+
+  const buildEnterBlogSection = useCallback(
+    (section: string, fromPath: string): HistoryEntry[] => [
+      {
+        id: nextId("cmd"),
+        kind: "cmd",
+        text: `ls blog/${section}/`,
+        animate: true,
+        atPath: fromPath,
+        action: { kind: "enterBlogSection", section },
+      },
+      { id: nextId("blogsec"), kind: "blogSection", section },
+    ],
+    [nextId],
+  );
+
   // "Home" no longer needs a separate `cd ~`; it just emits a fresh ls
   // categories block at ~.
   const buildEnterHome = useCallback(
@@ -103,6 +195,42 @@ export const LocationProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const block = buildEnterHome();
     setHistory((prev) => [...prev, ...block]);
   }, [buildEnterHome]);
+
+  const enterLeetcode = useCallback(() => {
+    setExpanded(new Set());
+    setHistory((prev) => [...prev, ...buildEnterLeetcode("~")]);
+  }, [buildEnterLeetcode]);
+
+  const enterLeetcodeTopic = useCallback(
+    (topic: string) => {
+      setExpanded(new Set());
+      setHistory((prev) => [...prev, ...buildEnterLeetcodeTopic(topic, "~")]);
+    },
+    [buildEnterLeetcodeTopic],
+  );
+
+  const enterJourneyLog = useCallback(() => {
+    setExpanded(new Set());
+    setHistory((prev) => [...prev, ...buildEnterJourneyLog("~")]);
+  }, [buildEnterJourneyLog]);
+
+  const enterGuides = useCallback(() => {
+    setExpanded(new Set());
+    setHistory((prev) => [...prev, ...buildEnterGuides("~")]);
+  }, [buildEnterGuides]);
+
+  const enterBlog = useCallback(() => {
+    setExpanded(new Set());
+    setHistory((prev) => [...prev, ...buildEnterBlog("~")]);
+  }, [buildEnterBlog]);
+
+  const enterBlogSection = useCallback(
+    (section: string) => {
+      setExpanded(new Set());
+      setHistory((prev) => [...prev, ...buildEnterBlogSection(section, "~")]);
+    },
+    [buildEnterBlogSection],
+  );
 
   // ---- one-time initial sequence (bootstrap)
   const bootstrap = useCallback(() => {
@@ -144,9 +272,32 @@ export const LocationProvider: FC<{ children: ReactNode }> = ({ children }) => {
           return buildEnterHome();
         case "lsCategories":
           return buildCategoriesBlock(fromPath);
+        case "enterLeetcode":
+          return buildEnterLeetcode(fromPath);
+        case "enterLeetcodeTopic":
+          return buildEnterLeetcodeTopic(action.topic, fromPath);
+        case "enterJourneyLog":
+          return buildEnterJourneyLog(fromPath);
+        case "enterGuides":
+          return buildEnterGuides(fromPath);
+        case "enterBlog":
+          return buildEnterBlog(fromPath);
+        case "enterBlogSection":
+          return buildEnterBlogSection(action.section, fromPath);
       }
     },
-    [buildEnterCategory, buildEnterAbout, buildEnterHome, buildCategoriesBlock],
+    [
+      buildEnterCategory,
+      buildEnterAbout,
+      buildEnterHome,
+      buildCategoriesBlock,
+      buildEnterLeetcode,
+      buildEnterLeetcodeTopic,
+      buildEnterJourneyLog,
+      buildEnterGuides,
+      buildEnterBlog,
+      buildEnterBlogSection,
+    ],
   );
 
   const replayFrom = useCallback(
@@ -208,6 +359,12 @@ export const LocationProvider: FC<{ children: ReactNode }> = ({ children }) => {
       enterCategory,
       enterAbout,
       enterHome,
+      enterLeetcode,
+      enterLeetcodeTopic,
+      enterJourneyLog,
+      enterGuides,
+      enterBlog,
+      enterBlogSection,
       toggle,
       isExpanded,
       bootstrap,
@@ -220,6 +377,12 @@ export const LocationProvider: FC<{ children: ReactNode }> = ({ children }) => {
       enterCategory,
       enterAbout,
       enterHome,
+      enterLeetcode,
+      enterLeetcodeTopic,
+      enterJourneyLog,
+      enterGuides,
+      enterBlog,
+      enterBlogSection,
       toggle,
       isExpanded,
       bootstrap,

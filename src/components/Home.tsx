@@ -30,6 +30,14 @@ import { PortfolioContext } from "./PortfolioContext";
 import { EducationView } from "./categories/EducationView";
 import { ExperienceView } from "./categories/ExperienceView";
 import { AboutMeView } from "./categories/AboutMeView/AboutMeView";
+import {
+  LeetcodeRootView,
+  LeetcodeTopicView,
+  JourneyLogView,
+  GuidesView,
+  BlogRootView,
+  BlogSectionView,
+} from "./leetcode/LeetcodeViews";
 import ScrollReveal from "./effects/ScrollReveal";
 import ElectricBorder from "./effects/ElectricBorder";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -38,7 +46,13 @@ const TYPING_MS_PER_CHAR = 20; // fast
 const STAGGER_MS = 80;
 const TYPING_BUFFER_MS = 120;
 
-type Location = "home" | "education" | "experience" | "about";
+type Location =
+  | "home"
+  | "education"
+  | "experience"
+  | "about"
+  | "leetcode"
+  | "blog";
 type WindowState = "normal" | "minimized" | "fullscreen";
 
 type AnimState = "idle" | "minimizing" | "restoring";
@@ -269,6 +283,14 @@ const currentLocationOf = (history: HistoryEntry[]): Location => {
         return "about";
       case "enterHome":
         return "home";
+      case "enterLeetcode":
+      case "enterLeetcodeTopic":
+      case "enterJourneyLog":
+      case "enterGuides":
+        return "leetcode";
+      case "enterBlog":
+      case "enterBlogSection":
+        return "blog";
       case "lsCategories":
         // ls categories/ is a menu, not a "place" — keep looking back.
         continue;
@@ -290,6 +312,8 @@ export const Home: FC = () => {
     enterCategory,
     enterAbout,
     enterHome,
+    enterLeetcode,
+    enterBlog,
     path,
   } = useLocation();
   const { $locale, data } = useContext(PortfolioContext);
@@ -378,19 +402,15 @@ export const Home: FC = () => {
     return () => window.cancelAnimationFrame(raf);
   }, [history.length, tailDelay]);
 
-  const handleCategoryClick = (
-    menuEntryId: string,
-    key: string,
-    external?: string,
-  ) => {
-    if (external) {
-      window.open(external, "_blank", "noopener,noreferrer");
-      return;
-    }
+  const handleCategoryClick = (menuEntryId: string, key: string) => {
     if (key === "education" || key === "experience") {
       chooseFromMenu(menuEntryId, { kind: "enterCategory", category: key });
     } else if (key === "about") {
       chooseFromMenu(menuEntryId, { kind: "enterAbout" });
+    } else if (key === "leetcode") {
+      chooseFromMenu(menuEntryId, { kind: "enterLeetcode" });
+    } else if (key === "blog") {
+      chooseFromMenu(menuEntryId, { kind: "enterBlog" });
     }
   };
 
@@ -402,8 +422,16 @@ export const Home: FC = () => {
         return enterAbout();
       case "enterHome":
         return enterHome();
+      case "enterLeetcode":
+        return enterLeetcode();
+      case "enterBlog":
+        return enterBlog();
+      case "enterLeetcodeTopic":
+      case "enterJourneyLog":
+      case "enterGuides":
+      case "enterBlogSection":
       case "lsCategories":
-        // Not used in trailing chips.
+        // Not surfaced as trailing chips.
         return;
     }
   };
@@ -501,6 +529,18 @@ export const Home: FC = () => {
         );
       case "about":
         return <AboutMeView introduction={data[$locale].introduction} />;
+      case "leetcodeRoot":
+        return <LeetcodeRootView />;
+      case "leetcodeTopic":
+        return <LeetcodeTopicView topic={e.topic} />;
+      case "journeyLog":
+        return <JourneyLogView />;
+      case "guides":
+        return <GuidesView />;
+      case "blogRoot":
+        return <BlogRootView />;
+      case "blogSection":
+        return <BlogSectionView section={e.section} />;
     }
   };
 
@@ -677,24 +717,20 @@ const TerminalDock: FC<{ onRestore: () => void }> = ({ onRestore }) => {
 
 const CategoryChips: FC<{
   menuEntryId: string;
-  onClick: (menuEntryId: string, key: string, external?: string) => void;
+  onClick: (menuEntryId: string, key: string) => void;
 }> = ({ menuEntryId, onClick }) => {
   const categories = [
     { key: "education", label: "education/" },
     { key: "experience", label: "experience/" },
-    { key: "blog", label: "blog/", external: "https://blog.jesseliu.me" },
+    { key: "leetcode", label: "leetcode/" },
+    { key: "blog", label: "blog/" },
     { key: "about", label: "about/" },
   ] as const;
 
   return (
     <Stack direction="row" spacing={1.2} flexWrap="wrap" sx={{ pt: 0.5 }}>
       {categories.map((c) => (
-        <Chip
-          key={c.key}
-          onClick={() =>
-            onClick(menuEntryId, c.key, "external" in c ? c.external : undefined)
-          }
-        >
+        <Chip key={c.key} onClick={() => onClick(menuEntryId, c.key)}>
           [{c.label}]
         </Chip>
       ))}
@@ -720,7 +756,12 @@ const trailingSuggestions = (current: Location): TrailingItem[] => {
       action: { kind: "enterCategory", category: "experience" },
     });
   }
-  items.push({ label: "blog/", external: "https://blog.jesseliu.me" });
+  if (current !== "leetcode") {
+    items.push({ label: "leetcode/", action: { kind: "enterLeetcode" } });
+  }
+  if (current !== "blog") {
+    items.push({ label: "blog/", action: { kind: "enterBlog" } });
+  }
   if (current !== "about") {
     items.push({ label: "about/", action: { kind: "enterAbout" } });
   }

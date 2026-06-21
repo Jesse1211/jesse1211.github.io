@@ -1,0 +1,3 @@
+[submodule "src/journey-content"]
+	path = src/journey-content
+	url = https://github.com/Jesse1211/Journey.git
