@@ -5,6 +5,7 @@
 
 import manifestJson from "../journey-content/journey.json";
 import timelineJson from "../journey-content/timeline.json";
+import aiTimelineJson from "../journey-content/ai-timeline.json";
 import guideIndexJson from "../journey-content/guides/index.json";
 import type {
   Manifest,
@@ -16,6 +17,7 @@ import type {
 
 export const manifest = manifestJson as unknown as Manifest;
 export const timeline = timelineJson as unknown as Timeline;
+export const aiTimeline = aiTimelineJson as unknown as Timeline;
 export const guideIndex = guideIndexJson as unknown as GuideIndex;
 
 // Lazy raw loaders for solution source and guide markdown. Keys are paths

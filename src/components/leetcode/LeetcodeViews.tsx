@@ -7,11 +7,12 @@ import {
   solutionsByTopic,
   manifest,
   timeline,
+  aiTimeline,
   guideIndex,
   loadGuideMarkdown,
   solutionLabel,
 } from "../../journey/data";
-import type { Solution } from "../../journey/types";
+import type { Solution, Timeline } from "../../journey/types";
 import {
   blogSectionsSorted,
   blogBySection,
@@ -89,18 +90,22 @@ export const LeetcodeTopicView: FC<{ topic: string }> = ({ topic }) => {
   );
 };
 
-// ── git log journey → the daily-log timeline, inline (git-log style)
-export const JourneyLogView: FC = () => {
+// Reusable git-log-style timeline renderer. Any Timeline (algos, ai, …)
+// renders the same way; only the data + caption differ.
+const TimelineView: FC<{ data: Timeline; caption: string }> = ({
+  data,
+  caption,
+}) => {
   const milestonesByDay: Record<string, string[]> = {};
-  for (const m of timeline.milestones) {
+  for (const m of data.milestones) {
     if (m.afterDay) (milestonesByDay[m.afterDay] ??= []).push(m.text);
   }
   // newest first, like git log
-  const entries = [...timeline.entries].reverse();
+  const entries = [...data.entries].reverse();
   return (
     <Box sx={{ pt: 0.5 }}>
       <Box className="term-dim" sx={{ mb: 0.6, fontSize: "0.85em" }}>
-        {timeline.count} days of practice — newest first
+        {data.count} {caption} — newest first
       </Box>
       <Box sx={{ fontSize: "0.92em", lineHeight: 1.7 }}>
         {entries.map((e) => (
@@ -135,6 +140,11 @@ export const JourneyLogView: FC = () => {
     </Box>
   );
 };
+
+// ── git log journey → the LeetCode practice timeline
+export const JourneyLogView: FC = () => (
+  <TimelineView data={timeline} caption="days of practice" />
+);
 
 // ── ls leetcode/guides/ → guide chips opening the doc modal
 export const GuidesView: FC = () => {
@@ -190,22 +200,34 @@ export const BlogRootView: FC<{ entryId: string }> = ({ entryId }) => {
   );
 };
 
-// ── ls blog/<section>/ → post chips opening the doc modal
+// ── ls notes/<section>/ → post chips opening the doc modal.
+// The MLs section additionally surfaces ai.log — the AI-study timeline —
+// since the AI learning journey naturally belongs alongside the ML notes.
 export const BlogSectionView: FC<{ section: string }> = ({ section }) => {
   const [active, setActive] = useState<BlogPost | null>(null);
+  const [showAiLog, setShowAiLog] = useState(false);
   const posts = blogBySection[section] ?? [];
+  const hasAiLog = section === "MLs";
   return (
     <Box>
       <Box className="term-dim" sx={{ mb: 0.5, fontSize: "0.85em" }}>
         {posts.length} posts in {section}/
       </Box>
       <Row>
+        {hasAiLog && (
+          <Chip onClick={() => setShowAiLog((v) => !v)}>
+            ai.log{showAiLog ? " ×" : ""}
+          </Chip>
+        )}
         {posts.map((p) => (
           <Chip key={p.slug} onClick={() => setActive(p)}>
             $ less {p.title}
           </Chip>
         ))}
       </Row>
+      {hasAiLog && showAiLog && (
+        <TimelineView data={aiTimeline} caption="days learning AI" />
+      )}
       {active && (
         <DocModal
           open={!!active}
