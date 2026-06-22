@@ -14,6 +14,24 @@ re-runnable.
 
 Deployed to https://jesseliu.me via GitHub Pages (Actions mode).
 
+## Render / content split
+
+This repo is the **render layer only**. ALL content lives in the
+**`Journey`** repo, pulled in as a git submodule at
+`src/journey-content`. Journey is the single source of truth:
+
+- `Algos/` — LeetCode solutions (`.java`), indexed by `journey.json`
+- `guides/` — algorithm strategy write-ups (`guides/index.json`)
+- `notes/` — knowledge notes (Backend / Frontend / Courses / DevOps /
+  MLs), indexed by `notes/index.json`
+- `portfolio/` — `experience.json` / `education.json` / `intro.json`
+  (bilingual) + `images/`
+- `timeline.json`, `ai-timeline.json` — daily-log timelines
+
+Nothing in this repo hardcodes portfolio data anymore; the React code
+reads everything from the submodule. To change content, edit Journey —
+not this repo. See **Editing content** below.
+
 ## Stack
 
 - **Vite 5 + React 18 + TypeScript** (SWC). `pnpm` is the package
@@ -224,7 +242,7 @@ src/
     Home.tsx               renders history + trailing prompt
     Navigation.tsx         top-right [ EN | 中 ] toggle
     Footer.tsx             fixed-bottom © line
-    PortfolioContext.tsx   static data + locale
+    PortfolioContext.tsx   data (from Journey) + locale
     PortfolioProvider.tsx
     DescriptionModal.tsx   "$ less brief.md" experience modal
 
@@ -247,8 +265,24 @@ src/
       ExperienceView.tsx  + Row + Detail (same shape)
       AboutMeView/        avatar + intro + social links
 
+    leetcode/            leetcode/ + notes/ views (read Journey content)
+      LeetcodeViews.tsx  ls drill-down + TimelineView (journey.log/ai.log)
+      SolutionModal.tsx  "$ less <file>.java" code + strategy modal
+      DocModal.tsx       "$ less <file>.md" guide/note modal
+      Markdown.tsx       react-markdown + remark-gfm renderer (terminal-skinned)
+      CodeBlock.tsx      lightweight Java syntax highlighting
+
+  journey/             data layer over the Journey submodule
+    data.ts            manifest / timelines / guides loaders
+    blog.ts            notes index + lazy markdown loaders
+    types.ts           content type definitions
+
+  journey-content/     ← git submodule: the Journey repo (all content)
+
   theme/terminal.ts    palette, fontStack, glassSx tokens (some unused)
-  models/              static data (AllData_US/CN, Categories types)
+  models/
+    AllData.tsx        builds bilingual data from Journey portfolio/*.json
+    Categories.tsx     Experience/Education/Introduction types
 ```
 
 ## Common edits
@@ -267,76 +301,99 @@ src/
   `trailingSuggestions`, `CategoryChips`, and add the corresponding
   `enterX` to the provider + a `CmdAction` variant.
 
-## Editing portfolio data
+## Editing content
 
-All visible content lives in `src/models/AllData_US.tsx` and
-`src/models/AllData_CN.tsx`. **Both files must stay in sync** —
-the locale switch in the navigation bar reads from whichever
-matches `$locale`. If you only edit one, switching language reveals
-stale or missing data.
+All content lives in the **`Journey`** repo (the submodule at
+`src/journey-content`) — not in this repo. This repo only renders it.
 
-The `Experience` shape is defined in `src/models/Categories.tsx`:
+**To change anything content-related** (a job, a school, a note, a
+solution, the intro):
 
-```ts
+1. Edit the relevant file in the `Journey` repo and push it.
+2. Regenerate the affected index if needed (Journey ships generators
+   under `Journey/.design/`: `gen-manifest.mjs` → `journey.json`,
+   `gen-notes-index.mjs` → `notes/index.json`,
+   `gen-timeline.mjs` / `gen-ai-timeline.mjs` → the timelines).
+3. In this repo, bump the submodule pointer and commit it:
+   ```bash
+   git submodule update --remote --merge src/journey-content
+   git commit -am "bump journey-content"
+   git push        # triggers the Pages deploy
+   ```
+
+CI checks out submodules (`submodules: recursive` in `deploy.yml`).
+**Journey must stay public** so the public Pages build can clone it.
+
+### Where each thing lives in Journey
+
+| Content | Journey path | Index |
+|---|---|---|
+| Experience / Education / Intro | `portfolio/*.json` (bilingual) | — |
+| Knowledge notes | `notes/<Section>/*.md` | `notes/index.json` |
+| LeetCode solutions | `Algos/<Topic>/*.java` | `journey.json` |
+| Strategy guides | `guides/*.md` | `guides/index.json` |
+| Daily-log timelines | `timeline.json`, `ai-timeline.json` | — |
+
+### Experience / Education JSON shape
+
+`portfolio/experience.json` and `education.json` are keyed by locale:
+`{ "en-US": [...], "zh-CN": [...] }`. **Both locales must stay in
+sync** — the nav-bar locale switch reads whichever matches `$locale`;
+editing only one shows stale data after a language switch.
+
+An experience row (see `Experience` in `src/models/Categories.tsx`):
+
+```jsonc
 {
-  _id: string;          // "1".."N", contiguous; see below
-  StartDate: string;    // "Sep 2025" / "2025年9月"
-  EndDate: string;      // "Jun 2026" / "2026年6月" / "Present" / "至今"
-  Title: string;
-  Company: string;
-  Location: string;
-  Description: string;  // one-line summary, shown in detail
-  Image?: string;       // "./protonbase.png" — file lives in public/
-  Link?: string;        // becomes a "$ open <url>" chip
-  Brief: Map<string, string[]>;
+  "_id": "1",                 // "1".."N", contiguous (see below)
+  "StartDate": "Sep 2025",    // "2025年9月" in zh-CN
+  "EndDate": "Jun 2026",      // / "Present" / "至今"
+  "Title": "...",
+  "Company": "...",
+  "Location": "...",
+  "Description": "...",       // one-line summary
+  "Image": "./protonbase.png",// file lives in this repo's public/
+  "Link": "https://...",      // becomes a "$ open <url>" chip
+  "Brief": [                  // array of [heading, sub-bullets] pairs
+    ["Built X with Y impact", ["Sub-bullet 1.", "Sub-bullet 2."]],
+    ["A standalone line with no sub-bullets", []]
+  ]
 }
 ```
 
-`Brief` is a 2-level hierarchy: each key is a heading (rendered with
-`▸`), each value is a list of sub-bullets (rendered with `-`). Pass
-`[]` for a heading with no sub-bullets. Example:
-
-```ts
-Brief: new Map([
-  [
-    "Built X with Y impact",
-    [
-      "Sub-bullet 1.",
-      "Sub-bullet 2.",
-    ],
-  ],
-  ["A standalone line with no sub-bullets", []],
-])
-```
-
-`Education` is similar but flatter — see the existing entries for
-field shape.
+`Brief` is stored as `[heading, bullets][]` pairs in JSON and
+**rehydrated into a `Map` at load time** by `src/models/AllData.tsx`
+(the view code still consumes a `Map<string, string[]>`). `Education`
+is similar but flatter.
 
 ### `_id` is contiguous
 
 `_id` values must be `"1"`, `"2"`, … without gaps. The slug helpers
 (`educationSlug` / `experienceSlug` in `src/state/locationSlug.ts`)
-derive the row's URL-style identifier from this, and the
-LocationContext's `expanded` Set keys depend on it. When inserting
-in the middle, **renumber all later entries** — `git grep '_id: "'
-src/models/` is the quick check.
+derive the row's identifier from this, and the LocationContext's
+`expanded` Set keys depend on it. When inserting in the middle,
+**renumber all later entries** in both locale arrays.
 
 ### Images
 
-Logos and other assets go in `public/<name>.png`. Vite copies the
-entire `public/` tree into `dist/` at build time. Reference them
-from data as `"./name.png"` (with the leading `./`) so the path
-works under the custom domain root.
+Logos still live in **this repo's** `public/<name>.png` (build assets
+served statically). JSON references them as `"./name.png"` (leading
+`./`). Journey keeps a backup copy under `portfolio/images/`, but the
+build serves from `public/`. Never put assets in `dist/` directly —
+`pnpm build` wipes it.
 
-**Never put assets in `dist/` directly** — `pnpm build` wipes that
-directory.
+### Notes title derivation
+
+`notes/index.json` derives each post's title from YAML front-matter
+`title:` if present, else the first markdown heading, else the
+filename. New notes need no front-matter — a leading `# Heading` is
+enough.
 
 ### List order
 
-`experienceUS[0]` renders first in the `$ ls -la experience/`
-output (top of the list). The convention is reverse-chronological:
-the most recent role goes at index 0. New role goes to the top,
-everything else shifts down.
+`experience["en-US"][0]` renders first in `$ ls -la experience/`
+(top of the list). Convention is reverse-chronological: the most
+recent role at index 0.
 
 ## Gotchas / non-obvious decisions
 
@@ -364,10 +421,11 @@ everything else shifts down.
   habit if a file feels "missing" — they were superseded by the
   current design.
 - **`axios` and `gh-pages` are intentionally NOT in
-  `package.json`**. The site reads from static `models/AllData_*`,
-  no HTTP calls. Deploys go through Pages Actions, no manual CLI.
-  (Note: `gsap` and `ogl` ARE intentional deps now — see the
-  ReactBits gotcha below.)
+  `package.json`**. All content is bundled at build time from the
+  Journey submodule (JSON imports + `import.meta.glob` raw loaders),
+  no runtime HTTP calls. Deploys go through Pages Actions, no manual
+  CLI. (Note: `gsap`, `ogl`, and `react-markdown`/`remark-gfm`/
+  `rehype-raw` ARE intentional deps now.)
 - **ElectricBorder wraps GlassPanel from the OUTSIDE** — its glow
   needs `overflow: visible`, while the panel keeps `overflow: hidden`
   for the scroll body. The glass `border` alpha was dropped to `0.18`
