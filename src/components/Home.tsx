@@ -530,7 +530,7 @@ export const Home: FC = () => {
       case "about":
         return <AboutMeView introduction={data[$locale].introduction} />;
       case "leetcodeRoot":
-        return <LeetcodeRootView />;
+        return <LeetcodeRootView entryId={e.id} />;
       case "leetcodeTopic":
         return <LeetcodeTopicView topic={e.topic} />;
       case "journeyLog":
@@ -538,7 +538,7 @@ export const Home: FC = () => {
       case "guides":
         return <GuidesView />;
       case "blogRoot":
-        return <BlogRootView />;
+        return <BlogRootView entryId={e.id} />;
       case "blogSection":
         return <BlogSectionView section={e.section} />;
     }
@@ -723,7 +723,7 @@ const CategoryChips: FC<{
     { key: "education", label: "education/" },
     { key: "experience", label: "experience/" },
     { key: "leetcode", label: "leetcode/" },
-    { key: "blog", label: "blog/" },
+    { key: "blog", label: "notes/" },
     { key: "about", label: "about/" },
   ] as const;
 
@@ -760,7 +760,7 @@ const trailingSuggestions = (current: Location): TrailingItem[] => {
     items.push({ label: "leetcode/", action: { kind: "enterLeetcode" } });
   }
   if (current !== "blog") {
-    items.push({ label: "blog/", action: { kind: "enterBlog" } });
+    items.push({ label: "notes/", action: { kind: "enterBlog" } });
   }
   if (current !== "about") {
     items.push({ label: "about/", action: { kind: "enterAbout" } });

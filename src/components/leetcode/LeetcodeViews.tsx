@@ -29,18 +29,30 @@ const Row: FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 // ── ls leetcode/ → topics + guides/ + journey.log
-export const LeetcodeRootView: FC = () => {
-  const { enterLeetcodeTopic, enterGuides, enterJourneyLog } = useLocation();
+// Clicking a chip REPLACES everything after this menu entry (chooseFromMenu)
+// rather than appending, so re-picking swaps the selection instead of piling
+// up duplicate trailing prompts — same model as the top-level category chips.
+export const LeetcodeRootView: FC<{ entryId: string }> = ({ entryId }) => {
+  const { chooseFromMenu } = useLocation();
   return (
     <Box>
       <Box className="term-dim" sx={{ mb: 0.5, fontSize: "0.85em" }}>
         {manifest.count} solutions · {topicsSorted.length} topics
       </Box>
       <Row>
-        <Chip onClick={enterJourneyLog}>journey.log</Chip>
-        <Chip onClick={enterGuides}>guides/</Chip>
+        <Chip onClick={() => chooseFromMenu(entryId, { kind: "enterJourneyLog" })}>
+          journey.log
+        </Chip>
+        <Chip onClick={() => chooseFromMenu(entryId, { kind: "enterGuides" })}>
+          guides/
+        </Chip>
         {topicsSorted.map((t) => (
-          <Chip key={t} onClick={() => enterLeetcodeTopic(t)}>
+          <Chip
+            key={t}
+            onClick={() =>
+              chooseFromMenu(entryId, { kind: "enterLeetcodeTopic", topic: t })
+            }
+          >
             {t}/ ({solutionsByTopic[t]?.length ?? 0})
           </Chip>
         ))}
@@ -153,9 +165,10 @@ export const GuidesView: FC = () => {
   );
 };
 
-// ── ls blog/ → sections
-export const BlogRootView: FC = () => {
-  const { enterBlogSection } = useLocation();
+// ── ls notes/ → sections. Clicking a section REPLACES everything after this
+// menu entry (chooseFromMenu) so the trailing prompt doesn't pile up.
+export const BlogRootView: FC<{ entryId: string }> = ({ entryId }) => {
+  const { chooseFromMenu } = useLocation();
   return (
     <Box>
       <Box className="term-dim" sx={{ mb: 0.5, fontSize: "0.85em" }}>
@@ -163,7 +176,12 @@ export const BlogRootView: FC = () => {
       </Box>
       <Row>
         {blogSectionsSorted.map((s) => (
-          <Chip key={s} onClick={() => enterBlogSection(s)}>
+          <Chip
+            key={s}
+            onClick={() =>
+              chooseFromMenu(entryId, { kind: "enterBlogSection", section: s })
+            }
+          >
             {s}/ ({blogBySection[s]?.length ?? 0})
           </Chip>
         ))}
@@ -192,7 +210,7 @@ export const BlogSectionView: FC<{ section: string }> = ({ section }) => {
         <DocModal
           open={!!active}
           onClose={() => setActive(null)}
-          title={`$ less blog/${active.slug}.md`}
+          title={`$ less notes/${active.slug}.md`}
           loadKey={active.slug}
           load={() => loadBlogMarkdown(active.slug)}
         />

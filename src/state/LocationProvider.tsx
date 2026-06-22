@@ -141,7 +141,7 @@ export const LocationProvider: FC<{ children: ReactNode }> = ({ children }) => {
       {
         id: nextId("cmd"),
         kind: "cmd",
-        text: "ls blog/",
+        text: "ls notes/",
         animate: true,
         atPath: fromPath,
         action: { kind: "enterBlog" },
@@ -156,7 +156,7 @@ export const LocationProvider: FC<{ children: ReactNode }> = ({ children }) => {
       {
         id: nextId("cmd"),
         kind: "cmd",
-        text: `ls blog/${section}/`,
+        text: `ls notes/${section}/`,
         animate: true,
         atPath: fromPath,
         action: { kind: "enterBlogSection", section },
