@@ -1,25 +1,109 @@
-import { FC, ReactNode } from "react";
+import { FC } from "react";
 import { Box } from "@mui/joy";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import type { Components } from "react-markdown";
 
-// Minimal, dependency-free markdown renderer good enough for the migrated
-// guides + blog posts: headings, code fences, blockquotes, lists, inline
-// `code`, **bold**, and paragraphs. Not a full CommonMark implementation —
-// just the subset these documents use.
+// Full GitHub-Flavored-Markdown rendering (react-markdown + remark-gfm):
+// tables, ordered/nested lists, task lists, strikethrough, fenced code, etc.
+// rehype-raw lets inline HTML like <br> (used inside table cells) render.
+// The `components` map skins every element in the terminal/glass aesthetic
+// so output matches the rest of the site. Front-matter is stripped before
+// parsing (the loaders keep it, but it's not display content).
 
-const inline = (text: string): ReactNode[] => {
-  const nodes: ReactNode[] = [];
-  // split on `code` and **bold**
-  const re = /(`[^`]+`|\*\*[^*]+\*\*)/g;
-  let last = 0;
-  let m: RegExpExecArray | null;
-  let k = 0;
-  while ((m = re.exec(text)) !== null) {
-    if (m.index > last) nodes.push(text.slice(last, m.index));
-    const tok = m[0];
-    if (tok.startsWith("`")) {
-      nodes.push(
+const ACCENT = "hsla(180,100%,82%,1)";
+const DIM = "hsla(180,20%,55%,0.85)";
+const BASE = "hsla(180,30%,88%,0.95)";
+const LINE = "hsla(180,100%,70%,0.18)";
+
+const components: Components = {
+  h1: ({ children }) => (
+    <Box sx={{ fontWeight: 700, fontSize: "1.5em", color: ACCENT, mt: 1.5, mb: 0.5 }}>
+      {children}
+    </Box>
+  ),
+  h2: ({ children }) => (
+    <Box sx={{ fontWeight: 700, fontSize: "1.3em", color: ACCENT, mt: 1.4, mb: 0.5 }}>
+      {children}
+    </Box>
+  ),
+  h3: ({ children }) => (
+    <Box sx={{ fontWeight: 700, fontSize: "1.12em", color: ACCENT, mt: 1.2, mb: 0.4 }}>
+      {children}
+    </Box>
+  ),
+  h4: ({ children }) => (
+    <Box sx={{ fontWeight: 700, fontSize: "1em", color: ACCENT, mt: 1, mb: 0.3 }}>
+      {children}
+    </Box>
+  ),
+  h5: ({ children }) => (
+    <Box sx={{ fontWeight: 700, color: ACCENT, mt: 1, mb: 0.3 }}>{children}</Box>
+  ),
+  h6: ({ children }) => (
+    <Box sx={{ fontWeight: 700, color: DIM, mt: 1, mb: 0.3 }}>{children}</Box>
+  ),
+  p: ({ children }) => <Box sx={{ my: 0.6, lineHeight: 1.65 }}>{children}</Box>,
+  strong: ({ children }) => (
+    <Box component="strong" sx={{ color: ACCENT, fontWeight: 700 }}>
+      {children}
+    </Box>
+  ),
+  em: ({ children }) => <Box component="em">{children}</Box>,
+  del: ({ children }) => (
+    <Box component="del" sx={{ color: DIM }}>
+      {children}
+    </Box>
+  ),
+  a: ({ children, href }) => (
+    <Box
+      component="a"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      sx={{ color: ACCENT, textDecoration: "underline dotted" }}
+    >
+      {children}
+    </Box>
+  ),
+  ul: ({ children }) => (
+    <Box component="ul" sx={{ pl: 2.5, my: 0.5 }}>
+      {children}
+    </Box>
+  ),
+  ol: ({ children }) => (
+    <Box component="ol" sx={{ pl: 2.5, my: 0.5 }}>
+      {children}
+    </Box>
+  ),
+  li: ({ children }) => (
+    <Box component="li" sx={{ mb: 0.3, lineHeight: 1.6 }}>
+      {children}
+    </Box>
+  ),
+  blockquote: ({ children }) => (
+    <Box
+      sx={{
+        borderLeft: `2px solid ${ACCENT.replace("82%,1", "70%,0.45")}`,
+        pl: 1.5,
+        my: 1,
+        color: "hsla(180,30%,85%,0.85)",
+      }}
+    >
+      {children}
+    </Box>
+  ),
+  hr: () => <Box sx={{ borderTop: `1px dashed ${LINE}`, my: 1.2 }} />,
+  // inline code vs fenced code: react-markdown passes `inline`-ish info via
+  // the absence of a language class / single-line content. We tint inline
+  // code, and box multi-line fences.
+  code: ({ children, className }) => {
+    const text = String(children ?? "");
+    const isBlock = className?.includes("language-") || text.includes("\n");
+    if (!isBlock) {
+      return (
         <Box
-          key={k++}
           component="code"
           sx={{
             fontFamily: "inherit",
@@ -29,171 +113,84 @@ const inline = (text: string): ReactNode[] => {
             color: "hsla(180,100%,85%,0.95)",
           }}
         >
-          {tok.slice(1, -1)}
-        </Box>,
-      );
-    } else {
-      nodes.push(
-        <Box key={k++} component="strong" sx={{ color: "hsla(180,100%,85%,1)" }}>
-          {tok.slice(2, -2)}
-        </Box>,
+          {text}
+        </Box>
       );
     }
-    last = m.index + tok.length;
-  }
-  if (last < text.length) nodes.push(text.slice(last));
-  return nodes;
+    return (
+      <Box
+        component="code"
+        sx={{ fontFamily: "inherit", whiteSpace: "pre", color: BASE }}
+      >
+        {text.replace(/\n$/, "")}
+      </Box>
+    );
+  },
+  pre: ({ children }) => (
+    <Box
+      component="pre"
+      sx={{
+        background: "hsla(240,55%,4%,0.6)",
+        border: `1px solid ${LINE}`,
+        borderRadius: "6px",
+        p: 1.2,
+        my: 1,
+        overflowX: "auto",
+        fontSize: "0.9em",
+        color: BASE,
+      }}
+    >
+      {children}
+    </Box>
+  ),
+  table: ({ children }) => (
+    <Box sx={{ overflowX: "auto", my: 1 }}>
+      <Box
+        component="table"
+        sx={{
+          borderCollapse: "collapse",
+          width: "100%",
+          fontSize: "0.9em",
+          "& th, & td": {
+            border: `1px solid ${LINE}`,
+            px: 1,
+            py: 0.6,
+            textAlign: "left",
+            verticalAlign: "top",
+          },
+          "& th": {
+            background: "hsla(180,100%,70%,0.08)",
+            color: ACCENT,
+            fontWeight: 700,
+          },
+        }}
+      >
+        {children}
+      </Box>
+    </Box>
+  ),
+  br: () => <Box component="br" />,
+  img: ({ src, alt }) => (
+    <Box
+      component="img"
+      src={src}
+      alt={alt}
+      sx={{ maxWidth: "100%", borderRadius: "4px", my: 1 }}
+    />
+  ),
 };
 
 export const Markdown: FC<{ source: string }> = ({ source }) => {
-  // strip YAML front-matter
   const body = source.replace(/^---\n[\s\S]*?\n---\n?/, "");
-  const lines = body.split("\n");
-  const blocks: ReactNode[] = [];
-  let i = 0;
-  let key = 0;
-
-  while (i < lines.length) {
-    const line = lines[i];
-
-    // code fence
-    if (line.trim().startsWith("```")) {
-      const lang = line.trim().slice(3).trim();
-      const buf: string[] = [];
-      i++;
-      while (i < lines.length && !lines[i].trim().startsWith("```")) {
-        buf.push(lines[i]);
-        i++;
-      }
-      i++; // skip closing fence
-      blocks.push(
-        <Box
-          key={key++}
-          component="pre"
-          sx={{
-            background: "hsla(240,55%,4%,0.6)",
-            border: "1px solid hsla(180,100%,70%,0.15)",
-            borderRadius: "6px",
-            p: 1.2,
-            my: 1,
-            overflowX: "auto",
-            fontSize: "0.9em",
-            color: "hsla(180,30%,88%,0.95)",
-            whiteSpace: "pre",
-          }}
-        >
-          {lang && (
-            <Box
-              component="span"
-              className="term-dim"
-              sx={{ display: "block", fontSize: "0.8em", mb: 0.5 }}
-            >
-              {lang}
-            </Box>
-          )}
-          {buf.join("\n")}
-        </Box>,
-      );
-      continue;
-    }
-
-    // heading
-    const h = line.match(/^(#{1,6})\s+(.*)$/);
-    if (h) {
-      const level = h[1].length;
-      blocks.push(
-        <Box
-          key={key++}
-          sx={{
-            fontWeight: 700,
-            fontSize: `${Math.max(1, 1.5 - (level - 1) * 0.12)}em`,
-            color: "hsla(180,100%,82%,1)",
-            mt: 1.5,
-            mb: 0.5,
-          }}
-        >
-          {inline(h[2])}
-        </Box>,
-      );
-      i++;
-      continue;
-    }
-
-    // blockquote (one or more consecutive > lines)
-    if (line.startsWith(">")) {
-      const buf: string[] = [];
-      while (i < lines.length && lines[i].startsWith(">")) {
-        buf.push(lines[i].replace(/^>\s?/, ""));
-        i++;
-      }
-      blocks.push(
-        <Box
-          key={key++}
-          sx={{
-            borderLeft: "2px solid hsla(180,100%,70%,0.4)",
-            pl: 1.5,
-            my: 1,
-            color: "hsla(180,30%,85%,0.85)",
-            whiteSpace: "pre-wrap",
-          }}
-        >
-          {buf.map((b, j) => (
-            <Box key={j}>{inline(b) }</Box>
-          ))}
-        </Box>,
-      );
-      continue;
-    }
-
-    // list (consecutive - or * lines)
-    if (/^\s*[-*]\s+/.test(line)) {
-      const items: string[] = [];
-      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) {
-        items.push(lines[i].replace(/^\s*[-*]\s+/, ""));
-        i++;
-      }
-      blocks.push(
-        <Box key={key++} component="ul" sx={{ pl: 2.5, my: 0.5 }}>
-          {items.map((it, j) => (
-            <Box key={j} component="li" sx={{ mb: 0.3 }}>
-              {inline(it)}
-            </Box>
-          ))}
-        </Box>,
-      );
-      continue;
-    }
-
-    // horizontal rule
-    if (/^---+$/.test(line.trim())) {
-      blocks.push(
-        <Box
-          key={key++}
-          sx={{ borderTop: "1px dashed hsla(180,100%,70%,0.18)", my: 1.2 }}
-        />,
-      );
-      i++;
-      continue;
-    }
-
-    // blank line
-    if (line.trim() === "") {
-      i++;
-      continue;
-    }
-
-    // paragraph (gather until blank)
-    const buf: string[] = [];
-    while (i < lines.length && lines[i].trim() !== "" && !/^(#{1,6}\s|>|```|\s*[-*]\s)/.test(lines[i])) {
-      buf.push(lines[i]);
-      i++;
-    }
-    blocks.push(
-      <Box key={key++} sx={{ my: 0.6, whiteSpace: "pre-wrap" }}>
-        {inline(buf.join("\n"))}
-      </Box>,
-    );
-  }
-
-  return <Box sx={{ lineHeight: 1.6 }}>{blocks}</Box>;
+  return (
+    <Box sx={{ lineHeight: 1.6, wordBreak: "break-word" }}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
+        components={components}
+      >
+        {body}
+      </ReactMarkdown>
+    </Box>
+  );
 };

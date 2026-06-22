@@ -46,6 +46,29 @@ export type HistoryEntry =
   | { id: string; kind: "blogRoot" }
   | { id: string; kind: "blogSection"; section: string };
 
+// A "menu" entry is one whose own rendered output already presents the
+// forward-navigation chips for choosing what to look at next (a list of
+// sections / topics / categories). When the most recent history entry is a
+// menu, the trailing prompt must NOT also render its global nav chips —
+// they'd be a redundant second selection layer below the menu's own chips.
+//
+// This is the single source of truth: any new list/menu view kind added to
+// HistoryEntry registers here once, and the trailing-prompt suppression and
+// any future menu-aware logic stay correct automatically. Leaf/content
+// entries (a rendered post, code, the about blurb, a cmd echo) are NOT
+// menus — after them the trailing prompt's nav chips are the way forward.
+const MENU_KINDS: ReadonlySet<HistoryEntry["kind"]> = new Set([
+  "categories",
+  "leetcodeRoot",
+  "leetcodeTopic",
+  "blogRoot",
+  "blogSection",
+  "guides",
+]);
+
+export const isMenuEntry = (entry: HistoryEntry | undefined): boolean =>
+  entry != null && MENU_KINDS.has(entry.kind);
+
 export interface LocationValue {
   path: string; // "~", "~/education", "~/education/01-cornell"
   expanded: Set<string>; // "<entryId>/<category>/<slug>"

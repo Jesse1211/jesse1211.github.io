@@ -20,7 +20,7 @@ import {
   Chip,
   Reveal,
 } from "./terminal";
-import { useLocation } from "../state/LocationContext";
+import { useLocation, isMenuEntry } from "../state/LocationContext";
 import type {
   CmdAction,
   HistoryEntry,
@@ -545,12 +545,16 @@ export const Home: FC = () => {
   };
 
   const location = currentLocationOf(history);
-  // If the last history entry is already a categories chips menu,
-  // hide the trailing prompt's own chips so they don't appear
-  // twice back-to-back.
+  // When the last history entry is a menu (it already shows its own
+  // forward-navigation chips — categories, topics, sections, guides…),
+  // suppress the trailing prompt's global nav chips so we don't render a
+  // redundant second selection layer beneath it. `isMenuEntry` is the
+  // single source of truth (defined next to HistoryEntry), so this stays
+  // correct as new list views are added.
   const lastEntry = history[history.length - 1];
-  const trailingItems =
-    lastEntry?.kind === "categories" ? [] : trailingSuggestions(location);
+  const trailingItems = isMenuEntry(lastEntry)
+    ? []
+    : trailingSuggestions(location);
 
   if (windowState === "minimized") {
     return <TerminalDock onRestore={handleRestore} />;
